@@ -54,6 +54,7 @@ DNSBunch/
 ## Coding Standards
 
 ### Backend (Python)
+
 - Use `dnspython` for DNS queries.
 - Use `asyncio` for concurrent DNS lookups where possible.
 - Organize code modularly: group each DNS check in its own function/class.
@@ -65,6 +66,7 @@ DNSBunch/
 - Follow [PEP 8](https://peps.python.org/pep-0008/) code style.
 
 ### Frontend (React)
+
 - Use functional components and hooks.
 - Fetch backend endpoints asynchronously; handle loading and error states.
 - Validate user input (domain format) on submit.
@@ -79,76 +81,91 @@ DNSBunch/
 For each DNS record type, Copilot should ensure:
 
 ### NS (Nameserver) Records
+
 - Lookup: All NS records for the domain.
 - Output: Hostnames, IPv4/IPv6 for each, and optionally, geolocation.
 - Validations: All resolve to valid IPs; no duplicates; delegation matches parent; all nameservers respond.
 
 ### SOA (Start of Authority)
+
 - Lookup: SOA record for the domain.
 - Output: Primary nameserver, responsible email, serial, refresh, retry, expire, min TTL.
 - Validations: Exists; serial matches across all NS; values within best-practice ranges.
 
 ### A and AAAA (IPv4/IPv6)
+
 - Lookup: All A and AAAA records for root and www.
 - Output: List of IPs.
 - Validations: Exist; not private/reserved; IPs reachable (optional).
 
 ### MX (Mail Exchange)
+
 - Lookup: All MX records, priorities, resolved IPs.
 - Output: Host, priority, IPs.
 - Validations: Exist if email enabled; priorities correct; MX targets resolve to A/AAAA (never CNAME); targets reachable.
 
 ### SPF (Sender Policy Framework)
+
 - Lookup: TXT records, extract SPF.
 - Output: SPF record value.
 - Validations: Exists; syntax valid; <10 DNS lookups; no deprecated mechanisms.
 
 ### TXT Records
+
 - Lookup: All TXT records for root.
 - Output: All values.
 - Validations: SPF/DKIM/DMARC presence; syntax valid.
 
 ### CNAME
+
 - Lookup: CNAMEs for www, mail, subdomains.
 - Output: CNAME targets.
 - Validations: No CNAME at apex; targets resolve; chains not too long.
 
 ### PTR (Reverse DNS)
+
 - Lookup: PTR for each mail server IP.
 - Output: PTR value.
 - Validations: Exists; matches host; not generic.
 
 ### CAA
+
 - Lookup: CAA records.
 - Output: All values.
 - Validations: Syntax valid; at least one CA authorized or none; no conflicts.
 
 ### DMARC
+
 - Lookup: DMARC TXT record.
 - Output: Record value.
 - Validations: Exists; syntax valid; policy set; aligns with SPF/DKIM.
 
 ### DKIM
+
 - Lookup: TXT record at selector._domainkey.domain.
 - Output: Record value.
 - Validations: Exists; syntax and key length valid.
 
 ### Glue Records
+
 - Lookup: Glue for in-zone NS.
 - Output: Glue IPs.
 - Validations: Present; consistent across zones.
 
 ### DNSSEC
+
 - Lookup: DS, RRSIG, and other DNSSEC records.
 - Output: All relevant records.
 - Validations: Exists; valid; consistent; no expired signatures.
 
 ### AXFR (Zone Transfer)
+
 - Check: Is AXFR open or closed.
 - Output: Status.
 - Validations: AXFR must be closed to unauthorized hosts.
 
 ### Wildcard Records
+
 - Check: Detect wildcard DNS entries.
 - Output: Presence and value.
 - Validations: Warn if inappropriate.

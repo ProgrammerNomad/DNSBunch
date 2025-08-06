@@ -24,6 +24,7 @@ DNSBunch is your all-in-one DNS and mail diagnostics platform. It performs deep 
 Below is a complete list of DNS record types checked, **what information is returned for each**, and **the validations performed**:
 
 ### 1. **NS (Nameserver) Records**
+
 - **Returned Information:**
   - All authoritative nameservers for the domain.
   - IPv4 and IPv6 addresses for each nameserver.
@@ -38,6 +39,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 2. **SOA (Start of Authority) Record**
+
 - **Returned Information:**
   - Primary master nameserver.
   - Responsible person/email.
@@ -52,6 +54,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 3. **A (IPv4 Address) Records**
+
 - **Returned Information:**
   - All IPv4 addresses for the domain and key subdomains (e.g., root, www).
 - **Validations:**
@@ -62,6 +65,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 4. **AAAA (IPv6 Address) Records**
+
 - **Returned Information:**
   - All IPv6 addresses for the domain and key subdomains.
 - **Validations:**
@@ -72,6 +76,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 5. **MX (Mail Exchange) Records**
+
 - **Returned Information:**
   - List of all MX hosts, their priorities, and resolved IPs.
 - **Validations:**
@@ -83,6 +88,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 6. **SPF (Sender Policy Framework)**
+
 - **Returned Information:**
   - SPF record value (via TXT type).
 - **Validations:**
@@ -94,6 +100,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 7. **TXT Records**
+
 - **Returned Information:**
   - All TXT records for the domain.
 - **Validations:**
@@ -103,6 +110,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 8. **CNAME (Canonical Name) Records**
+
 - **Returned Information:**
   - CNAMEs for www, mail, and other key subdomains.
 - **Validations:**
@@ -112,6 +120,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 9. **PTR (Reverse DNS) Records**
+
 - **Returned Information:**
   - PTR records for each mail server IP (each MX target).
 - **Validations:**
@@ -122,6 +131,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 10. **CAA (Certification Authority Authorization) Records**
+
 - **Returned Information:**
   - All CAA records for the domain.
 - **Validations:**
@@ -132,6 +142,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 11. **DMARC (Domain-based Message Authentication, Reporting & Conformance)**
+
 - **Returned Information:**
   - DMARC TXT record value.
 - **Validations:**
@@ -142,6 +153,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 12. **DKIM (DomainKeys Identified Mail)**
+
 - **Returned Information:**
   - DKIM selector records (user can provide or common ones are attempted).
 - **Validations:**
@@ -151,6 +163,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 13. **Glue Records**
+
 - **Returned Information:**
   - Presence and correctness of glue records for in-zone nameservers.
 - **Validations:**
@@ -160,6 +173,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 14. **DNSSEC (Domain Name System Security Extensions)**
+
 - **Returned Information:**
   - DS, RRSIG, and other DNSSEC records if present.
 - **Validations:**
@@ -170,6 +184,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 15. **Zone Transfer (AXFR)**
+
 - **Returned Information:**
   - AXFR status (open/closed).
 - **Validations:**
@@ -178,6 +193,7 @@ Below is a complete list of DNS record types checked, **what information is retu
 ---
 
 ### 16. **Wildcard Records**
+
 - **Returned Information:**
   - Detection of wildcard DNS entries.
 - **Validations:**
@@ -261,6 +277,7 @@ DNSBunch/
 ## Deployment Instructions
 
 ### Deploy Backend (Render.com)
+
 1. Push backend code to GitHub.
 2. Create a new Web Service on Render, connect your repo.
 3. Build command: `pip install -r requirements.txt`
@@ -268,6 +285,7 @@ DNSBunch/
 5. Deploy and get your backend URL (e.g. `https://dnsbunch.onrender.com`).
 
 ### Deploy Frontend (Vercel/Netlify)
+
 1. Push frontend code to GitHub.
 2. Import your repo to Vercel or Netlify and deploy.
 3. Set backend API URL in frontend config (`.env` or similar).
@@ -288,6 +306,7 @@ DNSBunch/
 Contributions are welcome! Please open issues or submit pull requests with improvements, bug fixes, or features.
 
 **Developer:**  
+
 - Nomad Programmer (GitHub: [ProgrammerNomad](https://github.com/ProgrammerNomad))
 
 See `COPILOT_INSTRUCTIONS.md` for technical guidelines.
