@@ -1,6 +1,8 @@
-# DNSBunch
+# DNSBunch 🚀
 
-DNSBunch is a comprehensive, open-source web application for DNS and mail server diagnostics. It empowers anyone to enter a domain name and receive a highly detailed analysis of its DNS configuration, mail server setup, and potential issues affecting domain health, email deliverability, or website accessibility.
+DNSBunch is a modern, comprehensive, open-source web application for DNS and mail server diagnostics. It empowers anyone to enter a domain name and receive a highly detailed, user-friendly analysis of their DNS configuration, mail server setup, and potential issues affecting domain health, email deliverability, or website accessibility.
+
+Built with modern web technologies including React, Material-UI, and Python Flask, DNSBunch provides an intuitive interface that explains complex DNS concepts in plain language, making it accessible to both technical and non-technical users.
 
 ---
 
@@ -8,14 +10,31 @@ DNSBunch is a comprehensive, open-source web application for DNS and mail server
 
 - **GitHub Repository:** [ProgrammerNomad/DNSBunch](https://github.com/ProgrammerNomad/DNSBunch)
 - **Primary Developer:** Nomad Programmer ([ProgrammerNomad](https://github.com/ProgrammerNomad))
-- **Status:** Active solo development
-- **Last Updated:** 2025-08-06
+- **Status:** Active development with modern UI enhancements
+- **Last Updated:** 2025-08-07
+- **Frontend:** React 18 with Material-UI v5 and modern components
+- **Backend:** Python Flask with comprehensive DNS checking capabilities
 
 ---
 
 ## What is DNSBunch?
 
-DNSBunch is your all-in-one DNS and mail diagnostics platform. It performs deep DNS record lookups, evaluates records for standards and best practices, and returns a categorized report. This helps you catch misconfigurations before they cause downtime or email issues.
+DNSBunch is your all-in-one DNS and mail diagnostics platform with a modern, user-friendly interface. It performs deep DNS record lookups, evaluates records for standards and best practices, and returns a categorized report with plain-language explanations.
+
+### ✨ Key Features
+
+- **Modern UI**: Built with React 18 and Material-UI v5 for a responsive, accessible experience
+- **User-Friendly Explanations**: Complex DNS concepts explained in plain language for non-technical users
+- **Comprehensive Analysis**: Checks 16+ DNS record types including DNSSEC, CAA, SPF, DMARC, and more
+- **Categorized Results**: Results organized into logical categories:
+  - 🏗️ **DNS Foundation** - Core DNS settings (NS, SOA, A, AAAA)
+  - 🌐 **Website & Content** - Website-related configuration (CNAME, TXT, wildcard)
+  - 📧 **Email & Communication** - Email delivery and security (MX, SPF, DMARC, DKIM, PTR)
+  - 🔒 **Security & Protection** - Advanced security features (DNSSEC, CAA, AXFR)
+  - ⚡ **Performance & Optimization** - Speed and efficiency settings (glue records)
+- **Visual Status Indicators**: Clear pass/warning/error/info status with color coding
+- **Detailed Recommendations**: Actionable advice for fixing issues
+- **No Registration Required**: Instant analysis without signup or data storage
 
 ---
 
@@ -106,34 +125,37 @@ Below is a complete list of DNS record types checked, **what information is retu
 
 ### Backend (`/backend`)
 - **Language:** Python 3.9+
-- **Framework:** Flask (recommended for simplicity)
+- **Framework:** Flask 2.3.3
 - **Key Libraries:**
-  - [`dnspython`](https://www.dnspython.org/) — DNS queries (A, AAAA, MX, NS, etc.)
-  - [`Flask`](https://flask.palletsprojects.com/) — REST API
-  - [`Flask-Cors`](https://flask-cors.readthedocs.io/) — CORS for API
-  - [`gunicorn`](https://gunicorn.org/) — Production server
-  - [`validators`](https://pypi.org/project/validators/) — Domain validation
-  - [`python-dotenv`](https://pypi.org/project/python-dotenv/) — Environment config
-  - [`pytest`](https://docs.pytest.org/) — Testing
-
-**Optional:**  
-- [`asyncio`](https://docs.python.org/3/library/asyncio.html) — For concurrent lookups (Flask supports async in recent versions)
-- [`loguru`](https://github.com/Delgan/loguru) — Logging
+  - [`dnspython`](https://www.dnspython.org/) 2.4.2 — DNS queries (A, AAAA, MX, NS, etc.)
+  - [`Flask`](https://flask.palletsprojects.com/) 2.3.3 — REST API framework
+  - [`Flask-Cors`](https://flask-cors.readthedocs.io/) 4.0.0 — CORS for API
+  - [`gunicorn`](https://gunicorn.org/) 21.2.0 — Production WSGI server
+  - [`python-dotenv`](https://pypi.org/project/python-dotenv/) 1.0.0 — Environment config
+  - [`pytest`](https://docs.pytest.org/) 7.4.2 — Testing framework
+  - [`requests`](https://docs.python-requests.org/) 2.31.0 — HTTP library
+  - [`geoip2`](https://pypi.org/project/geoip2/) 4.7.0 — Geographic IP lookups
 
 ---
 
 ### Frontend (`/frontend`)
-- **Framework:** React.js
-- **UI Library:** [Material UI (MUI)](https://mui.com/) — Modern, accessible, and popular React component library (recommended and used by many top projects)
+- **Framework:** React 18.2.0
+- **UI Library:** [Material UI (MUI)](https://mui.com/) v5.18.0 — Modern, accessible React components
+- **Build Tool:** [Vite](https://vitejs.dev/) — Fast development and build tool
 - **Key Libraries:**
-  - [`Axios`](https://axios-http.com/) — HTTP requests
-  - [`react-hook-form`](https://react-hook-form.com/) — Form management and validation
-  - [`yup`](https://github.com/jquense/yup) — Input/schema validation
-  - [`react-query`](https://tanstack.com/query/latest) — API data management and caching
-  - [`react-toastify`](https://fkhadra.github.io/react-toastify/) — User notifications
-  - [`vite`](https://vitejs.dev/) — Fast React build tool (recommended for new projects)
-  - [`eslint`](https://eslint.org/) & [`prettier`](https://prettier.io/) — Linting/formatting
-  - [`Jest`](https://jestjs.io/) & [`React Testing Library`](https://testing-library.com/docs/react-testing-library/intro/) — Testing
+  - [`@mui/material`](https://mui.com/) 5.18.0 — Material Design components
+  - [`@mui/icons-material`](https://mui.com/material-ui/material-icons/) 5.18.0 — Material Design icons
+  - [`@emotion/react`](https://emotion.sh/) 11.14.0 — CSS-in-JS styling
+  - [`@emotion/styled`](https://emotion.sh/) 11.14.1 — Styled components
+  - [`axios`](https://axios-http.com/) 1.5.0 — HTTP client for API requests
+  - [`react-hook-form`](https://react-hook-form.com/) 7.62.0 — Form management and validation
+  - [`@hookform/resolvers`](https://github.com/react-hook-form/resolvers) 5.2.1 — Form validation resolvers
+  - [`yup`](https://github.com/jquense/yup) 1.7.0 — Schema validation
+  - [`@tanstack/react-query`](https://tanstack.com/query/latest) 5.84.1 — Data fetching and caching
+  - [`react-toastify`](https://fkhadra.github.io/react-toastify/) 11.0.5 — Toast notifications
+  - [`vite`](https://vitejs.dev/) — Development server and build tool
+  - [`vitest`](https://vitest.dev/) — Testing framework (Vite-native)
+  - [`eslint`](https://eslint.org/) & [`prettier`](https://prettier.io/) — Code linting and formatting
 
 ---
 
@@ -143,17 +165,34 @@ This repository contains both frontend and backend code for DNSBunch:
 
 ```
 DNSBunch/
+├── .github/
+│   └── COPILOT_INSTRUCTIONS.md
 ├── backend/
-│   ├── app.py
-│   ├── requirements.txt
-│   └── ... (other backend files)
+│   ├── app.py                    # Main Flask application
+│   ├── dns_checker.py           # DNS checking logic
+│   ├── requirements.txt         # Python dependencies
+│   ├── render.yaml             # Render deployment config
+│   ├── tests/
+│   │   └── test_dns_checker.py # Backend tests
+│   └── __pycache__/            # Python cache files
 ├── frontend/
-│   ├── package.json
-│   ├── src/
-│   └── ... (other frontend files)
-├── README.md
-├── COPILOT_INSTRUCTIONS.md
-└── .gitignore
+│   ├── index.html              # Main HTML file
+│   ├── package.json            # Node.js dependencies
+│   ├── vite.config.js         # Vite configuration
+│   ├── vercel.json            # Vercel deployment config
+│   └── src/
+│       ├── App.jsx            # Main React component
+│       ├── main.jsx           # React entry point
+│       ├── index.css          # Global styles
+│       ├── components/
+│       │   ├── DNSResults.jsx        # Enhanced results display
+│       │   ├── DomainSearchForm.jsx  # Domain input form
+│       │   └── ErrorBoundary.jsx     # Error handling
+│       └── services/
+│           └── api.js         # API communication
+├── README.md                  # This file
+├── DEVELOPMENT.md            # Development notes
+└── .gitignore               # Git ignore rules
 ```
 
 ---
