@@ -682,34 +682,463 @@ class DNSChecker:
                 'issues': [f"No PTR record for {ip}: {str(e)}"]
             }
     
-    # Placeholder methods for remaining checks
+    # Advanced DNS checks
     async def _check_caa_records(self) -> Dict[str, Any]:
-        """Check CAA records - placeholder"""
-        return {'status': 'info', 'records': [], 'issues': ["CAA check not implemented yet"]}
+        """Check CAA (Certificate Authority Authorization) records"""
+        try:
+            answers = self.resolver.resolve(self.domain, 'CAA')
+            
+            # Simple check - if we get an answer, CAA records exist
+            caa_records = []
+            if answers:
+                caa_records.append({
+                    'record': str(answers[0]) if len(answers) > 0 else 'CAA record found',
+                    'ttl': getattr(answers, 'ttl', 0)
+                })
+            
+            return {
+                'status': 'pass',
+                'records': caa_records,
+                'issues': ["CAA records found and configured"]
+            }
+            
+        except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
+            return {
+                'status': 'warning',
+                'records': [],
+                'issues': ["No CAA records found. Consider adding CAA records for enhanced SSL security."]
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'records': [],
+                'issues': [f"CAA check failed: {str(e)}"]
+            }
     
     async def _check_dmarc_record(self) -> Dict[str, Any]:
-        """Check DMARC record - placeholder"""
-        return {'status': 'info', 'record': '', 'issues': ["DMARC check not implemented yet"]}
+        """Check DMARC (Domain-based Message Authentication, Reporting & Conformance) record"""
+        try:
+            dmarc_domain = f"_dmarc.{self.domain}"
+            answers = self.resolver.resolve(dmarc_domain, 'TXT')
+            dmarc_record = None
+            issues = []
+            
+            # Find DMARC record by checking the first answer
+            if answers and len(answers) > 0:
+                record_text = str(answers[0]).strip('"')
+                if record_text.startswith('v=DMARC1'):
+                    dmarc_record = record_text
+            
+            if not dmarc_record:
+                return {
+                    'status': 'warning',
+                    'record': '',
+                    'issues': ["No DMARC record found. Consider implementing DMARC for better email security."]
+                }
+            
+            # Parse DMARC record
+            dmarc_data = self._parse_dmarc_record(dmarc_record)
+            
+            # Validate DMARC settings
+            policy = dmarc_data.get('p', 'none')
+            
+            if policy == 'none':
+                issues.append("DMARC policy is set to 'none'. Consider using 'quarantine' or 'reject' for better security.")
+                status = 'warning'
+            elif policy in ['quarantine', 'reject']:
+                status = 'pass'
+            else:
+                issues.append(f"Invalid DMARC policy: {policy}")
+                status = 'error'
+            
+            # Check for reporting
+            if 'rua' not in dmarc_data:
+                issues.append("No aggregate reporting address (rua) configured.")
+            
+            return {
+                'status': status,
+                'record': dmarc_record,
+                'parsed': dmarc_data,
+                'issues': issues
+            }
+            
+        except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
+            return {
+                'status': 'warning',
+                'record': '',
+                'issues': ["No DMARC record found. Consider implementing DMARC for better email security."]
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'record': '',
+                'issues': [f"DMARC check failed: {str(e)}"]
+            }
+    
+    def _parse_dmarc_record(self, record: str) -> Dict[str, str]:
+        """Parse DMARC record into components"""
+        dmarc_data = {}
+        parts = record.split(';')
+        
+        for part in parts:
+            part = part.strip()
+            if '=' in part:
+                key, value = part.split('=', 1)
+                dmarc_data[key.strip()] = value.strip()
+        
+        return dmarc_data
     
     async def _check_dkim_records(self) -> Dict[str, Any]:
-        """Check DKIM records - placeholder"""
-        return {'status': 'info', 'records': [], 'issues': ["DKIM check not implemented yet"]}
+        """Check DKIM (DomainKeys Identified Mail) records"""
+        try:
+            # Common DKIM selectors to check
+            common_selectors = [
+                'default', 'selector1', 'selector2', 'google', 'k1', 's1', 's2',
+                'dkim', 'mail', 'email', 'smtp', 'mx', 'key1', 'key2'
+            ]
+            
+            dkim_records = []
+            issues = []
+            
+            for selector in common_selectors:
+                try:
+                    dkim_domain = f"{selector}._domainkey.{self.domain}"
+                    answers = self.resolver.resolve(dkim_domain, 'TXT')
+                    
+                    # Get the first answer (DKIM record)
+                    if answers:
+                        dkim_record = str(answers[0]).strip('"')
+                        if 'k=' in dkim_record or 'p=' in dkim_record:
+                            parsed_dkim = self._parse_dkim_record(dkim_record)
+                            dkim_records.append({
+                                'selector': selector,
+                                'record': dkim_record,
+                                'parsed': parsed_dkim
+                            })
+                except:
+                    continue  # Selector not found, which is normal
+            
+            if not dkim_records:
+                return {
+                    'status': 'warning',
+                    'records': [],
+                    'issues': ["No DKIM records found. Consider implementing DKIM for better email authentication."]
+                }
+            
+            # Validate DKIM records
+            for dkim in dkim_records:
+                parsed = dkim['parsed']
+                if 'p' not in parsed or not parsed['p']:
+                    issues.append(f"DKIM selector '{dkim['selector']}' is missing public key (p=)")
+                if 'k' in parsed and parsed['k'] not in ['rsa', 'ed25519']:
+                    issues.append(f"DKIM selector '{dkim['selector']}' uses unsupported key type: {parsed['k']}")
+            
+            status = 'pass' if not issues else 'warning'
+            
+            return {
+                'status': status,
+                'records': dkim_records,
+                'issues': issues
+            }
+            
+        except Exception as e:
+            return {
+                'status': 'error',
+                'records': [],
+                'issues': [f"DKIM check failed: {str(e)}"]
+            }
+    
+    def _parse_dkim_record(self, record: str) -> Dict[str, str]:
+        """Parse DKIM record into components"""
+        dkim_data = {}
+        parts = record.split(';')
+        
+        for part in parts:
+            part = part.strip()
+            if '=' in part:
+                key, value = part.split('=', 1)
+                dkim_data[key.strip()] = value.strip()
+        
+        return dkim_data
     
     async def _check_glue_records(self) -> Dict[str, Any]:
-        """Check glue records - placeholder"""
-        return {'status': 'info', 'records': [], 'issues': ["Glue records check not implemented yet"]}
+        """Check glue records for nameservers"""
+        try:
+            # First get NS records
+            ns_check = await self._check_ns_records()
+            glue_info = []
+            issues = []
+            
+            if ns_check['status'] == 'error':
+                return {
+                    'status': 'error',
+                    'records': [],
+                    'issues': ["Cannot check glue records: NS record check failed"]
+                }
+            
+            # Check each nameserver for glue records
+            for ns_record in ns_check.get('records', []):
+                ns_host = ns_record['host']
+                ns_ips = [ip_info['ip'] for ip_info in ns_record.get('ips', [])]
+                
+                # Check if nameserver is in the same domain
+                if ns_host.endswith(f".{self.domain}") or ns_host == self.domain:
+                    # This nameserver needs glue records
+                    glue_needed = True
+                    has_glue = len(ns_ips) > 0
+                    
+                    glue_info.append({
+                        'nameserver': ns_host,
+                        'needs_glue': glue_needed,
+                        'has_glue': has_glue,
+                        'glue_records': ns_ips
+                    })
+                    
+                    if not has_glue:
+                        issues.append(f"Nameserver {ns_host} needs glue records but none found")
+                else:
+                    # External nameserver, glue not required but helpful
+                    glue_info.append({
+                        'nameserver': ns_host,
+                        'needs_glue': False,
+                        'has_glue': len(ns_ips) > 0,
+                        'glue_records': ns_ips
+                    })
+            
+            # Determine overall status
+            critical_issues = [info for info in glue_info if info['needs_glue'] and not info['has_glue']]
+            
+            if critical_issues:
+                status = 'error'
+            elif issues:
+                status = 'warning'
+            else:
+                status = 'pass'
+            
+            return {
+                'status': status,
+                'records': glue_info,
+                'issues': issues
+            }
+            
+        except Exception as e:
+            return {
+                'status': 'error',
+                'records': [],
+                'issues': [f"Glue records check failed: {str(e)}"]
+            }
     
     async def _check_dnssec(self) -> Dict[str, Any]:
-        """Check DNSSEC - placeholder"""
-        return {'status': 'info', 'records': [], 'issues': ["DNSSEC check not implemented yet"]}
+        """Check DNSSEC (DNS Security Extensions)"""
+        try:
+            dnssec_records = []
+            issues = []
+            
+            # Check for DS records (at parent zone)
+            try:
+                ds_answers = self.resolver.resolve(self.domain, 'DS')
+                if ds_answers and len(ds_answers) > 0:
+                    ds_records = [{
+                        'type': 'DS',
+                        'record': str(ds_answers[0]),
+                        'ttl': getattr(ds_answers, 'ttl', 0)
+                    }]
+                    dnssec_records.extend(ds_records)
+                    issues.append("DS records found at parent zone")
+                
+            except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
+                issues.append("No DS records found at parent zone")
+            
+            # Check for DNSKEY records
+            try:
+                dnskey_answers = self.resolver.resolve(self.domain, 'DNSKEY')
+                if dnskey_answers and len(dnskey_answers) > 0:
+                    dnskey_records = [{
+                        'type': 'DNSKEY',
+                        'record': str(dnskey_answers[0]),
+                        'ttl': getattr(dnskey_answers, 'ttl', 0)
+                    }]
+                    dnssec_records.extend(dnskey_records)
+                    issues.append("DNSKEY records found")
+                
+            except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
+                issues.append("No DNSKEY records found")
+            
+            # Check for RRSIG records
+            try:
+                rrsig_answers = self.resolver.resolve(self.domain, 'RRSIG')
+                if rrsig_answers and len(rrsig_answers) > 0:
+                    rrsig_count = len(rrsig_answers)
+                    issues.append(f"Found {rrsig_count} RRSIG records")
+            except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
+                issues.append("No RRSIG records found")
+            
+            # Determine status
+            if not dnssec_records:
+                status = 'warning'
+                issues.append("DNSSEC is not configured for this domain")
+            else:
+                status = 'pass'
+                issues.append("DNSSEC appears to be configured")
+            
+            return {
+                'status': status,
+                'records': dnssec_records,
+                'issues': issues
+            }
+            
+        except Exception as e:
+            return {
+                'status': 'error',
+                'records': [],
+                'issues': [f"DNSSEC check failed: {str(e)}"]
+            }
     
     async def _check_axfr(self) -> Dict[str, Any]:
-        """Check AXFR (zone transfer) - placeholder"""
-        return {'status': 'info', 'open': False, 'issues': ["AXFR check not implemented yet"]}
+        """Check AXFR (zone transfer) vulnerability"""
+        try:
+            # Get nameservers to test
+            ns_check = await self._check_ns_records()
+            if ns_check['status'] == 'error':
+                return {
+                    'status': 'error',
+                    'open': False,
+                    'issues': ["Cannot check AXFR: NS record check failed"]
+                }
+            
+            vulnerable_servers = []
+            issues = []
+            
+            # Test each nameserver for zone transfer
+            for ns_record in ns_check.get('records', []):
+                for ip_info in ns_record.get('ips', []):
+                    ip = ip_info['ip']
+                    try:
+                        # Attempt zone transfer
+                        zone = dns.zone.from_xfr(dns.query.xfr(ip, self.domain, timeout=5))
+                        if zone:
+                            vulnerable_servers.append({
+                                'nameserver': ns_record['host'],
+                                'ip': ip,
+                                'vulnerable': True
+                            })
+                            issues.append(f"Zone transfer allowed from {ns_record['host']} ({ip})")
+                    except Exception:
+                        # Zone transfer rejected (good)
+                        vulnerable_servers.append({
+                            'nameserver': ns_record['host'],
+                            'ip': ip,
+                            'vulnerable': False
+                        })
+            
+            # Determine status
+            if any(server['vulnerable'] for server in vulnerable_servers):
+                status = 'error'
+                issues.insert(0, "Zone transfer vulnerability detected! This allows unauthorized access to DNS records.")
+            else:
+                status = 'pass'
+                issues.append("Zone transfers are properly restricted on all nameservers.")
+            
+            return {
+                'status': status,
+                'open': any(server['vulnerable'] for server in vulnerable_servers),
+                'servers': vulnerable_servers,
+                'issues': issues
+            }
+            
+        except Exception as e:
+            return {
+                'status': 'error',
+                'open': False,
+                'issues': [f"AXFR check failed: {str(e)}"]
+            }
     
     async def _check_wildcard(self) -> Dict[str, Any]:
-        """Check wildcard records - placeholder"""
-        return {'status': 'info', 'records': [], 'issues': ["Wildcard check not implemented yet"]}
+        """Check wildcard DNS records"""
+        try:
+            wildcard_tests = []
+            issues = []
+            
+            # Test common wildcard patterns
+            test_subdomains = [
+                f"randomtest123.{self.domain}",
+                f"nonexistent-subdomain.{self.domain}",
+                f"*.{self.domain}",
+                f"test-wildcard.{self.domain}"
+            ]
+            
+            wildcard_found = False
+            
+            for subdomain in test_subdomains:
+                try:
+                    # Test A record
+                    try:
+                        a_answers = self.resolver.resolve(subdomain, 'A')
+                        if a_answers:
+                            wildcard_tests.append({
+                                'subdomain': subdomain,
+                                'type': 'A',
+                                'has_record': True,
+                                'value': str(a_answers[0])
+                            })
+                            wildcard_found = True
+                    except:
+                        wildcard_tests.append({
+                            'subdomain': subdomain,
+                            'type': 'A',
+                            'has_record': False,
+                            'value': None
+                        })
+                    
+                    # Test AAAA record
+                    try:
+                        aaaa_answers = self.resolver.resolve(subdomain, 'AAAA')
+                        if aaaa_answers:
+                            wildcard_tests.append({
+                                'subdomain': subdomain,
+                                'type': 'AAAA',
+                                'has_record': True,
+                                'value': str(aaaa_answers[0])
+                            })
+                            wildcard_found = True
+                    except:
+                        wildcard_tests.append({
+                            'subdomain': subdomain,
+                            'type': 'AAAA',
+                            'has_record': False,
+                            'value': None
+                        })
+                        
+                except Exception as e:
+                    wildcard_tests.append({
+                        'subdomain': subdomain,
+                        'type': 'error',
+                        'has_record': False,
+                        'value': str(e)
+                    })
+            
+            # Analyze results
+            if wildcard_found:
+                issues.append("Wildcard DNS records detected. This means any subdomain will resolve.")
+                issues.append("This can be useful for catch-all setups but may have security implications.")
+                status = 'warning'
+            else:
+                issues.append("No wildcard DNS records detected.")
+                status = 'pass'
+            
+            return {
+                'status': status,
+                'records': wildcard_tests,
+                'has_wildcard': wildcard_found,
+                'issues': issues
+            }
+            
+        except Exception as e:
+            return {
+                'status': 'error',
+                'records': [],
+                'issues': [f"Wildcard check failed: {str(e)}"]
+            }
     
     def _calculate_summary(self, results: Dict[str, Any]) -> None:
         """Calculate summary statistics"""
