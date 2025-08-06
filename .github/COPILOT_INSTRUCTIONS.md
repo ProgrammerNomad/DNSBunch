@@ -1,6 +1,6 @@
 # Copilot Instructions for DNSBunch
 
-This document provides comprehensive, explicit guidelines for GitHub Copilot (and any AI code assistant) to maintain, extend, and contribute to the DNSBunch repository.
+Guidelines for GitHub Copilot and contributors to maintain, extend, and contribute to [ProgrammerNomad/DNSBunch](https://github.com/ProgrammerNomad/DNSBunch).
 
 ---
 
@@ -13,26 +13,118 @@ This document provides comprehensive, explicit guidelines for GitHub Copilot (an
 
 ---
 
-## Project Purpose
+## Project Functionality
 
-- DNSBunch is a free, open-source DNS and mail server diagnostics web application.
-- It analyzes domain health by performing in-depth DNS record checks and reporting all details in a categorized, actionable report.
-- DNSBunch helps users identify, understand, and resolve misconfigurations for better reliability and deliverability.
+### What DNSBunch Does
+
+- Accepts a domain name as input through a modern web interface.
+- Performs **in-depth DNS and mail server analysis** using a wide range of DNS queries.
+- Checks NS, SOA, A, AAAA, MX, SPF, TXT, CNAME, PTR, CAA, DMARC, DKIM, glue records, DNSSEC, AXFR, and wildcard records.
+- Analyzes nameserver delegation, record consistency, mail configuration, DNSSEC, zone transfer risks, and more.
+- Returns a **detailed, categorized report** for each DNS record type, showing values, issues, and best practice guidance.
+- Highlights **warnings and errors** for each aspect of DNS configuration and mail deliverability.
+- No login or signup required; no data is stored beyond the current check.
 
 ---
 
-## Tech Stack
+## DNS Record Checks: Details and Outputs
 
-- **Backend:** Python 3.9+, Flask (or FastAPI), dnspython, asyncio
-- **Frontend:** React.js (recommended), or static HTML/CSS/Bootstrap for MVP
-- **Deployment:** Render.com (backend), Vercel/Netlify (frontend)
+### NS (Nameserver) Records
+- **Information Returned:** All authoritative nameservers, their IPv4/IPv6, (optional) geolocation.
+- **Checks:** Valid IPs, reachability, duplicates, parent/child delegation, no single point of failure.
+
+### SOA (Start of Authority)
+- **Information Returned:** Primary nameserver, responsible email, serial, refresh, retry, expire, min TTL.
+- **Checks:** Record exists, serial matches, recommended values, valid email.
+
+### A (IPv4) and AAAA (IPv6)
+- **Information Returned:** All IPs for domain/root/www.
+- **Checks:** Presence, no private/reserved/invalid IPs, reachability.
+
+### MX (Mail Exchange)
+- **Information Returned:** All MX hosts, priorities, resolved IPs.
+- **Checks:** Existence, duplicates, priorities, valid A/AAAA (no CNAME), reachability.
+
+### SPF (Sender Policy Framework)
+- **Information Returned:** SPF record value (TXT).
+- **Checks:** Exists, valid syntax, max 10 lookups, no deprecated terms.
+
+### TXT
+- **Information Returned:** All TXT records for domain.
+- **Checks:** SPF, DKIM, DMARC presence; syntax valid.
+
+### CNAME
+- **Information Returned:** CNAMEs for www, mail, subdomains.
+- **Checks:** No apex CNAME, targets resolve, chain not too long.
+
+### PTR (Reverse DNS)
+- **Information Returned:** PTR for each mail server IP.
+- **Checks:** Exists, matches hostname, not generic.
+
+### CAA
+- **Information Returned:** All CAA records.
+- **Checks:** Syntax valid, at least one CA or none, no conflicts.
+
+### DMARC
+- **Information Returned:** DMARC TXT record.
+- **Checks:** Exists, valid syntax/policy, SPF/DKIM alignment.
+
+### DKIM
+- **Information Returned:** DKIM selector records (user/common).
+- **Checks:** Exists, valid syntax, key length.
+
+### Glue Records
+- **Information Returned:** In-zone glue presence and correctness.
+- **Checks:** Present for all in-bailiwick nameservers, consistent.
+
+### DNSSEC
+- **Information Returned:** DS, RRSIG, etc.
+- **Checks:** Present, valid, consistent, no expired signatures.
+
+### AXFR (Zone Transfer)
+- **Information Returned:** AXFR status.
+- **Checks:** Not open to unauthorized hosts.
+
+### Wildcard Records
+- **Information Returned:** Detection of wildcards.
+- **Checks:** Warn if inappropriate.
+
+---
+
+## Tech Stack and Library Choices
+
+### Backend (`/backend`)
+- **Language:** Python 3.9+
+- **Framework:** Flask (recommended)
+- **Key Libraries:**
+  - [`dnspython`](https://www.dnspython.org/) — DNS lookups
+  - [`Flask`](https://flask.palletsprojects.com/) — REST API
+  - [`Flask-Cors`](https://flask-cors.readthedocs.io/) — CORS
+  - [`gunicorn`](https://gunicorn.org/) — Production HTTP server
+  - [`validators`](https://pypi.org/project/validators/) — Domain validation
+  - [`python-dotenv`](https://pypi.org/project/python-dotenv/) — Env config
+  - [`pytest`](https://docs.pytest.org/) — Testing
+
+**Optional:**  
+- [`asyncio`](https://docs.python.org/3/library/asyncio.html) — For concurrent lookups (Flask supports async in recent versions)
+- [`loguru`](https://github.com/Delgan/loguru) — Logging
+
+### Frontend (`/frontend`)
+- **Framework:** React.js
+- **UI Library:** [Material UI (MUI)](https://mui.com/) — Modern, accessible, popular React component library
+- **Key Libraries:**
+  - [`Axios`](https://axios-http.com/) — HTTP requests
+  - [`react-hook-form`](https://react-hook-form.com/) — Form management & validation
+  - [`yup`](https://github.com/jquense/yup) — Input/schema validation
+  - [`react-query`](https://tanstack.com/query/latest) — API data management and caching
+  - [`react-toastify`](https://fkhadra.github.io/react-toastify/) — Notifications
+  - [`vite`](https://vitejs.dev/) — Fast React build tool
+  - [`eslint`](https://eslint.org/) & [`prettier`](https://prettier.io/) — Linting/formatting
+  - [`Jest`](https://jestjs.io/) & [`React Testing Library`](https://testing-library.com/docs/react-testing-library/intro/) — Testing
 
 ---
 
 ## Monorepo Structure
-
-Both frontend and backend live in this repository.  
-Recommended structure:
 
 ```
 DNSBunch/
@@ -54,121 +146,21 @@ DNSBunch/
 ## Coding Standards
 
 ### Backend (Python)
-
-- Use `dnspython` for DNS queries.
-- Use `asyncio` for concurrent DNS lookups where possible.
-- Organize code modularly: group each DNS check in its own function/class.
-- Validate all user input (domain names; use regex or proper libraries).
-- Catch and log exceptions for all network operations.
-- Return results and errors in structured JSON.
-- Use environment variables for sensitive config (API keys, secrets).
-- Write descriptive docstrings for all public classes/functions.
-- Follow [PEP 8](https://peps.python.org/pep-0008/) code style.
+- Modular code: each DNS check in its own function/class.
+- Validate all user input.
+- Catch/log exceptions for network ops.
+- Return results/errors in structured JSON.
+- Use environment variables for sensitive config.
+- Descriptive docstrings.
+- Follow [PEP 8](https://peps.python.org/pep-0008/).
 
 ### Frontend (React)
-
-- Use functional components and hooks.
-- Fetch backend endpoints asynchronously; handle loading and error states.
-- Validate user input (domain format) on submit.
-- Organize results clearly by record type and check.
-- Display all returned information, including warnings and errors.
-- Use Bootstrap or Material UI for styling (optional).
-
----
-
-## DNSBunch Record Checks: Details and Outputs
-
-For each DNS record type, Copilot should ensure:
-
-### NS (Nameserver) Records
-
-- Lookup: All NS records for the domain.
-- Output: Hostnames, IPv4/IPv6 for each, and optionally, geolocation.
-- Validations: All resolve to valid IPs; no duplicates; delegation matches parent; all nameservers respond.
-
-### SOA (Start of Authority)
-
-- Lookup: SOA record for the domain.
-- Output: Primary nameserver, responsible email, serial, refresh, retry, expire, min TTL.
-- Validations: Exists; serial matches across all NS; values within best-practice ranges.
-
-### A and AAAA (IPv4/IPv6)
-
-- Lookup: All A and AAAA records for root and www.
-- Output: List of IPs.
-- Validations: Exist; not private/reserved; IPs reachable (optional).
-
-### MX (Mail Exchange)
-
-- Lookup: All MX records, priorities, resolved IPs.
-- Output: Host, priority, IPs.
-- Validations: Exist if email enabled; priorities correct; MX targets resolve to A/AAAA (never CNAME); targets reachable.
-
-### SPF (Sender Policy Framework)
-
-- Lookup: TXT records, extract SPF.
-- Output: SPF record value.
-- Validations: Exists; syntax valid; <10 DNS lookups; no deprecated mechanisms.
-
-### TXT Records
-
-- Lookup: All TXT records for root.
-- Output: All values.
-- Validations: SPF/DKIM/DMARC presence; syntax valid.
-
-### CNAME
-
-- Lookup: CNAMEs for www, mail, subdomains.
-- Output: CNAME targets.
-- Validations: No CNAME at apex; targets resolve; chains not too long.
-
-### PTR (Reverse DNS)
-
-- Lookup: PTR for each mail server IP.
-- Output: PTR value.
-- Validations: Exists; matches host; not generic.
-
-### CAA
-
-- Lookup: CAA records.
-- Output: All values.
-- Validations: Syntax valid; at least one CA authorized or none; no conflicts.
-
-### DMARC
-
-- Lookup: DMARC TXT record.
-- Output: Record value.
-- Validations: Exists; syntax valid; policy set; aligns with SPF/DKIM.
-
-### DKIM
-
-- Lookup: TXT record at selector._domainkey.domain.
-- Output: Record value.
-- Validations: Exists; syntax and key length valid.
-
-### Glue Records
-
-- Lookup: Glue for in-zone NS.
-- Output: Glue IPs.
-- Validations: Present; consistent across zones.
-
-### DNSSEC
-
-- Lookup: DS, RRSIG, and other DNSSEC records.
-- Output: All relevant records.
-- Validations: Exists; valid; consistent; no expired signatures.
-
-### AXFR (Zone Transfer)
-
-- Check: Is AXFR open or closed.
-- Output: Status.
-- Validations: AXFR must be closed to unauthorized hosts.
-
-### Wildcard Records
-
-- Check: Detect wildcard DNS entries.
-- Output: Presence and value.
-- Validations: Warn if inappropriate.
+- Functional components/hooks.
+- Modern UI (Material UI).
+- Validate form input.
+- Organize results by record type/check.
+- Handle loading/error states.
+- Show all info, warnings, and errors.
 
 ---
 
@@ -197,9 +189,9 @@ For each DNS record type, Copilot should ensure:
 
 ## Deployment
 
-- Backend should run on port `$PORT` (Render default).
+- Backend runs on `$PORT` (Render default).
 - Enable CORS for frontend’s domain.
-- Frontend must point API requests to deployed backend URL.
+- Frontend points API requests to deployed backend URL.
 
 ---
 
@@ -212,17 +204,17 @@ For each DNS record type, Copilot should ensure:
 
 ## Contributing
 
-- Use feature branches for any change.
-- Open an issue before major features or breaking changes.
+- Use feature branches for changes.
+- Open an issue before major/breaking changes.
 - Write clear commit messages.
-- Add/update tests for all new features.
+- Add/update tests for new features.
 - Update documentation for core changes.
 
 ---
 
 ## Developer
 
-- Nomad Programmer (GitHub: [ProgrammerNomad](https://github.com/ProgrammerNomad))
+- Nomad Programmer ([ProgrammerNomad](https://github.com/ProgrammerNomad))
 
 ---
 

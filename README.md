@@ -19,185 +19,142 @@ DNSBunch is your all-in-one DNS and mail diagnostics platform. It performs deep 
 
 ---
 
+## Project Functionality
+
+### What DNSBunch Does
+
+- Accepts a domain name as input through a modern web interface.
+- Performs **in-depth DNS and mail server analysis** using a variety of DNS record queries.
+- Analyzes nameserver delegation, record consistency, mail configuration, DNSSEC, zone transfer risks, and more.
+- Returns a **detailed, categorized report** for each DNS record type, showing values, issues, and best practice guidance.
+- Highlights **warnings and errors** for each aspect of DNS configuration and mail deliverability.
+- No login or signup required; no data is stored beyond the current check.
+
+---
+
 ## DNS Record Checks: Maximum Detail
 
 Below is a complete list of DNS record types checked, **what information is returned for each**, and **the validations performed**:
 
 ### 1. **NS (Nameserver) Records**
-
-- **Returned Information:**
-  - All authoritative nameservers for the domain.
-  - IPv4 and IPv6 addresses for each nameserver.
-  - (Optional) Geolocation of each nameserver.
-- **Validations:**
-  - All NS records resolve to valid IPs.
-  - All nameservers are reachable and respond to DNS queries.
-  - No duplicate or missing NS entries.
-  - Delegation is consistent between parent and child zones.
-  - No single point of failure.
-
----
+- **Information Returned:** All authoritative nameservers for the domain, IPv4/IPv6 addresses, (Optional) geolocation.
+- **Checks:** Valid IPs, reachability, duplicates, parent/child delegation, no single point of failure.
 
 ### 2. **SOA (Start of Authority) Record**
-
-- **Returned Information:**
-  - Primary master nameserver.
-  - Responsible person/email.
-  - Serial number.
-  - Refresh, retry, expire, and minimum TTL values.
-- **Validations:**
-  - SOA record exists and is correct.
-  - Serial numbers match across all nameservers.
-  - SOA timings are within recommended ranges.
-  - Responsible email is valid.
-
----
+- **Information Returned:** Primary master nameserver, responsible email, serial, refresh, retry, expire, and minimum TTL values.
+- **Checks:** Exists, serial matches across nameservers, recommended values, valid email.
 
 ### 3. **A (IPv4 Address) Records**
-
-- **Returned Information:**
-  - All IPv4 addresses for the domain and key subdomains (e.g., root, www).
-- **Validations:**
-  - A records are present for domain and www.
-  - No private or reserved IPs.
-  - IPs are reachable (optional ping check).
-
----
+- **Information Returned:** All IPv4 addresses assigned to the domain (including root and www).
+- **Checks:** Records exist, no private/reserved IPs, IPs reachable (optional ping).
 
 ### 4. **AAAA (IPv6 Address) Records**
-
-- **Returned Information:**
-  - All IPv6 addresses for the domain and key subdomains.
-- **Validations:**
-  - AAAA records exist where expected.
-  - No invalid or reserved IPv6 blocks.
-  - IPs are reachable (optional).
-
----
+- **Information Returned:** All IPv6 addresses assigned to the domain (including root and www).
+- **Checks:** Records exist, no invalid/reserved blocks, IPs reachable (optional ping).
 
 ### 5. **MX (Mail Exchange) Records**
-
-- **Returned Information:**
-  - List of all MX hosts, their priorities, and resolved IPs.
-- **Validations:**
-  - MX records are present if email is enabled.
-  - No duplicate or mis-prioritized records.
-  - Each MX host resolves to valid A/AAAA (never CNAME).
-  - MX targets are reachable (optional SMTP check).
-
----
+- **Information Returned:** List of all MX hosts, priorities, and resolved IPs.
+- **Checks:** Records exist, no duplicate/misprioritized entries, valid A/AAAA (no CNAME for MX), reachable targets.
 
 ### 6. **SPF (Sender Policy Framework)**
-
-- **Returned Information:**
-  - SPF record value (via TXT type).
-- **Validations:**
-  - SPF record exists.
-  - Syntax is valid.
-  - No more than 10 DNS lookups.
-  - No deprecated mechanisms.
-
----
+- **Information Returned:** SPF record (TXT type) value.
+- **Checks:** Exists, valid syntax, max 10 DNS lookups, no deprecated mechanisms.
 
 ### 7. **TXT Records**
-
-- **Returned Information:**
-  - All TXT records for the domain.
-- **Validations:**
-  - Presence of SPF, DKIM, DMARC (where appropriate).
-  - TXT syntax is valid.
-
----
+- **Information Returned:** All TXT records for the root domain.
+- **Checks:** Presence of SPF, DKIM, DMARC, valid syntax.
 
 ### 8. **CNAME (Canonical Name) Records**
-
-- **Returned Information:**
-  - CNAMEs for www, mail, and other key subdomains.
-- **Validations:**
-  - No CNAME at zone apex.
-  - CNAME chains are not too long and targets resolve.
-
----
+- **Information Returned:** CNAMEs for key subdomains (e.g., www, mail).
+- **Checks:** No CNAME at apex, chain length, target exists and resolves.
 
 ### 9. **PTR (Reverse DNS) Records**
-
-- **Returned Information:**
-  - PTR records for each mail server IP (each MX target).
-- **Validations:**
-  - PTR exists for every mail server IP.
-  - PTR matches sending hostname.
-  - No generic PTR/reverse DNS mismatches.
-
----
+- **Information Returned:** PTR records for each mail server IP (MX targets).
+- **Checks:** PTR exists, matches hostname, not generic.
 
 ### 10. **CAA (Certification Authority Authorization) Records**
-
-- **Returned Information:**
-  - All CAA records for the domain.
-- **Validations:**
-  - Syntax is valid.
-  - At least one CA authorized or explicitly none.
-  - No conflicting entries.
-
----
+- **Information Returned:** List of CAA records.
+- **Checks:** Valid syntax, at least one CA allowed or none, no conflicts.
 
 ### 11. **DMARC (Domain-based Message Authentication, Reporting & Conformance)**
-
-- **Returned Information:**
-  - DMARC TXT record value.
-- **Validations:**
-  - DMARC record exists.
-  - Syntax is valid; policy set to none/quarantine/reject.
-  - Alignment with SPF/DKIM.
-
----
+- **Information Returned:** DMARC TXT record value.
+- **Checks:** Record exists, syntax valid, policy set, aligns with SPF/DKIM.
 
 ### 12. **DKIM (DomainKeys Identified Mail)**
-
-- **Returned Information:**
-  - DKIM selector records (user can provide or common ones are attempted).
-- **Validations:**
-  - DKIM record exists for given selector.
-  - Syntax and key length are valid.
-
----
+- **Information Returned:** DKIM selector records (user-provided or common).
+- **Checks:** Record exists, valid syntax, key length.
 
 ### 13. **Glue Records**
-
-- **Returned Information:**
-  - Presence and correctness of glue records for in-zone nameservers.
-- **Validations:**
-  - Glue records are present for all in-bailiwick nameservers.
-  - Consistency between parent and child zones.
-
----
+- **Information Returned:** Presence and correctness of glue records for in-zone nameservers.
+- **Checks:** Glue present for all in-bailiwick nameservers, consistent.
 
 ### 14. **DNSSEC (Domain Name System Security Extensions)**
-
-- **Returned Information:**
-  - DS, RRSIG, and other DNSSEC records if present.
-- **Validations:**
-  - DNSSEC is present and valid.
-  - Consistency between DS and DNSKEY.
-  - No expired signatures.
-
----
+- **Information Returned:** DS, RRSIG, and other DNSSEC records if present.
+- **Checks:** Present, valid, consistent, not expired.
 
 ### 15. **Zone Transfer (AXFR)**
+- **Information Returned:** AXFR status (open/closed).
+- **Checks:** AXFR not allowed to unauthorized hosts.
 
-- **Returned Information:**
-  - AXFR status (open/closed).
-- **Validations:**
-  - Zone transfers (AXFR) are not allowed to unauthorized hosts.
+### 16. **Wildcard Records**
+- **Information Returned:** Detection of wildcard DNS entries.
+- **Checks:** Report if wildcards exist; warn if inappropriate.
 
 ---
 
-### 16. **Wildcard Records**
+## Tech Stack and Plugin/Library Choices
 
-- **Returned Information:**
-  - Detection of wildcard DNS entries.
-- **Validations:**
-  - Report if wildcards exist; warn if inappropriate.
+### Backend (`/backend`)
+- **Language:** Python 3.9+
+- **Framework:** Flask (recommended for simplicity)
+- **Key Libraries:**
+  - [`dnspython`](https://www.dnspython.org/) — DNS queries (A, AAAA, MX, NS, etc.)
+  - [`Flask`](https://flask.palletsprojects.com/) — REST API
+  - [`Flask-Cors`](https://flask-cors.readthedocs.io/) — CORS for API
+  - [`gunicorn`](https://gunicorn.org/) — Production server
+  - [`validators`](https://pypi.org/project/validators/) — Domain validation
+  - [`python-dotenv`](https://pypi.org/project/python-dotenv/) — Environment config
+  - [`pytest`](https://docs.pytest.org/) — Testing
+
+**Optional:**  
+- [`asyncio`](https://docs.python.org/3/library/asyncio.html) — For concurrent lookups (Flask supports async in recent versions)
+- [`loguru`](https://github.com/Delgan/loguru) — Logging
+
+---
+
+### Frontend (`/frontend`)
+- **Framework:** React.js
+- **UI Library:** [Material UI (MUI)](https://mui.com/) — Modern, accessible, and popular React component library (recommended and used by many top projects)
+- **Key Libraries:**
+  - [`Axios`](https://axios-http.com/) — HTTP requests
+  - [`react-hook-form`](https://react-hook-form.com/) — Form management and validation
+  - [`yup`](https://github.com/jquense/yup) — Input/schema validation
+  - [`react-query`](https://tanstack.com/query/latest) — API data management and caching
+  - [`react-toastify`](https://fkhadra.github.io/react-toastify/) — User notifications
+  - [`vite`](https://vitejs.dev/) — Fast React build tool (recommended for new projects)
+  - [`eslint`](https://eslint.org/) & [`prettier`](https://prettier.io/) — Linting/formatting
+  - [`Jest`](https://jestjs.io/) & [`React Testing Library`](https://testing-library.com/docs/react-testing-library/intro/) — Testing
+
+---
+
+## Monorepo Structure
+
+This repository contains both frontend and backend code for DNSBunch:
+
+```
+DNSBunch/
+├── backend/
+│   ├── app.py
+│   ├── requirements.txt
+│   └── ... (other backend files)
+├── frontend/
+│   ├── package.json
+│   ├── src/
+│   └── ... (other frontend files)
+├── README.md
+├── COPILOT_INSTRUCTIONS.md
+└── .gitignore
+```
 
 ---
 
@@ -244,48 +201,16 @@ Below is a complete list of DNS record types checked, **what information is retu
 
 ---
 
-## Monorepo Structure
-
-This repository contains both frontend and backend code for DNSBunch.  
-Recommended structure:
-
-```
-DNSBunch/
-├── backend/
-│   ├── app.py
-│   ├── requirements.txt
-│   └── ... (other backend files)
-├── frontend/
-│   ├── package.json
-│   ├── src/
-│   └── ... (other frontend files)
-├── README.md
-├── COPILOT_INSTRUCTIONS.md
-└── .gitignore
-```
-
----
-
-## Tech Stack
-
-- **Backend:** Python 3.9+ (Flask or FastAPI), dnspython, asyncio
-- **Frontend:** React, Vue, or HTML/Bootstrap
-- **Deployment:** [Render.com](https://render.com/) for backend, [Vercel](https://vercel.com/) or [Netlify](https://netlify.com/) for frontend
-
----
-
 ## Deployment Instructions
 
-### Deploy Backend (Render.com)
-
+### Backend (Render.com)
 1. Push backend code to GitHub.
 2. Create a new Web Service on Render, connect your repo.
 3. Build command: `pip install -r requirements.txt`
 4. Start command: `gunicorn app:app`
 5. Deploy and get your backend URL (e.g. `https://dnsbunch.onrender.com`).
 
-### Deploy Frontend (Vercel/Netlify)
-
+### Frontend (Vercel/Netlify)
 1. Push frontend code to GitHub.
 2. Import your repo to Vercel or Netlify and deploy.
 3. Set backend API URL in frontend config (`.env` or similar).
@@ -306,7 +231,6 @@ DNSBunch/
 Contributions are welcome! Please open issues or submit pull requests with improvements, bug fixes, or features.
 
 **Developer:**  
-
 - Nomad Programmer (GitHub: [ProgrammerNomad](https://github.com/ProgrammerNomad))
 
 See `COPILOT_INSTRUCTIONS.md` for technical guidelines.
