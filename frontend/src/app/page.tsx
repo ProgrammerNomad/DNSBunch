@@ -18,9 +18,9 @@ import {
   CheckCircle as CheckIcon
 } from '@mui/icons-material';
 
-import { DomainSearchForm } from '@/components/DomainSearchForm';
-import { DNSResults } from '@/components/DNSResults';
-import { useDNSAnalysis } from '@/hooks/useDNSAnalysis';
+import { DomainSearchForm } from '../components/DomainSearchForm';
+import { DNSResults } from '../components/DNSResults';
+import { useDNSAnalysis } from '../hooks/useDNSAnalysis';
 
 export default function HomePage() {
   const {

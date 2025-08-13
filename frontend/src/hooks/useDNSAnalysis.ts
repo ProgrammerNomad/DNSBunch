@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { dnsApi, DNSAnalysisResult } from '@/services/api';
+import { dnsApi, DNSAnalysisResult } from '../services/api';
 
 export function useDNSAnalysis() {
   const [results, setResults] = useState<DNSAnalysisResult | null>(null);

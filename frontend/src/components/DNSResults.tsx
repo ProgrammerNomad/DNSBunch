@@ -43,7 +43,7 @@ import {
   Lock as LockIcon
 } from '@mui/icons-material';
 
-import { DNSAnalysisResult, DNSRecord, CheckResult } from '@/services/api';
+import { DNSAnalysisResult, DNSRecord, CheckResult } from '../services/api';
 
 interface DNSResultsProps {
   results: DNSAnalysisResult;

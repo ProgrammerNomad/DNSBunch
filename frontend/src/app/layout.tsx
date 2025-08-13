@@ -5,9 +5,9 @@ import { CssBaseline } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { theme } from '@/theme/theme';
-import { QueryProvider } from '@/providers/QueryProvider';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { theme } from '../theme/theme';
+import { QueryProvider } from '../providers/QueryProvider';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
 export const metadata: Metadata = {
   title: 'DNSBunch - DNS & Mail Server Diagnostics',
