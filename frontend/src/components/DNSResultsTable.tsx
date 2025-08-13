@@ -87,13 +87,41 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
         );
 
       case 'a':
-        return data.records?.map((record: { name?: string; address?: string; ip?: string; ttl?: number }, index: number) => (
-          <Box key={index} component="span" display="block">
-            <strong>{record.name || domain}</strong>&nbsp;&nbsp;
-            [{record.address || record.ip}]
-            &nbsp;&nbsp;[TTL={record.ttl || 'N/A'}]
-          </Box>
-        )) || 'No A records found';
+        // Handle A records structure which has root and www nested objects
+        if (!data.records || typeof data.records !== 'object') {
+          return 'No A records found';
+        }
+        
+        const aRecords = data.records as unknown as { root?: { records?: string[] }, www?: { records?: string[] } };
+        const elements: React.ReactElement[] = [];
+        
+        // Display root domain A records
+        if (aRecords.root?.records && Array.isArray(aRecords.root.records)) {
+          aRecords.root.records.forEach((ip: string, index: number) => {
+            elements.push(
+              <Box key={`root-${index}`} component="span" display="block">
+                <strong>{domain}</strong>&nbsp;&nbsp;
+                [{ip}]
+                &nbsp;&nbsp;[TTL=N/A]
+              </Box>
+            );
+          });
+        }
+        
+        // Display www subdomain A records
+        if (aRecords.www?.records && Array.isArray(aRecords.www.records)) {
+          aRecords.www.records.forEach((ip: string, index: number) => {
+            elements.push(
+              <Box key={`www-${index}`} component="span" display="block">
+                <strong>www.{domain}</strong>&nbsp;&nbsp;
+                [{ip}]
+                &nbsp;&nbsp;[TTL=N/A]
+              </Box>
+            );
+          });
+        }
+        
+        return elements.length > 0 ? elements : 'No A records found';
 
       case 'mx':
         return data.records?.map((record: { priority?: number; exchange?: string; host?: string; ips?: string[]; ip?: string; glue?: boolean }, index: number) => (

@@ -91,7 +91,7 @@ class DNSApi {
    */
   async healthCheck(): Promise<{ status: string; timestamp: string }> {
     try {
-      const response = await this.client.get('/api/health');
+      const response = await this.client.get('/');
       return response.data;
     } catch {
       throw new Error('Health check failed');

@@ -12,7 +12,11 @@ export const metadata: Metadata = {
   description: 'Comprehensive DNS record analysis, mail server diagnostics, and email security validation tool. Check SPF, DMARC, DKIM, and more.',
   keywords: ['DNS', 'mail server', 'SPF', 'DMARC', 'DKIM', 'DNS analysis', 'email security'],
   authors: [{ name: 'Nomad Programmer' }],
-  viewport: 'width=device-width, initial-scale=1',
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -22,7 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className} style={{ margin: 0, padding: 0, minHeight: '100vh' }}>
+      <body className={inter.className} style={{ margin: 0, padding: 0, minHeight: '100vh' }} suppressHydrationWarning={true}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           {children}

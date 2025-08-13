@@ -242,7 +242,9 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
               {checkData?.records && (
                 <Box sx={{ mb: 2 }}>
                   <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 1 }}>
-                    Found {checkData.records.length} record(s)
+                    Found {Array.isArray(checkData.records) ? checkData.records.length : 
+                      ((checkData.records as unknown as { root?: { count?: number }, www?: { count?: number } })?.root?.count || 0) + 
+                      ((checkData.records as unknown as { root?: { count?: number }, www?: { count?: number } })?.www?.count || 0)} record(s)
                   </Typography>
                 </Box>
               )}
