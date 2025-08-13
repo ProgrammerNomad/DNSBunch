@@ -7,17 +7,12 @@ import * as yup from 'yup';
 import {
   TextField,
   Button,
-  FormGroup,
   FormControlLabel,
   Checkbox,
   Typography,
   CircularProgress,
   Box,
-  Divider,
-  Chip,
-  Stack,
-  Collapse,
-  IconButton
+  Chip
 } from '@mui/material';
 import { 
   Search as SearchIcon, 
@@ -32,14 +27,16 @@ const schema = yup.object({
     .string()
     .required('Domain is required')
     .matches(
-      /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/,
+      /^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$/,
       'Please enter a valid domain name'
-    ),
+    )
+    .max(253, 'Domain name is too long'),
 });
 
+// Component props interface
 interface DomainSearchFormProps {
-  onSearch: (domain: string, checks?: string[]) => void;
-  loading: boolean;
+  onSearch: (domain: string, checks: string[]) => void;
+  loading?: boolean;
   onClear?: () => void;
   hasResults?: boolean;
 }
@@ -51,7 +48,6 @@ export function DomainSearchForm({
   hasResults = false 
 }: DomainSearchFormProps) {
   const [selectedChecks, setSelectedChecks] = useState(['all']);
-  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
 
   const {
     control,
@@ -90,37 +86,37 @@ export function DomainSearchForm({
     general: { name: 'General', color: 'primary' as const },
     basic: { name: 'Basic DNS', color: 'info' as const },
     email: { name: 'Email Security', color: 'secondary' as const },
-    security: { name: 'Security', color: 'error' as const },
+    security: { name: 'Security', color: 'success' as const },
     advanced: { name: 'Advanced', color: 'warning' as const }
-  };
-
-  const onSubmit = (data: { domain: string }) => {
-    const cleanDomain = data.domain.trim().toLowerCase();
-    onSearch(cleanDomain, selectedChecks);
   };
 
   const handleCheckChange = (checkValue: string) => {
     if (checkValue === 'all') {
       setSelectedChecks(['all']);
     } else {
-      const newChecks = selectedChecks.filter(c => c !== 'all');
-      if (selectedChecks.includes(checkValue)) {
-        const filtered = newChecks.filter(c => c !== checkValue);
-        setSelectedChecks(filtered.length > 0 ? filtered : ['all']);
-      } else {
-        setSelectedChecks([...newChecks, checkValue]);
-      }
+      setSelectedChecks(prev => {
+        const newChecks = prev.filter(check => check !== 'all');
+        if (newChecks.includes(checkValue)) {
+          return newChecks.filter(check => check !== checkValue);
+        } else {
+          return [...newChecks, checkValue];
+        }
+      });
     }
+  };
+
+  const onSubmit = (data: { domain: string }) => {
+    const checksToSend = selectedChecks.includes('all') 
+      ? availableChecks.map(check => check.value).filter(check => check !== 'all')
+      : selectedChecks;
+    
+    onSearch(data.domain.toLowerCase().trim(), checksToSend);
   };
 
   const handleClear = () => {
     reset();
     setSelectedChecks(['all']);
     onClear?.();
-  };
-
-  const getChecksByCategory = (category: string) => {
-    return availableChecks.filter(check => check.category === category);
   };
 
   return (
@@ -139,72 +135,47 @@ export function DomainSearchForm({
           sx={{ mb: 2 }}
         >
           {/* Domain Input */}
-          <Box flex="1" minWidth={{ xs: '100%', sm: '300px' }}>
-            <Controller
-              name="domain"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="Domain Name"
-                  placeholder="example.com"
-                  variant="outlined"
-                  disabled={loading}
-                  error={!!errors.domain}
-                  helperText={
-                    errors.domain?.message || 
-                    'Enter a domain without http:// or www (e.g., google.com)'
-                  }
-                  InputProps={{
-                    sx: { fontSize: '1.1rem' }
-                  }}
-                />
-              )}
-            />
-          </Box>
-          
-          {/* Buttons Container */}
-          <Box 
-            display="flex" 
-            gap={1} 
-            alignItems="flex-start"
-            flexShrink={0}
-            sx={{ 
-              mt: { xs: 0, sm: 0 },
-              width: { xs: '100%', sm: 'auto' }
-            }}
-          >
-            {/* Submit Button */}
+          <Controller
+            name="domain"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Domain Name"
+                placeholder="example.com"
+                variant="outlined"
+                fullWidth
+                error={!!errors.domain}
+                helperText={errors.domain?.message}
+                disabled={loading}
+                sx={{ flex: 1, flexShrink: 1 }}
+              />
+            )}
+          />
+
+          {/* Action Buttons */}
+          <Box display="flex" gap={1} flexShrink={0}>
             <Button
               type="submit"
               variant="contained"
+              color="primary"
               size="large"
-              disabled={loading || !isValid}
+              disabled={!isValid || loading}
               startIcon={loading ? <CircularProgress size={20} /> : <SearchIcon />}
-              sx={{ 
-                height: '56px',
-                fontSize: '1.1rem',
-                minWidth: '120px',
-                flex: { xs: 1, sm: 'none' }
-              }}
+              sx={{ whiteSpace: 'nowrap', minWidth: '120px' }}
             >
               {loading ? 'Analyzing...' : 'Analyze'}
             </Button>
 
-            {/* Clear Button */}
             {hasResults && (
               <Button
                 variant="outlined"
+                color="secondary"
                 size="large"
                 onClick={handleClear}
+                disabled={loading}
                 startIcon={<ClearIcon />}
-                sx={{ 
-                  height: '56px',
-                  fontSize: '1.1rem',
-                  minWidth: '100px',
-                  flex: { xs: 1, sm: 'none' }
-                }}
+                sx={{ whiteSpace: 'nowrap' }}
               >
                 Clear
               </Button>
@@ -212,13 +183,12 @@ export function DomainSearchForm({
           </Box>
         </Box>
 
-        {/* Check Selection - Compact Version */}
-        <Box sx={{ mt: 2 }}>
-          <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              Analysis Options
+        {/* DNS Check Selection */}
+        <Box mt={2}>
+          <Box display="flex" alignItems="center" gap={1} mb={1}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+              Select Checks:
             </Typography>
-            {/* Quick All/Custom Toggle */}
             <Box display="flex" gap={1}>
               <Button
                 size="small"

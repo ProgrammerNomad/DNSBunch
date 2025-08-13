@@ -81,16 +81,16 @@ export interface DNSRecord {
   target?: string;
   ttl?: number;
   ips?: Array<{ ip: string; type: string }>;
-  [key: string]: any; // Allow additional properties
+  [key: string]: unknown; // Allow additional properties
 }
 
 export interface CheckResult {
   status: 'pass' | 'warning' | 'error' | 'info';
-  records: DNSRecord[] | any[] | any; // More flexible type to handle API variations
+  records: DNSRecord[] | Record<string, unknown>[] | Record<string, unknown>; // More flexible type to handle API variations
   issues: string[];
   count?: number;
-  record?: string | object; // Single record for some check types
-  [key: string]: any; // Allow additional properties
+  record?: string | Record<string, unknown>; // Single record for some check types
+  [key: string]: unknown; // Allow additional properties
 }
 
 export interface DNSAnalysisResult {

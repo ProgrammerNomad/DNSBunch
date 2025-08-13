@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
-  CardHeader,
   Typography,
   Chip,
   Alert,
@@ -24,7 +23,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemIcon,
   CircularProgress
 } from '@mui/material';
 import {
@@ -36,14 +34,12 @@ import {
   Dns as DnsIcon,
   Email as EmailIcon,
   Security as SecurityIcon,
-  Speed as SpeedIcon,
   Language as WebIcon,
   AccessTime as TimeIcon,
-  Public as PublicIcon,
-  Lock as LockIcon
+  Public as PublicIcon
 } from '@mui/icons-material';
 
-import { DNSAnalysisResult, DNSRecord, CheckResult } from '../services/api';
+import { DNSAnalysisResult, CheckResult } from '../services/api';
 
 interface DNSResultsProps {
   results: DNSAnalysisResult;
@@ -57,6 +53,19 @@ interface RecordCategory {
   checks: CheckResult[];
   description: string;
   checkTypes: string[];
+}
+
+// Type for API record objects
+interface APIRecord {
+  host?: string;
+  ip?: string;
+  type?: string;
+  value?: string;
+  priority?: number;
+  target?: string;
+  ttl?: number;
+  ips?: Array<{ ip: string; type: string }>;
+  [key: string]: unknown;
 }
 
 export function DNSResults({ results, loading = false }: DNSResultsProps) {
@@ -140,7 +149,7 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
   const formatRecordDisplay = (check: CheckResult, checkType: string): React.ReactNode[] => {
     // Handle array of records
     if (check.records && Array.isArray(check.records) && check.records.length > 0) {
-      return check.records.map((record: any, idx: number) => (
+      return check.records.map((record: APIRecord, idx: number) => (
         <TableRow key={`${checkType}-${idx}`} hover>
           <TableCell>
             <Chip 
@@ -157,7 +166,7 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
             }
           </TableCell>
           <TableCell>
-            {record?.ips ? record.ips.map((ip: any) => ip?.ip).join(', ') : 
+            {record?.ips ? record.ips.map((ip: { ip: string; type: string }) => ip?.ip).join(', ') : 
              record?.ip || record?.ttl || '-'}
           </TableCell>
         </TableRow>
