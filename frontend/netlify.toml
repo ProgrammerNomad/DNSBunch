@@ -1,112 +1,19 @@
-# Netlify configuration for DNSBunch Frontend
+# Essential Netlify configuration for Next.js DNSBunch
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
 [build]
-  # Build command for Next.js
   command = "npm run build"
-  
-  # Directory to publish (Next.js output)
-  publish = ".next"
-  
-  # Functions directory (if using Netlify functions)
-  functions = "netlify/functions"
 
-# Build environment variables
 [build.environment]
-  # Node.js version
   NODE_VERSION = "18"
-  
-  # NPM version
-  NPM_VERSION = "9"
+  NEXT_PUBLIC_API_URL = "https://api2.dnsbunch.com"
+  NEXT_PUBLIC_API_TIMEOUT = "30000"
+  NODE_ENV = "production"
 
-# Production context (main branch)
-[context.production]
-  command = "npm run build"
-  
-  # Production environment variables
-  [context.production.environment]
-    NODE_ENV = "production"
-    NEXT_PUBLIC_API_URL = "https://api2.dnsbunch.com"
-    NEXT_PUBLIC_API_TIMEOUT = "30000"
-
-# Deploy preview context (pull requests)
-[context.deploy-preview]
-  command = "npm run build"
-  
-  [context.deploy-preview.environment]
-    NODE_ENV = "production"
-    NEXT_PUBLIC_API_URL = "https://api2.dnsbunch.com"
-    NEXT_PUBLIC_API_TIMEOUT = "30000"
-
-# Branch deploy context (other branches)
-[context.branch-deploy]
-  command = "npm run build"
-
-# Headers for security and performance
-[[headers]]
-  for = "/*"
-  [headers.values]
-    # Security headers
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    
-    # Performance headers
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/*.html"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
-
-[[headers]]
-  for = "/api/*"
-  [headers.values]
-    Cache-Control = "no-cache"
-
-# Redirects and rewrites
+# API Proxy to backend
 [[redirects]]
   from = "/api/*"
   to = "https://api2.dnsbunch.com/api/:splat"
   status = 200
   force = true
-
-# Error pages
-[[redirects]]
-  from = "/*"
-  to = "/404.html"
-  status = 404
-
-# SPA fallback for Next.js routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  conditions = {Role = ["admin"], Country = ["US"]}
-
-# Plugin configuration
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-# Build processing
-[build.processing]
-  skip_processing = false
-
-[build.processing.css]
-  bundle = true
-  minify = true
-
-[build.processing.js]
-  bundle = true
-  minify = true
-
-[build.processing.html]
-  pretty_urls = true
-
-[build.processing.images]
-  compress = true
-
-# Dev server configuration for local development
-[dev]
-  command = "npm run dev"
-  port = 3000
-  publish = "public"
