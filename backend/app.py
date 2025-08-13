@@ -53,99 +53,63 @@ ALLOWED_ORIGINS = [origin.strip() for origin in os.environ.get('CORS_ORIGINS', '
 class CSRFManager:
     def __init__(self):
         self.serializer = URLSafeTimedSerializer(CSRF_SECRET_KEY)
+        self.jwt_secret = JWT_SECRET_KEY
     
-    def generate_token(self, client_ip: str, user_agent: str) -> dict:
-        """Generate a secure CSRF token with multiple binding factors"""
-        current_time = time.time()
-        
-        # Create unique token data with multiple binding factors
-        token_data = {
-            'ip': self._hash_ip(client_ip),  # Hashed IP for privacy
-            'ua_hash': self._hash_user_agent(user_agent),  # User agent fingerprint
-            'timestamp': current_time,
-            'nonce': secrets.token_hex(16),  # Random nonce
-            'session_id': secrets.token_hex(8)  # Session identifier
+    def generate_token(self, client_ip: str, user_agent: str) -> str:
+        """Generate a secure CSRF token with IP and User-Agent binding"""
+        payload = {
+            'ip_hash': self._hash_ip(client_ip),
+            'ua_hash': self._hash_user_agent(user_agent),
+            'issued_at': int(time.time()),
+            'expires_at': int(time.time()) + CSRF_TOKEN_EXPIRES,
+            'nonce': secrets.token_hex(16)
         }
         
-        # Create JWT token with additional security
-        jwt_payload = {
-            'data': token_data,
-            'exp': current_time + CSRF_TOKEN_EXPIRES,
-            'iat': current_time,
-            'iss': 'dnsbunch-api',
-            'aud': 'dnsbunch-frontend'
-        }
+        token = jwt.encode(payload, self.jwt_secret, algorithm='HS256')
         
-        # Sign with both symmetric and HMAC
-        token = jwt.encode(jwt_payload, JWT_SECRET_KEY, algorithm='HS256')
-        
-        # Store token metadata (for validation and cleanup)
+        # Store token metadata for validation
         csrf_tokens[token] = {
-            'ip_hash': token_data['ip'],
-            'ua_hash': token_data['ua_hash'],
-            'created': current_time,
-            'last_used': current_time,
-            'usage_count': 0,
-            'session_id': token_data['session_id']
+            'ip_hash': payload['ip_hash'],
+            'ua_hash': payload['ua_hash'],
+            'expires_at': payload['expires_at'],
+            'usage_count': 0
         }
         
-        return {
-            'csrf_token': token,
-            'expires_in': CSRF_TOKEN_EXPIRES,
-            'expires_at': current_time + CSRF_TOKEN_EXPIRES,
-            'refresh_after': CSRF_REFRESH_THRESHOLD
-        }
+        return token
     
     def validate_token(self, token: str, client_ip: str, user_agent: str) -> bool:
-        """Validate CSRF token with comprehensive security checks"""
+        """Validate CSRF token with multi-factor verification"""
         try:
-            if not token or token not in csrf_tokens:
+            # Check if token exists in our store
+            if token not in csrf_tokens:
                 return False
             
-            # Decode and verify JWT
-            payload = jwt.decode(
-                token, 
-                JWT_SECRET_KEY, 
-                algorithms=['HS256'],
-                audience='dnsbunch-frontend',
-                issuer='dnsbunch-api'
-            )
-            
-            token_data = payload['data']
-            current_time = time.time()
+            token_data = csrf_tokens[token]
             
             # Check expiration
-            if current_time > payload['exp']:
+            if time.time() > token_data['expires_at']:
                 self._cleanup_token(token)
                 return False
             
-            # Verify IP binding (hashed)
-            if token_data['ip'] != self._hash_ip(client_ip):
-                self._cleanup_token(token)
+            # Decode JWT
+            payload = jwt.decode(token, self.jwt_secret, algorithms=['HS256'])
+            
+            # Verify IP and User-Agent binding
+            if (payload['ip_hash'] != self._hash_ip(client_ip) or 
+                payload['ua_hash'] != self._hash_user_agent(user_agent)):
                 return False
             
-            # Verify User-Agent binding
-            if token_data['ua_hash'] != self._hash_user_agent(user_agent):
+            # Update usage count
+            token_data['usage_count'] += 1
+            
+            # Optional: Limit token usage count
+            if token_data['usage_count'] > 100:  # Prevent token abuse
                 self._cleanup_token(token)
                 return False
-            
-            # Check token metadata
-            metadata = csrf_tokens[token]
-            
-            # Rate limiting per token (prevent token abuse)
-            if metadata['usage_count'] > 100:  # Max 100 uses per token
-                self._cleanup_token(token)
-                return False
-            
-            # Update usage statistics
-            metadata['last_used'] = current_time
-            metadata['usage_count'] += 1
             
             return True
             
-        except (jwt.InvalidTokenError, jwt.ExpiredSignatureError, KeyError) as e:
-            if token in csrf_tokens:
-                self._cleanup_token(token)
+        except (jwt.InvalidTokenError, KeyError, ValueError):
             return False
     
     def should_refresh_token(self, token: str) -> bool:
@@ -153,59 +117,30 @@ class CSRFManager:
         if token not in csrf_tokens:
             return True
         
-        metadata = csrf_tokens[token]
-        age = time.time() - metadata['created']
-        return age > CSRF_REFRESH_THRESHOLD
+        token_data = csrf_tokens[token]
+        time_until_expiry = token_data['expires_at'] - time.time()
+        
+        return time_until_expiry < CSRF_REFRESH_THRESHOLD
     
     def _hash_ip(self, ip: str) -> str:
-        """Hash IP address for privacy while maintaining binding"""
-        return hmac.new(
-            CSRF_SECRET_KEY.encode(),
-            ip.encode(),
-            hashlib.sha256
-        ).hexdigest()[:16]  # First 16 chars for space efficiency
+        """Create a hash of the IP address"""
+        return hashlib.sha256(f"{ip}{CSRF_SECRET_KEY}".encode()).hexdigest()[:16]
     
     def _hash_user_agent(self, user_agent: str) -> str:
-        """Create user agent fingerprint"""
-        # Extract key components to create stable fingerprint
-        ua_lower = user_agent.lower()
-        key_parts = []
-        
-        # Browser detection
-        browsers = ['chrome', 'firefox', 'safari', 'edge', 'opera']
-        for browser in browsers:
-            if browser in ua_lower:
-                key_parts.append(browser)
-                break
-        
-        # OS detection
-        os_list = ['windows', 'macos', 'linux', 'android', 'ios']
-        for os_name in os_list:
-            if os_name in ua_lower:
-                key_parts.append(os_name)
-                break
-        
-        # Create hash of key components
-        ua_key = '|'.join(key_parts) + '|' + str(len(user_agent))
-        return hmac.new(
-            CSRF_SECRET_KEY.encode(),
-            ua_key.encode(),
-            hashlib.sha256
-        ).hexdigest()[:12]
+        """Create a hash of the User-Agent"""
+        return hashlib.sha256(f"{user_agent}{CSRF_SECRET_KEY}".encode()).hexdigest()[:16]
     
     def _cleanup_token(self, token: str):
-        """Remove invalid or expired token"""
-        if token in csrf_tokens:
-            del csrf_tokens[token]
+        """Remove token from store"""
+        csrf_tokens.pop(token, None)
     
     def cleanup_expired_tokens(self):
-        """Clean up expired tokens (call periodically)"""
+        """Clean up expired tokens periodically"""
         current_time = time.time()
-        expired_tokens = []
-        
-        for token, metadata in csrf_tokens.items():
-            if current_time - metadata['created'] > CSRF_TOKEN_EXPIRES:
-                expired_tokens.append(token)
+        expired_tokens = [
+            token for token, data in csrf_tokens.items() 
+            if current_time > data['expires_at']
+        ]
         
         for token in expired_tokens:
             self._cleanup_token(token)
@@ -226,28 +161,24 @@ def csrf_required(f):
     """CSRF protection decorator"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        client_ip = get_client_ip()
-        user_agent = request.headers.get('User-Agent', '')
+        if request.method == 'OPTIONS':
+            return f(*args, **kwargs)
         
-        # Get CSRF token from header
-        csrf_token = request.headers.get('X-CSRF-Token') or request.headers.get('X-CSRFToken')
-        
+        csrf_token = request.headers.get('X-CSRF-Token')
         if not csrf_token:
             return jsonify({
-                'error': 'CSRF token missing. Please refresh the page and try again.',
+                'error': 'CSRF token required',
                 'code': 'CSRF_TOKEN_MISSING'
             }), 403
         
-        # Validate token
+        client_ip = get_client_ip()
+        user_agent = request.headers.get('User-Agent', '')
+        
         if not csrf_manager.validate_token(csrf_token, client_ip, user_agent):
             return jsonify({
-                'error': 'Invalid or expired CSRF token. Please refresh the page.',
+                'error': 'Invalid or expired CSRF token',
                 'code': 'CSRF_TOKEN_INVALID'
             }), 403
-        
-        # Store token info for response headers
-        g.csrf_token = csrf_token
-        g.should_refresh = csrf_manager.should_refresh_token(csrf_token)
         
         return f(*args, **kwargs)
     
@@ -265,7 +196,8 @@ def rate_limit(f):
             if current_time < blocked_ips[client_ip]:
                 return jsonify({
                     'error': 'Rate limit exceeded. Access temporarily blocked.',
-                    'retry_after': int(blocked_ips[client_ip] - current_time)
+                    'retry_after': int(blocked_ips[client_ip] - current_time),
+                    'code': 'RATE_LIMITED'
                 }), 429
             else:
                 del blocked_ips[client_ip]
@@ -282,7 +214,8 @@ def rate_limit(f):
             blocked_ips[client_ip] = current_time + BLOCK_DURATION
             return jsonify({
                 'error': f'Rate limit exceeded: {RATE_LIMIT_REQUESTS} requests per {RATE_LIMIT_WINDOW} seconds.',
-                'retry_after': BLOCK_DURATION
+                'retry_after': BLOCK_DURATION,
+                'code': 'RATE_LIMITED'
             }), 429
         
         # Add current request
@@ -300,29 +233,49 @@ def validate_request(f):
     """Request validation decorator"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        user_agent = request.headers.get('User-Agent', '')
-        if not user_agent or len(user_agent) < 10:
-            return jsonify({'error': 'Invalid request'}), 400
-        
-        # Block common bot user agents
-        bot_indicators = ['bot', 'crawler', 'spider', 'scraper', 'curl', 'wget']
-        if any(indicator in user_agent.lower() for indicator in bot_indicators):
-            return jsonify({'error': 'Automated requests not allowed'}), 403
+        # Skip validation for OPTIONS requests
+        if request.method == 'OPTIONS':
+            return f(*args, **kwargs)
         
         # Validate Content-Type for POST requests
         if request.method == 'POST':
-            if not request.is_json:
-                return jsonify({'error': 'Content-Type must be application/json'}), 400
+            content_type = request.headers.get('Content-Type', '')
+            if not content_type.startswith('application/json'):
+                return jsonify({
+                    'error': 'Invalid Content-Type. Expected application/json.',
+                    'code': 'INVALID_CONTENT_TYPE'
+                }), 400
         
-        # Validate Origin (CSRF protection)
+        # Validate Origin
         origin = request.headers.get('Origin')
-        if origin and ALLOWED_ORIGINS:
-            if not any(allowed in origin for allowed in ALLOWED_ORIGINS):
-                return jsonify({'error': 'Origin not allowed'}), 403
+        if origin and origin not in ALLOWED_ORIGINS:
+            return jsonify({
+                'error': 'Invalid origin',
+                'code': 'INVALID_ORIGIN'
+            }), 403
         
         return f(*args, **kwargs)
     
     return decorated_function
+
+def is_valid_domain(domain: str) -> bool:
+    """Validate domain format"""
+    if not domain or len(domain) > MAX_DOMAIN_LENGTH:
+        return False
+    
+    # Basic domain regex
+    import re
+    domain_pattern = r'^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$'
+    
+    if not re.match(domain_pattern, domain):
+        return False
+    
+    # Check for suspicious patterns
+    suspicious = ['localhost', '127.0.0.1', 'test.test', 'example.example']
+    if any(pattern in domain.lower() for pattern in suspicious):
+        return False
+    
+    return True
 
 @app.before_request
 def before_request():
@@ -341,17 +294,18 @@ def after_request(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'DENY'
     response.headers['X-XSS-Protection'] = '1; mode=block'
-    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    
+    # CORS headers for credentials
+    origin = request.headers.get('Origin')
+    if origin in ALLOWED_ORIGINS:
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
     
     # Rate limit headers
     if hasattr(g, 'rate_limit_remaining'):
-        response.headers['X-RateLimit-Limit'] = str(RATE_LIMIT_REQUESTS)
         response.headers['X-RateLimit-Remaining'] = str(g.rate_limit_remaining)
         response.headers['X-RateLimit-Reset'] = str(g.rate_limit_reset)
-    
-    # CSRF refresh notification
-    if hasattr(g, 'should_refresh') and g.should_refresh:
-        response.headers['X-CSRF-Refresh-Required'] = 'true'
     
     return response
 
@@ -362,8 +316,8 @@ def health_check():
     return jsonify({
         'status': 'healthy',
         'service': 'DNSBunch API',
-        'timestamp': datetime.now().isoformat(),
-        'version': '1.0.0'
+        'version': '1.0.0',
+        'timestamp': datetime.utcnow().isoformat()
     })
 
 # Fixed CSRF token endpoint
@@ -384,8 +338,10 @@ def get_csrf_token():
         })
         
         # Set CORS headers explicitly
-        response.headers['Access-Control-Allow-Credentials'] = 'true'
-        response.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin', 'https://www.dnsbunch.com')
+        origin = request.headers.get('Origin')
+        if origin in ALLOWED_ORIGINS:
+            response.headers['Access-Control-Allow-Credentials'] = 'true'
+            response.headers['Access-Control-Allow-Origin'] = origin
         
         return response
         
@@ -393,9 +349,9 @@ def get_csrf_token():
         app.logger.error(f"CSRF token generation failed: {e}")
         return jsonify({'error': 'Token generation failed'}), 500
 
-# Fixed main API endpoint
+# Fixed main API endpoint - FIXED DECORATOR NAME
 @app.route('/api/check', methods=['POST', 'OPTIONS'])
-@rate_limit_decorator
+@rate_limit  # Fixed: was @rate_limit_decorator, now @rate_limit
 @validate_request
 @csrf_required
 def check_dns():
@@ -403,10 +359,12 @@ def check_dns():
     if request.method == 'OPTIONS':
         # Handle preflight request
         response = jsonify({'status': 'ok'})
-        response.headers['Access-Control-Allow-Credentials'] = 'true'
-        response.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin', 'https://www.dnsbunch.com')
-        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
-        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, X-CSRF-Token'
+        origin = request.headers.get('Origin')
+        if origin in ALLOWED_ORIGINS:
+            response.headers['Access-Control-Allow-Credentials'] = 'true'
+            response.headers['Access-Control-Allow-Origin'] = origin
+            response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, X-CSRF-Token'
         return response
     
     try:
@@ -426,16 +384,20 @@ def check_dns():
         results = asyncio.run(checker.check_domain(domain, checks))
         
         response = jsonify(results)
-        response.headers['Access-Control-Allow-Credentials'] = 'true'
-        response.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin', 'https://www.dnsbunch.com')
+        origin = request.headers.get('Origin')
+        if origin in ALLOWED_ORIGINS:
+            response.headers['Access-Control-Allow-Credentials'] = 'true'
+            response.headers['Access-Control-Allow-Origin'] = origin
         
         return response
         
     except Exception as e:
         app.logger.error(f"DNS check failed for {domain}: {e}")
         error_response = jsonify({'error': 'DNS analysis failed'})
-        error_response.headers['Access-Control-Allow-Credentials'] = 'true'
-        error_response.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin', 'https://www.dnsbunch.com')
+        origin = request.headers.get('Origin')
+        if origin in ALLOWED_ORIGINS:
+            error_response.headers['Access-Control-Allow-Credentials'] = 'true'
+            error_response.headers['Access-Control-Allow-Origin'] = origin
         return error_response, 500
 
 @app.errorhandler(404)
