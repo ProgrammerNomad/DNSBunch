@@ -1,0 +1,121 @@
+import axios from 'axios';
+
+// Validate required environment variables
+if (!process.env.NEXT_PUBLIC_API_URL) {
+  throw new Error('NEXT_PUBLIC_API_URL environment variable is required');
+}
+
+if (!process.env.NEXT_PUBLIC_API_TIMEOUT) {
+  throw new Error('NEXT_PUBLIC_API_TIMEOUT environment variable is required');
+}
+
+// Get API configuration from environment variables only
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+const apiTimeout = parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT);
+
+// Create axios instance with strict environment-based configuration
+const api = axios.create({
+  baseURL: `${apiBaseUrl}/api`, // Use backend URL directly from environment
+  timeout: apiTimeout,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request interceptor
+api.interceptors.request.use(
+  (config) => {
+    console.log(`Making API request to: ${config.baseURL}${config.url}`);
+    return config;
+  },
+  (error) => {
+    console.error('Request error:', error);
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor
+api.interceptors.response.use(
+  (response) => {
+    console.log(`API response from: ${response.config.url}`, response.data);
+    return response;
+  },
+  (error) => {
+    console.error('Response error:', error.response?.data || error.message);
+    
+    // Handle different error types
+    if (error.code === 'ECONNREFUSED') {
+      throw new Error('Unable to connect to the DNS analysis server. Please ensure the backend is running.');
+    }
+    
+    if (error.response?.status === 404) {
+      throw new Error('API endpoint not found. Please check the server configuration.');
+    }
+    
+    if (error.response?.status >= 500) {
+      throw new Error('Server error occurred. Please try again later.');
+    }
+    
+    if (error.response?.data?.error) {
+      throw new Error(error.response.data.error);
+    }
+    
+    throw new Error(error.message || 'An unexpected error occurred');
+  }
+);
+
+// DNS Analysis API functions
+export const dnsApi = {
+  /**
+   * Analyze DNS records for a domain
+   */
+  analyzeDomain: async (domain: string): Promise<DNSAnalysisResult> => {
+    const response = await api.post('/check', { domain });
+    return response.data;
+  },
+
+  /**
+   * Health check for the API
+   */
+  healthCheck: async (): Promise<{ status: string; timestamp: string }> => {
+    const response = await api.get('/');
+    return response.data;
+  },
+};
+
+// TypeScript interfaces for API responses
+export interface DNSRecord {
+  host?: string;
+  ip?: string;
+  ips?: { type: string; ip: string }[];
+  priority?: number;
+  value?: string;
+  ttl?: number;
+  type?: string;
+}
+
+export interface CheckResult {
+  status: 'pass' | 'warning' | 'error' | 'info';
+  records?: DNSRecord[];
+  record?: any;
+  issues?: string[];
+  count?: number;
+  error?: string;
+}
+
+export interface DNSAnalysisResult {
+  domain: string;
+  timestamp: string;
+  status: string;
+  checks: {
+    [key: string]: CheckResult;
+  };
+  summary?: {
+    total: number;
+    passed: number;
+    warnings: number;
+    errors: number;
+  };
+}
+
+export default api;

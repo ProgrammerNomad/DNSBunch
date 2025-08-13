@@ -15,8 +15,9 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-# Configure CORS
-CORS(app, origins=["*"])  # In production, specify actual frontend domains
+# Configure CORS from environment variables
+cors_origins = os.getenv('CORS_ORIGINS', 'http://localhost:3000').split(',')
+CORS(app, origins=cors_origins)
 
 @app.route('/', methods=['GET'])
 def health_check():
