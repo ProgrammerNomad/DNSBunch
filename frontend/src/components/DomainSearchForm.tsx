@@ -15,12 +15,15 @@ import {
   Box,
   Divider,
   Chip,
-  Stack
+  Stack,
+  Collapse,
+  IconButton
 } from '@mui/material';
 import { 
   Search as SearchIcon, 
   Clear as ClearIcon,
-  SelectAll as SelectAllIcon
+  SelectAll as SelectAllIcon,
+  CheckCircle as CheckIcon
 } from '@mui/icons-material';
 
 // Validation schema
@@ -48,6 +51,7 @@ export function DomainSearchForm({
   hasResults = false 
 }: DomainSearchFormProps) {
   const [selectedChecks, setSelectedChecks] = useState(['all']);
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
 
   const {
     control,
@@ -126,169 +130,182 @@ export function DomainSearchForm({
       </Typography>
       
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box display="grid" gridTemplateColumns={`1fr ${hasResults ? 'auto auto' : 'auto'}`} gap={2} alignItems="end">
+        {/* Domain Input and Buttons Row */}
+        <Box 
+          display="flex" 
+          gap={2} 
+          alignItems="flex-start"
+          flexWrap={{ xs: 'wrap', sm: 'nowrap' }}
+          sx={{ mb: 2 }}
+        >
           {/* Domain Input */}
-          <Controller
-            name="domain"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                fullWidth
-                label="Domain Name"
-                placeholder="example.com"
-                variant="outlined"
-                disabled={loading}
-                error={!!errors.domain}
-                helperText={
-                  errors.domain?.message || 
-                  'Enter a domain without http:// or www (e.g., google.com)'
-                }
-                InputProps={{
-                  sx: { fontSize: '1.1rem' }
-                }}
-              />
-            )}
-          />
+          <Box flex="1" minWidth={{ xs: '100%', sm: '300px' }}>
+            <Controller
+              name="domain"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  fullWidth
+                  label="Domain Name"
+                  placeholder="example.com"
+                  variant="outlined"
+                  disabled={loading}
+                  error={!!errors.domain}
+                  helperText={
+                    errors.domain?.message || 
+                    'Enter a domain without http:// or www (e.g., google.com)'
+                  }
+                  InputProps={{
+                    sx: { fontSize: '1.1rem' }
+                  }}
+                />
+              )}
+            />
+          </Box>
           
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            variant="contained"
-            size="large"
-            disabled={loading || !isValid}
-            startIcon={loading ? <CircularProgress size={20} /> : <SearchIcon />}
+          {/* Buttons Container */}
+          <Box 
+            display="flex" 
+            gap={1} 
+            alignItems="flex-start"
+            flexShrink={0}
             sx={{ 
-              height: '56px',
-              fontSize: '1.1rem',
-              minWidth: '120px'
+              mt: { xs: 0, sm: 0 },
+              width: { xs: '100%', sm: 'auto' }
             }}
           >
-            {loading ? 'Analyzing...' : 'Analyze'}
-          </Button>
-
-          {/* Clear Button */}
-          {hasResults && (
+            {/* Submit Button */}
             <Button
-              variant="outlined"
+              type="submit"
+              variant="contained"
               size="large"
-              onClick={handleClear}
-              startIcon={<ClearIcon />}
+              disabled={loading || !isValid}
+              startIcon={loading ? <CircularProgress size={20} /> : <SearchIcon />}
               sx={{ 
                 height: '56px',
                 fontSize: '1.1rem',
-                minWidth: '100px'
+                minWidth: '120px',
+                flex: { xs: 1, sm: 'none' }
               }}
             >
-              Clear
+              {loading ? 'Analyzing...' : 'Analyze'}
             </Button>
-          )}
+
+            {/* Clear Button */}
+            {hasResults && (
+              <Button
+                variant="outlined"
+                size="large"
+                onClick={handleClear}
+                startIcon={<ClearIcon />}
+                sx={{ 
+                  height: '56px',
+                  fontSize: '1.1rem',
+                  minWidth: '100px',
+                  flex: { xs: 1, sm: 'none' }
+                }}
+              >
+                Clear
+              </Button>
+            )}
+          </Box>
         </Box>
 
-        {/* Check Selection */}
-        <Box sx={{ mt: 4 }}>
-          <Box display="flex" alignItems="center" mb={2}>
-            <SelectAllIcon sx={{ mr: 1, color: 'primary.main' }} />
-            <Typography variant="h6">
+        {/* Check Selection - Compact Version */}
+        <Box sx={{ mt: 2 }}>
+          <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
               Analysis Options
             </Typography>
-          </Box>
-          
-          <Divider sx={{ mb: 3 }} />
-
-          <FormGroup>
-            {/* All Checks Option */}
-            <Box mb={2}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={selectedChecks.includes('all')}
-                    onChange={() => handleCheckChange('all')}
-                    disabled={loading}
-                    color="primary"
-                    size="medium"
-                  />
-                }
-                label={
-                  <Box display="flex" alignItems="center">
-                    <Typography variant="h6" sx={{ mr: 1 }}>
-                      All Checks
-                    </Typography>
-                    <Chip 
-                      label="Recommended" 
-                      size="small" 
-                      color="primary" 
-                      variant="outlined"
-                    />
-                  </Box>
-                }
-              />
+            {/* Quick All/Custom Toggle */}
+            <Box display="flex" gap={1}>
+              <Button
+                size="small"
+                variant={selectedChecks.includes('all') ? 'contained' : 'outlined'}
+                onClick={() => setSelectedChecks(['all'])}
+                disabled={loading}
+                startIcon={<SelectAllIcon />}
+                sx={{ fontSize: '0.75rem', py: 0.5 }}
+              >
+                All Checks
+              </Button>
+              <Button
+                size="small"
+                variant={!selectedChecks.includes('all') ? 'contained' : 'outlined'}
+                onClick={() => setSelectedChecks(['ns', 'a', 'mx', 'spf'])}
+                disabled={loading}
+                sx={{ fontSize: '0.75rem', py: 0.5 }}
+              >
+                Basic Only
+              </Button>
             </Box>
+          </Box>
 
-            {/* Categorized Checks */}
-            {Object.entries(categories).map(([categoryKey, categoryInfo]) => {
-              const categoryChecks = getChecksByCategory(categoryKey);
-              if (categoryChecks.length === 0 || categoryKey === 'general') return null;
-
-              return (
-                <Box key={categoryKey} mb={3}>
-                  <Typography variant="subtitle1" color="text.secondary" mb={1}>
-                    {categoryInfo.name}
-                  </Typography>
-                  <Box display="grid" gridTemplateColumns="repeat(auto-fit, minmax(250px, 1fr))" gap={1}>
-                    {categoryChecks.map((check) => (
-                      <FormControlLabel
-                        key={check.value}
-                        control={
-                          <Checkbox
-                            checked={selectedChecks.includes(check.value)}
-                            onChange={() => handleCheckChange(check.value)}
-                            disabled={loading || selectedChecks.includes('all')}
-                            color={categoryInfo.color}
-                            size="small"
-                          />
-                        }
-                        label={
-                          <Typography variant="body2">
-                            {check.label}
-                          </Typography>
-                        }
-                        sx={{ 
-                          width: '100%',
-                          opacity: selectedChecks.includes('all') ? 0.6 : 1
-                        }}
-                      />
-                    ))}
-                  </Box>
-                </Box>
-              );
-            })}
-          </FormGroup>
-
-          {/* Selected Checks Summary */}
-          {selectedChecks.length > 0 && !selectedChecks.includes('all') && (
-            <Box mt={2}>
-              <Typography variant="body2" color="text.secondary" mb={1}>
-                Selected checks ({selectedChecks.length}):
-              </Typography>
-              <Stack direction="row" spacing={1} flexWrap="wrap">
-                {selectedChecks.map((checkValue) => {
-                  const check = availableChecks.find(c => c.value === checkValue);
-                  if (!check) return null;
+          {/* Compact Checkbox Grid - Only show if not "All Checks" */}
+          {!selectedChecks.includes('all') && (
+            <>
+              <Box 
+                display="grid" 
+                gridTemplateColumns="repeat(auto-fit, minmax(160px, 1fr))" 
+                gap={0.5}
+                sx={{ 
+                  maxHeight: '120px', 
+                  overflowY: 'auto', 
+                  pr: 1,
+                  bgcolor: 'grey.50',
+                  p: 1,
+                  borderRadius: 1,
+                  border: '1px solid',
+                  borderColor: 'grey.200'
+                }}
+              >
+                {availableChecks.filter(check => check.value !== 'all').map((check) => {
                   const category = categories[check.category as keyof typeof categories];
                   return (
-                    <Chip
-                      key={checkValue}
-                      label={check.label}
-                      size="small"
-                      color={category.color}
-                      variant="outlined"
-                      onDelete={() => handleCheckChange(checkValue)}
+                    <FormControlLabel
+                      key={check.value}
+                      control={
+                        <Checkbox
+                          checked={selectedChecks.includes(check.value)}
+                          onChange={() => handleCheckChange(check.value)}
+                          disabled={loading}
+                          color={category.color}
+                          size="small"
+                        />
+                      }
+                      label={
+                        <Typography variant="caption" sx={{ fontSize: '0.75rem' }}>
+                          {check.label.replace(/\s*\([^)]*\)/g, '')} {/* Remove parentheses content */}
+                        </Typography>
+                      }
+                      sx={{ 
+                        m: 0,
+                        height: '28px',
+                        '& .MuiFormControlLabel-label': { fontSize: '0.75rem' }
+                      }}
                     />
                   );
                 })}
-              </Stack>
-            </Box>
+              </Box>
+              
+              {/* Selected Count */}
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+                {selectedChecks.length} checks selected
+              </Typography>
+            </>
+          )}
+
+          {/* Show recommended message when All Checks is selected */}
+          {selectedChecks.includes('all') && (
+            <Chip 
+              label="All 16 DNS checks will be performed" 
+              size="small" 
+              color="primary" 
+              variant="outlined"
+              icon={<CheckIcon />}
+              sx={{ mt: 1, fontSize: '0.75rem' }}
+            />
           )}
         </Box>
       </form>
