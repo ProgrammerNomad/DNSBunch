@@ -80,13 +80,17 @@ export interface DNSRecord {
   priority?: number;
   target?: string;
   ttl?: number;
+  ips?: Array<{ ip: string; type: string }>;
+  [key: string]: any; // Allow additional properties
 }
 
 export interface CheckResult {
   status: 'pass' | 'warning' | 'error' | 'info';
-  records: DNSRecord[] | any;
+  records: DNSRecord[] | any[] | any; // More flexible type to handle API variations
   issues: string[];
   count?: number;
+  record?: string | object; // Single record for some check types
+  [key: string]: any; // Allow additional properties
 }
 
 export interface DNSAnalysisResult {

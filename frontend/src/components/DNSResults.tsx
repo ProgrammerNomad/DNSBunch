@@ -137,9 +137,10 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
     }
   ];
 
-  const formatRecordDisplay = (check: CheckResult, checkType: string) => {
-    if (check.records && check.records.length > 0) {
-      return check.records.map((record, idx) => (
+  const formatRecordDisplay = (check: CheckResult, checkType: string): React.ReactNode[] => {
+    // Handle array of records
+    if (check.records && Array.isArray(check.records) && check.records.length > 0) {
+      return check.records.map((record: any, idx: number) => (
         <TableRow key={`${checkType}-${idx}`} hover>
           <TableCell>
             <Chip 
@@ -150,21 +151,22 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
             />
           </TableCell>
           <TableCell sx={{ fontFamily: 'monospace', fontSize: '0.9rem' }}>
-            {record.host && record.priority 
+            {record?.host && record?.priority 
               ? `${record.priority} ${record.host}`
-              : record.host || record.value || JSON.stringify(record)
+              : record?.host || record?.value || JSON.stringify(record)
             }
           </TableCell>
           <TableCell>
-            {record.ips ? record.ips.map(ip => ip.ip).join(', ') : 
-             record.ip || record.ttl || '-'}
+            {record?.ips ? record.ips.map((ip: any) => ip?.ip).join(', ') : 
+             record?.ip || record?.ttl || '-'}
           </TableCell>
         </TableRow>
       ));
     }
 
+    // Handle single record
     if (check.record) {
-      return (
+      return [
         <TableRow key={`${checkType}-single`} hover>
           <TableCell>
             <Chip 
@@ -182,10 +184,11 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
           </TableCell>
           <TableCell>-</TableCell>
         </TableRow>
-      );
+      ];
     }
 
-    return (
+    // Handle no records found
+    return [
       <TableRow key={`${checkType}-empty`}>
         <TableCell colSpan={3}>
           <Alert severity="info">
@@ -193,7 +196,7 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
           </Alert>
         </TableCell>
       </TableRow>
-    );
+    ];
   };
 
   return (
@@ -321,8 +324,7 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
                       {category.checkTypes.flatMap((checkType) => {
                         const check = results.checks[checkType];
                         if (!check) return [];
-                        const result = formatRecordDisplay(check, checkType);
-                        return Array.isArray(result) ? result : [result];
+                        return formatRecordDisplay(check, checkType);
                       })}
                     </TableBody>
                   </Table>
