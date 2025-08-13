@@ -2,8 +2,8 @@ version: 1
 
 services:
   - type: web
-    name: dnsbunch-backend
-    runtime: python3
+    name: dnsbunch-api
+    env: python
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
@@ -11,4 +11,7 @@ services:
       - key: FLASK_ENV
         value: production
       - key: FLASK_DEBUG
-        value: False
+        value: "False"
+      - key: CORS_ORIGINS
+        value: "https://dnsbunch.netlify.app,https://your-netlify-site.netlify.app"
+    healthCheckPath: /

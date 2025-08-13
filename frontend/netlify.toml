@@ -9,12 +9,16 @@
 [build.environment]
   NODE_VERSION = "18"
   NEXT_PUBLIC_API_URL = "https://api2.dnsbunch.com"
-  NEXT_PUBLIC_API_TIMEOUT = "30000"
-  NODE_ENV = "production"
 
-# API Proxy to backend
+# API Proxy Configuration
 [[redirects]]
   from = "/api/*"
   to = "https://api2.dnsbunch.com/api/:splat"
   status = 200
   force = true
+
+# Handle client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
