@@ -7,6 +7,7 @@ import { Box } from '@mui/material';
 import { theme } from '../theme/theme';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Footer } from '../components/Footer';
+import { QueryProvider } from '../providers/QueryProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -36,26 +37,28 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <ErrorBoundary>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '100vh',
-              }}
-            >
-              {/* Main content area */}
-              <Box component="main" sx={{ flex: 1 }}>
-                {children}
+        <QueryProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <ErrorBoundary>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minHeight: '100vh',
+                }}
+              >
+                {/* Main content area */}
+                <Box component="main" sx={{ flex: 1 }}>
+                  {children}
+                </Box>
+                
+                {/* Footer */}
+                <Footer />
               </Box>
-              
-              {/* Footer */}
-              <Footer />
-            </Box>
-          </ErrorBoundary>
-        </ThemeProvider>
+            </ErrorBoundary>
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );
