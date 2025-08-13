@@ -14,7 +14,8 @@ import {
   Box,
   Chip,
   Paper,
-  Divider
+  Divider,
+  FormGroup
 } from '@mui/material';
 import { 
   Search as SearchIcon, 
@@ -66,39 +67,39 @@ export function DomainSearchForm({
 
   const availableChecks = [
     // All Checks option - FIRST in the list
-    { value: 'all', label: 'All DNS Checks (Recommended)', category: 'general', isAllOption: true },
+    { value: 'all', label: 'All DNS Checks', category: 'general', isAllOption: true },
     
     // Basic DNS Records
-    { value: 'ns', label: 'Nameservers (NS)', category: 'basic' },
-    { value: 'soa', label: 'Start of Authority (SOA)', category: 'basic' },
-    { value: 'a', label: 'IPv4 Addresses (A)', category: 'basic' },
-    { value: 'aaaa', label: 'IPv6 Addresses (AAAA)', category: 'basic' },
+    { value: 'ns', label: 'NS', category: 'basic' },
+    { value: 'soa', label: 'SOA', category: 'basic' },
+    { value: 'a', label: 'A Records', category: 'basic' },
+    { value: 'aaaa', label: 'AAAA', category: 'basic' },
     
     // Website & Content
-    { value: 'cname', label: 'CNAME Records', category: 'content' },
-    { value: 'txt', label: 'TXT Records', category: 'content' },
-    { value: 'wildcard', label: 'Wildcard Records', category: 'content' },
+    { value: 'cname', label: 'CNAME', category: 'content' },
+    { value: 'txt', label: 'TXT', category: 'content' },
+    { value: 'wildcard', label: 'Wildcard', category: 'content' },
     
     // Email Configuration
-    { value: 'mx', label: 'Mail Exchange (MX)', category: 'email' },
-    { value: 'spf', label: 'SPF Records', category: 'email' },
-    { value: 'dmarc', label: 'DMARC Records', category: 'email' },
-    { value: 'dkim', label: 'DKIM Records', category: 'email' },
-    { value: 'ptr', label: 'PTR (Reverse DNS)', category: 'email' },
+    { value: 'mx', label: 'MX', category: 'email' },
+    { value: 'spf', label: 'SPF', category: 'email' },
+    { value: 'dmarc', label: 'DMARC', category: 'email' },
+    { value: 'dkim', label: 'DKIM', category: 'email' },
+    { value: 'ptr', label: 'PTR', category: 'email' },
     
     // Security & Advanced
-    { value: 'caa', label: 'CAA Records', category: 'security' },
+    { value: 'caa', label: 'CAA', category: 'security' },
     { value: 'dnssec', label: 'DNSSEC', category: 'security' },
-    { value: 'axfr', label: 'Zone Transfer (AXFR)', category: 'security' },
-    { value: 'glue', label: 'Glue Records', category: 'security' }
+    { value: 'axfr', label: 'AXFR', category: 'security' },
+    { value: 'glue', label: 'Glue', category: 'security' }
   ];
 
   const categories = {
     general: { name: 'General', color: 'primary' as const },
-    basic: { name: 'Basic DNS', color: 'info' as const },
-    content: { name: 'Website & Content', color: 'secondary' as const },
-    email: { name: 'Email Security', color: 'warning' as const },
-    security: { name: 'Security & Advanced', color: 'success' as const }
+    basic: { name: 'Basic', color: 'info' as const },
+    content: { name: 'Content', color: 'secondary' as const },
+    email: { name: 'Email', color: 'warning' as const },
+    security: { name: 'Security', color: 'success' as const }
   };
 
   const handleCheckChange = (checkValue: string) => {
@@ -174,7 +175,14 @@ export function DomainSearchForm({
                 error={!!errors.domain}
                 helperText={errors.domain?.message}
                 disabled={loading}
-                sx={{ flex: 1, flexShrink: 1 }}
+                size="medium"
+                sx={{ 
+                  flex: 1, 
+                  flexShrink: 1,
+                  '& .MuiInputBase-root': {
+                    height: '56px' // Match button height
+                  }
+                }}
               />
             )}
           />
@@ -188,7 +196,11 @@ export function DomainSearchForm({
               size="large"
               disabled={!isValid || loading}
               startIcon={loading ? <CircularProgress size={20} /> : <SearchIcon />}
-              sx={{ whiteSpace: 'nowrap', minWidth: '120px' }}
+              sx={{ 
+                whiteSpace: 'nowrap', 
+                minWidth: '120px',
+                height: '56px' // Explicit height to match input
+              }}
             >
               {loading ? 'Analyzing...' : 'Analyze'}
             </Button>
@@ -201,7 +213,10 @@ export function DomainSearchForm({
                 onClick={handleClear}
                 disabled={loading}
                 startIcon={<ClearIcon />}
-                sx={{ whiteSpace: 'nowrap' }}
+                sx={{ 
+                  whiteSpace: 'nowrap',
+                  height: '56px' // Match other elements
+                }}
               >
                 Clear
               </Button>
@@ -209,27 +224,40 @@ export function DomainSearchForm({
           </Box>
         </Box>
 
-        {/* DNS Check Selection */}
-        <Paper elevation={1} sx={{ p: 3, bgcolor: 'grey.50' }}>
-          <Box display="flex" alignItems="center" gap={2} mb={2}>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              Select DNS Checks:
+        {/* DNS Check Selection - Compact Version */}
+        <Paper elevation={1} sx={{ p: 2, bgcolor: 'grey.50' }}>
+          <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+            <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem' }}>
+              DNS Checks
             </Typography>
-            <Chip 
-              icon={<CheckIcon />}
-              label={`${getSelectedCount()} check${getSelectedCount() !== 1 ? 's' : ''} selected`}
-              size="small" 
-              color="primary" 
-              variant="outlined"
-            />
+            <Box display="flex" alignItems="center" gap={1}>
+              <Chip 
+                icon={<CheckIcon />}
+                label={`${getSelectedCount()} selected`}
+                size="small" 
+                color="primary" 
+                variant="outlined"
+                sx={{ fontSize: '0.75rem' }}
+              />
+              <Button
+                size="small"
+                variant="text"
+                onClick={() => setSelectedChecks(['all'])}
+                disabled={loading || selectedChecks.includes('all')}
+                startIcon={<SelectAllIcon />}
+                sx={{ fontSize: '0.7rem', minWidth: 'auto', px: 1 }}
+              >
+                All
+              </Button>
+            </Box>
           </Box>
 
-          {/* Checkbox Grid */}
+          {/* Compact Checkbox Grid */}
           <Box 
             display="grid" 
-            gridTemplateColumns="repeat(auto-fit, minmax(200px, 1fr))" 
-            gap={1}
-            sx={{ maxHeight: '300px', overflowY: 'auto' }}
+            gridTemplateColumns="repeat(auto-fit, minmax(100px, 1fr))" 
+            gap={0.5}
+            sx={{ maxHeight: '200px', overflowY: 'auto' }}
           >
             {availableChecks.map((check) => {
               const category = categories[check.category as keyof typeof categories];
@@ -246,44 +274,58 @@ export function DomainSearchForm({
                       disabled={loading}
                       color={isAllOption ? 'primary' : category.color}
                       size="small"
+                      sx={{ 
+                        py: 0.25,
+                        '& .MuiSvgIcon-root': { fontSize: '1rem' }
+                      }}
                     />
                   }
                   label={
-                    <Box display="flex" alignItems="center" gap={1}>
+                    <Box display="flex" alignItems="center" gap={0.5}>
                       <Typography 
-                        variant="body2" 
+                        variant="caption" 
                         sx={{ 
-                          fontSize: '0.875rem',
+                          fontSize: '0.75rem',
                           fontWeight: isAllOption ? 600 : 400,
-                          color: isAllOption ? 'primary.main' : 'text.primary'
+                          color: isAllOption ? 'primary.main' : 'text.primary',
+                          lineHeight: 1.2
                         }}
                       >
                         {check.label}
                       </Typography>
                       {!isAllOption && (
                         <Chip 
-                          label={category.name} 
+                          label={category.name.charAt(0)} // Just first letter for compactness
                           size="small" 
                           color={category.color}
                           variant="outlined"
-                          sx={{ fontSize: '0.65rem', height: '20px' }}
+                          sx={{ 
+                            fontSize: '0.6rem', 
+                            height: '16px', 
+                            minWidth: '16px',
+                            '& .MuiChip-label': { px: 0.5 }
+                          }}
                         />
                       )}
                     </Box>
                   }
                   sx={{ 
                     m: 0,
-                    p: 1,
-                    border: isAllOption ? '2px solid' : '1px solid',
+                    py: 0.25,
+                    px: 0.5,
+                    border: isAllOption ? '1px solid' : 'none',
                     borderColor: isAllOption 
                       ? (isChecked ? 'primary.main' : 'primary.light')
                       : 'transparent',
-                    borderRadius: 1,
+                    borderRadius: 0.5,
                     bgcolor: isAllOption 
                       ? (isChecked ? 'primary.50' : 'background.paper')
                       : 'transparent',
                     '&:hover': {
                       bgcolor: isAllOption ? 'primary.50' : 'action.hover'
+                    },
+                    '& .MuiFormControlLabel-label': {
+                      fontSize: '0.75rem'
                     }
                   }}
                 />
@@ -291,27 +333,14 @@ export function DomainSearchForm({
             })}
           </Box>
 
-          {/* Selection Info */}
-          <Divider sx={{ my: 2 }} />
-          <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={1}>
-            <Typography variant="caption" color="text.secondary">
-              {selectedChecks.includes('all') 
-                ? "All available DNS checks will be performed (comprehensive analysis)"
-                : `Selected ${selectedChecks.length} specific check${selectedChecks.length !== 1 ? 's' : ''} (custom analysis)`
-              }
-            </Typography>
-            
-            <Button
-              size="small"
-              variant="text"
-              onClick={() => setSelectedChecks(['all'])}
-              disabled={loading || selectedChecks.includes('all')}
-              startIcon={<SelectAllIcon />}
-              sx={{ fontSize: '0.75rem' }}
-            >
-              Select All
-            </Button>
-          </Box>
+          {/* Compact Selection Info */}
+          <Divider sx={{ my: 1.5 }} />
+          <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
+            {selectedChecks.includes('all') 
+              ? "All available DNS checks will be performed"
+              : `${selectedChecks.length} custom check${selectedChecks.length !== 1 ? 's' : ''} selected`
+            }
+          </Typography>
         </Paper>
       </form>
     </Box>
