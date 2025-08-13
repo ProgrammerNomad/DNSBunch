@@ -17,7 +17,7 @@ import {
   Collapse,
   Alert,
   CircularProgress,
-  AlertTitle
+  InputAdornment
 } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
 
@@ -128,58 +128,130 @@ export function DomainSearchForm({ onSearch, loading = false, error = null }: Do
     onSearch(domain.trim().toLowerCase(), checksToRun, resultType);
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && !loading && !domainError && domain.trim()) {
+      handleSubmit(event as unknown as React.FormEvent);
+    }
+  };
+
   return (
-    <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+    <Paper elevation={2} sx={{ p: { xs: 2, sm: 3 }, mb: 3 }}>
       <form onSubmit={handleSubmit}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          {/* Domain Input */}
-          <Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {/* Compact Domain Input + Button Row */}
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start', flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
             <TextField
               fullWidth
               label="Domain Name"
               placeholder="example.com"
               value={domain}
               onChange={handleDomainChange}
+              onKeyPress={handleKeyPress}
               error={!!domainError}
-              helperText={domainError || 'Enter a domain name to analyze'}
               disabled={loading}
-              sx={{ mb: 2 }}
+              size="medium"
+              sx={{ 
+                flex: 1,
+                minWidth: { xs: '100%', sm: '200px' },
+                mb: { xs: 1, sm: 0 }
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon color="action" fontSize="small" />
+                  </InputAdornment>
+                ),
+              }}
             />
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              disabled={loading || !!domainError || !domain.trim()}
+              startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
+              sx={{ 
+                px: { xs: 2, sm: 3 },
+                py: 1.75,
+                minWidth: { xs: '100%', sm: '140px' },
+                fontWeight: 'bold',
+                background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+                boxShadow: '0 3px 5px 2px rgba(33, 203, 243, .3)',
+                '&:hover': {
+                  background: 'linear-gradient(45deg, #1976D2 30%, #1CB5E0 90%)',
+                  boxShadow: '0 6px 10px 2px rgba(33, 203, 243, .3)',
+                },
+                '&:disabled': {
+                  background: 'rgba(0, 0, 0, 0.12)',
+                  boxShadow: 'none',
+                }
+              }}
+            >
+              {loading ? 'Analyzing...' : 'Analyze'}
+            </Button>
           </Box>
 
-          {/* Result Type Selection */}
+          {/* Domain Error Display */}
+          {domainError && (
+            <Alert severity="error" sx={{ py: 0.5 }}>
+              <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
+                {domainError}
+              </Typography>
+            </Alert>
+          )}
+
+          {/* Result Type Selection - More Compact */}
           <Box>
-            <FormControl component="fieldset">
-              <FormLabel component="legend" sx={{ mb: 1, fontWeight: 'bold' }}>
+            <FormControl component="fieldset" size="small">
+              <FormLabel component="legend" sx={{ mb: 0.5, fontSize: '0.875rem', fontWeight: 'bold' }}>
                 Result Format
               </FormLabel>
               <RadioGroup
                 row
                 value={resultType}
                 onChange={handleResultTypeChange}
+                sx={{ gap: 2 }}
               >
                 <FormControlLabel 
                   value="normal" 
-                  control={<Radio disabled={loading} />} 
-                  label="Normal (Table Format)"
+                  control={<Radio disabled={loading} size="small" />} 
+                  label={
+                    <Box>
+                      <Typography variant="body2" sx={{ fontWeight: 'medium', fontSize: '0.875rem' }}>
+                        Normal
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                        Table format
+                      </Typography>
+                    </Box>
+                  }
                   disabled={loading}
+                  sx={{ mr: 1 }}
                 />
                 <FormControlLabel 
                   value="advanced" 
-                  control={<Radio disabled={loading} />} 
-                  label="Advanced (Detailed Analysis)"
+                  control={<Radio disabled={loading} size="small" />} 
+                  label={
+                    <Box>
+                      <Typography variant="body2" sx={{ fontWeight: 'medium', fontSize: '0.875rem' }}>
+                        Advanced
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                        Detailed analysis
+                      </Typography>
+                    </Box>
+                  }
                   disabled={loading}
                 />
               </RadioGroup>
             </FormControl>
           </Box>
 
-          {/* Advanced Options */}
+          {/* Advanced Options - More Compact */}
           <Collapse in={resultType === 'advanced'}>
-            <Box>
+            <Box sx={{ mt: 1, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
               <FormControl component="fieldset" fullWidth>
-                <FormLabel component="legend" sx={{ mb: 2, fontWeight: 'bold' }}>
-                  Select DNS Checks (Optional - leave empty for all checks)
+                <FormLabel component="legend" sx={{ mb: 1, fontSize: '0.875rem', fontWeight: 'bold' }}>
+                  DNS Checks (Optional - leave empty for all checks)
                 </FormLabel>
                 
                 <FormControlLabel
@@ -189,18 +261,23 @@ export function DomainSearchForm({ onSearch, loading = false, error = null }: Do
                       onChange={handleSelectAllChange}
                       disabled={loading}
                       color="primary"
+                      size="small"
                     />
                   }
-                  label="Select All"
-                  sx={{ mb: 1, fontWeight: 'bold' }}
+                  label={
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.875rem' }}>
+                      Select All
+                    </Typography>
+                  }
+                  sx={{ mb: 1 }}
                   disabled={loading}
                 />
 
-                <FormGroup sx={{ ml: 2 }}>
+                <FormGroup sx={{ ml: 1 }}>
                   <Box sx={{ 
                     display: 'grid', 
                     gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
-                    gap: 1 
+                    gap: 0.5
                   }}>
                     {DNS_RECORD_TYPES.map((type) => (
                       <FormControlLabel
@@ -215,15 +292,15 @@ export function DomainSearchForm({ onSearch, loading = false, error = null }: Do
                         }
                         label={
                           <Box>
-                            <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                            <Typography variant="body2" sx={{ fontWeight: 'medium', fontSize: '0.8rem' }}>
                               {type.label}
                             </Typography>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem', lineHeight: 1.2 }}>
                               {type.description}
                             </Typography>
                           </Box>
                         }
-                        sx={{ margin: 0 }}
+                        sx={{ margin: 0, alignItems: 'flex-start' }}
                         disabled={loading}
                       />
                     ))}
@@ -233,24 +310,20 @@ export function DomainSearchForm({ onSearch, loading = false, error = null }: Do
             </Box>
           </Collapse>
 
-          {/* Result Type Descriptions */}
-          <Box sx={{ mt: 2 }}>
+          {/* Result Type Descriptions - More Compact */}
+          <Box>
             {resultType === 'normal' && (
-              <Alert severity="info" sx={{ mb: 2 }}>
-                <AlertTitle>Normal Mode</AlertTitle>
-                <Typography variant="body2">
-                  Simple table format showing test results with pass/warning/error status. 
-                  Perfect for quick domain health checks.
+              <Alert severity="info" sx={{ py: 1 }}>
+                <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
+                  <strong>Normal Mode:</strong> Simple table format with pass/warning/error status. Perfect for quick domain health checks.
                 </Typography>
               </Alert>
             )}
             
             {resultType === 'advanced' && (
-              <Alert severity="info" sx={{ mb: 2 }}>
-                <AlertTitle>Advanced Mode</AlertTitle>
-                <Typography variant="body2">
-                  Detailed analysis with categorized results, technical explanations, 
-                  and actionable recommendations for each DNS record type.
+              <Alert severity="info" sx={{ py: 1 }}>
+                <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
+                  <strong>Advanced Mode:</strong> Detailed analysis with categorized results, technical explanations, and actionable recommendations.
                 </Typography>
               </Alert>
             )}
@@ -258,29 +331,12 @@ export function DomainSearchForm({ onSearch, loading = false, error = null }: Do
 
           {/* Error Display */}
           {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
+            <Alert severity="error" sx={{ py: 1 }}>
+              <Typography variant="body2">
+                {error}
+              </Typography>
             </Alert>
           )}
-
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            variant="contained"
-            size="large"
-            disabled={loading || !!domainError || !domain.trim()}
-            startIcon={loading ? <CircularProgress size={20} /> : <SearchIcon />}
-            sx={{ 
-              py: 1.5,
-              fontWeight: 'bold',
-              background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
-              '&:hover': {
-                background: 'linear-gradient(45deg, #1976D2 30%, #1CB5E0 90%)',
-              }
-            }}
-          >
-            {loading ? 'Analyzing...' : 'Analyze Domain'}
-          </Button>
         </Box>
       </form>
     </Paper>

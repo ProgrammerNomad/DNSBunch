@@ -2,9 +2,14 @@
 
 import axios from 'axios';
 
-// API Configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+// API Configuration - NO FALLBACKS, must be set in environment
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const REQUEST_TIMEOUT = parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '30000');
+
+// Validate required environment variables
+if (!API_BASE_URL) {
+  throw new Error('NEXT_PUBLIC_API_URL environment variable is required');
+}
 
 class CSRFService {
   private token: string | null = null;
@@ -85,14 +90,20 @@ class CSRFService {
 
   private async doRefreshToken(): Promise<void> {
     try {
-      const response = await axios.get(`${API_BASE_URL}/csrf-token`, {
+      const response = await axios.get(`${API_BASE_URL}/api/csrf-token`, {
         withCredentials: true,
-        timeout: REQUEST_TIMEOUT
+        timeout: REQUEST_TIMEOUT,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
       });
       
       const data = response.data;
       if (data.csrf_token) {
         this.setToken(data.csrf_token, data.expires_in);
+      } else {
+        throw new Error('No CSRF token in response');
       }
     } catch (err) {
       console.error('Failed to refresh CSRF token:', err);
