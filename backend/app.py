@@ -17,7 +17,19 @@ import jwt
 from dns_checker import DNSChecker
 
 app = Flask(__name__)
-CORS(app)
+
+# Fixed CORS Configuration - MUST set supports_credentials=True
+CORS(app, 
+     origins=[
+         "https://www.dnsbunch.com",
+         "https://dnsbunch.com", 
+         "http://localhost:3000",
+         "http://localhost:3001"
+     ],
+     supports_credentials=True,  # This is crucial!
+     allow_headers=['Content-Type', 'Authorization', 'X-CSRF-Token'],
+     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+)
 
 # Enhanced Security Configuration
 CSRF_SECRET_KEY = os.environ.get('CSRF_SECRET_KEY', secrets.token_hex(32))
@@ -354,100 +366,77 @@ def health_check():
         'version': '1.0.0'
     })
 
+# Fixed CSRF token endpoint
 @app.route('/api/csrf-token', methods=['GET'])
-@rate_limit
-@validate_request
 def get_csrf_token():
-    """Generate and return CSRF token"""
-    client_ip = get_client_ip()
-    user_agent = request.headers.get('User-Agent', '')
-    
+    """Generate and return a new CSRF token"""
     try:
-        token_info = csrf_manager.generate_token(client_ip, user_agent)
+        client_ip = get_client_ip()
+        user_agent = request.headers.get('User-Agent', '')
         
-        return jsonify({
-            'success': True,
-            'csrf_token': token_info['csrf_token'],
-            'expires_in': token_info['expires_in'],
-            'expires_at': token_info['expires_at'],
-            'server_time': time.time()
+        # Generate new token
+        token = csrf_manager.generate_token(client_ip, user_agent)
+        
+        response = jsonify({
+            'csrf_token': token,
+            'expires_in': CSRF_TOKEN_EXPIRES,
+            'server_time': int(time.time())
         })
         
+        # Set CORS headers explicitly
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin', 'https://www.dnsbunch.com')
+        
+        return response
+        
     except Exception as e:
-        print(f"Error generating CSRF token: {str(e)}")
-        return jsonify({'error': 'Failed to generate security token'}), 500
+        app.logger.error(f"CSRF token generation failed: {e}")
+        return jsonify({'error': 'Token generation failed'}), 500
 
-@app.route('/api/check', methods=['POST'])
-@rate_limit
+# Fixed main API endpoint
+@app.route('/api/check', methods=['POST', 'OPTIONS'])
+@rate_limit_decorator
 @validate_request
 @csrf_required
 def check_dns():
-    """Check DNS records for a domain"""
+    """Main DNS checking endpoint"""
+    if request.method == 'OPTIONS':
+        # Handle preflight request
+        response = jsonify({'status': 'ok'})
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin', 'https://www.dnsbunch.com')
+        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, X-CSRF-Token'
+        return response
+    
     try:
         data = request.get_json()
+        domain = data.get('domain', '').strip().lower()
+        checks = data.get('checks', [])
         
-        if not data or 'domain' not in data:
+        if not domain:
             return jsonify({'error': 'Domain is required'}), 400
         
-        domain = data['domain'].strip().lower()
-        requested_checks = data.get('checks', [])
-        
-        # Enhanced domain validation
-        if not domain or len(domain) > MAX_DOMAIN_LENGTH:
-            return jsonify({'error': 'Invalid domain name'}), 400
-        
-        # Block suspicious patterns
-        suspicious_patterns = [
-            'localhost', '127.0.0.1', '0.0.0.0', '10.', '192.168.', '172.',
-            'test.test', 'example.example', 'admin', 'root', 'api'
-        ]
-        
-        if any(pattern in domain for pattern in suspicious_patterns):
-            return jsonify({'error': 'Domain not allowed for analysis'}), 400
-        
         # Validate domain format
-        import re
-        domain_pattern = r'^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$'
-        if not re.match(domain_pattern, domain):
+        if not is_valid_domain(domain):
             return jsonify({'error': 'Invalid domain format'}), 400
         
-        # Validate checks array
-        if requested_checks:
-            valid_checks = [
-                'ns', 'soa', 'a', 'aaaa', 'mx', 'spf', 'txt', 'cname',
-                'ptr', 'caa', 'dmarc', 'dkim', 'glue', 'dnssec', 'axfr', 'wildcard'
-            ]
-            invalid_checks = [check for check in requested_checks if check not in valid_checks]
-            if invalid_checks:
-                return jsonify({'error': f'Invalid check types: {invalid_checks}'}), 400
+        # Run DNS analysis
+        checker = DNSChecker()
+        results = asyncio.run(checker.check_domain(domain, checks))
         
-        # Create DNS checker and run analysis
-        checker = DNSChecker(domain)
+        response = jsonify(results)
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin', 'https://www.dnsbunch.com')
         
-        # Run checks with timeout
-        if requested_checks and len(requested_checks) > 0:
-            print(f"Running specific checks: {requested_checks} for domain: {domain} from IP: {get_client_ip()}")
-            result = asyncio.wait_for(
-                checker.run_all_checks(requested_checks),
-                timeout=60
-            )
-        else:
-            print(f"Running all checks for domain: {domain} from IP: {get_client_ip()}")
-            result = asyncio.wait_for(
-                checker.run_all_checks(),
-                timeout=120
-            )
+        return response
         
-        # Run the async operation
-        result = asyncio.run(result)
-        
-        return jsonify(result)
-        
-    except asyncio.TimeoutError:
-        return jsonify({'error': 'Request timeout - analysis took too long'}), 408
     except Exception as e:
-        print(f"Error checking DNS for domain {domain}: {str(e)}")
-        return jsonify({'error': 'DNS check failed - please try again later'}), 500
+        app.logger.error(f"DNS check failed for {domain}: {e}")
+        error_response = jsonify({'error': 'DNS analysis failed'})
+        error_response.headers['Access-Control-Allow-Credentials'] = 'true'
+        error_response.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin', 'https://www.dnsbunch.com')
+        return error_response, 500
 
 @app.errorhandler(404)
 def not_found(error):
