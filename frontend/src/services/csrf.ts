@@ -1,11 +1,10 @@
 'use client';
 
-interface CSRFTokenData {
-  csrf_token: string;
-  expires_in: number;
-  expires_at: number;
-  server_time: number;
-}
+import axios from 'axios';
+
+// API Configuration
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const REQUEST_TIMEOUT = parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '30000');
 
 class CSRFService {
   private token: string | null = null;
@@ -18,6 +17,22 @@ class CSRFService {
   constructor() {
     // Try to load existing token from sessionStorage (more secure than localStorage)
     this.loadTokenFromStorage();
+  }
+
+  /**
+   * Set token data from server response
+   */
+  setToken(token: string, expiresIn?: number): void {
+    this.token = token;
+    
+    if (expiresIn) {
+      this.expiresAt = Date.now() + (expiresIn * 1000);
+    } else {
+      // Default 1 hour expiry if not provided
+      this.expiresAt = Date.now() + (60 * 60 * 1000);
+    }
+    
+    this.saveTokenToStorage();
   }
 
   /**
@@ -60,8 +75,7 @@ class CSRFService {
    * Refresh the CSRF token from the server
    */
   private async refreshToken(): Promise<void> {
-    this.refreshPromise = this._performRefresh();
-    
+    this.refreshPromise = this.doRefreshToken();
     try {
       await this.refreshPromise;
     } finally {
@@ -69,46 +83,21 @@ class CSRFService {
     }
   }
 
-  /**
-   * Actually perform the token refresh
-   */
-  private async _performRefresh(): Promise<void> {
+  private async doRefreshToken(): Promise<void> {
     try {
-      console.log('Refreshing CSRF token...');
-      
-      const response = await fetch('/api/csrf-token', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        credentials: 'same-origin', // Important for CSRF protection
+      const response = await axios.get(`${API_BASE_URL}/csrf-token`, {
+        withCredentials: true,
+        timeout: REQUEST_TIMEOUT
       });
-
-      if (!response.ok) {
-        throw new Error(`Failed to get CSRF token: ${response.status}`);
+      
+      const data = response.data;
+      if (data.csrf_token) {
+        this.setToken(data.csrf_token, data.expires_in);
       }
-
-      const data: CSRFTokenData = await response.json();
-      
-      // Validate response
-      if (!data.csrf_token || !data.expires_at) {
-        throw new Error('Invalid CSRF token response');
-      }
-
-      // Store new token
-      this.token = data.csrf_token;
-      this.expiresAt = data.expires_at * 1000; // Convert to milliseconds
-      
-      // Save to storage
-      this.saveTokenToStorage();
-      
-      console.log('CSRF token refreshed successfully');
-      
-    } catch (error) {
-      console.error('Failed to refresh CSRF token:', error);
+    } catch (err) {
+      console.error('Failed to refresh CSRF token:', err);
       this.clearToken();
-      throw new Error('Unable to obtain security token. Please refresh the page.');
+      throw new Error('CSRF token refresh failed');
     }
   }
 
@@ -132,8 +121,8 @@ class CSRFService {
         sessionStorage.setItem(this.STORAGE_KEY, tokenHash);
         sessionStorage.setItem(this.STORAGE_EXPIRES_KEY, this.expiresAt.toString());
       }
-    } catch (error) {
-      console.warn('Failed to save CSRF token to storage:', error);
+    } catch (err) {
+      console.warn('Failed to save CSRF token to storage:', err);
     }
   }
 
@@ -160,8 +149,8 @@ class CSRFService {
           }
         }
       }
-    } catch (error) {
-      console.warn('Failed to load CSRF token from storage:', error);
+    } catch (err) {
+      console.warn('Failed to load CSRF token from storage:', err);
       this.clearTokenFromStorage();
     }
   }
@@ -175,8 +164,9 @@ class CSRFService {
         sessionStorage.removeItem(this.STORAGE_KEY);
         sessionStorage.removeItem(this.STORAGE_EXPIRES_KEY);
       }
-    } catch (error) {
-      // Ignore storage errors
+    } catch (err) {
+      // Silently ignore storage errors
+      console.debug('Storage cleanup failed:', err);
     }
   }
 

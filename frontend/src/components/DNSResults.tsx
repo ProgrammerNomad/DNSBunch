@@ -39,45 +39,23 @@ import {
   Public as PublicIcon
 } from '@mui/icons-material';
 
-import { DNSAnalysisResult, CheckResult } from '../services/api';
+import { DNSResultsProps, CheckResult } from '../types/dns';
+import { NormalResults } from './NormalResults';
 
-interface DNSResultsProps {
-  results: DNSAnalysisResult;
-  loading?: boolean;
-}
-
-interface RecordCategory {
-  title: string;
-  icon: React.ReactNode;
-  color: string;
-  checks: CheckResult[];
-  description: string;
-  checkTypes: string[];
-}
-
-// Type for API record objects
-interface APIRecord {
-  host?: string;
-  ip?: string;
-  type?: string;
-  value?: string;
-  priority?: number;
-  target?: string;
-  ttl?: number;
-  ips?: Array<{ ip: string; type: string }>;
-  [key: string]: unknown;
-}
-
-export function DNSResults({ results, loading = false }: DNSResultsProps) {
+export function DNSResults({ 
+  data, 
+  loading = false, 
+  resultType = 'advanced'
+}: DNSResultsProps) {
   const [expandedPanels, setExpandedPanels] = useState<Record<string, boolean>>({});
   const [clientTimestamp, setClientTimestamp] = useState<string>('');
 
   useEffect(() => {
     // Format timestamp on client side to avoid hydration mismatch
-    if (results?.timestamp) {
-      setClientTimestamp(new Date(results.timestamp).toLocaleString());
+    if (data?.timestamp) {
+      setClientTimestamp(new Date(data.timestamp).toLocaleString());
     }
-  }, [results?.timestamp]);
+  }, [data]);
 
   if (loading) {
     return (
@@ -90,30 +68,54 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
     );
   }
 
-  if (!results || !results.checks) {
+  if (!data || !data.checks) {
     return null;
   }
 
-  const handlePanelChange = (panel: string) => {
+  // If normal mode, use the table format
+  if (resultType === 'normal') {
+    return <NormalResults data={data} />;
+  }
+
+  const results = data;
+
+  const handlePanelChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpandedPanels(prev => ({
       ...prev,
-      [panel]: !prev[panel]
+      [panel]: isExpanded
     }));
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'pass': return <CheckCircleIcon color="success" />;
-      case 'warning': return <WarningIcon color="warning" />;
-      case 'error': return <ErrorIcon color="error" />;
-      default: return <InfoIcon color="info" />;
+      case 'pass':
+        return <CheckCircleIcon color="success" />;
+      case 'warning':
+        return <WarningIcon color="warning" />;
+      case 'error':
+        return <ErrorIcon color="error" />;
+      default:
+        return <InfoIcon color="info" />;
     }
   };
 
-  // Group checks by category - only show categories that have actual results
-  const categories: RecordCategory[] = [
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pass':
+        return 'success';
+      case 'warning':
+        return 'warning';
+      case 'error':
+        return 'error';
+      default:
+        return 'info';
+    }
+  };
+
+  // Categorize checks
+  const categories = [
     {
-      title: 'Basic DNS Records',
+      title: 'DNS Foundation', 
       icon: <DnsIcon />,
       color: '#1976d2',
       description: 'Core DNS settings that make your domain work',
@@ -144,136 +146,34 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
       checkTypes: ['dnssec', 'caa', 'axfr', 'glue'],
       checks: ['dnssec', 'caa', 'axfr', 'glue'].map(type => results.checks[type]).filter(Boolean)
     }
-  ].filter(category => category.checks.length > 0); // Only show categories with actual results
+  ];
 
-  // Helper function to truncate long text with tooltip-like display
-  const formatValue = (value: string, maxLength: number = 50) => {
-    if (!value) return '-';
-    if (value.length <= maxLength) return value;
-    return (
-      <Box component="span" title={value}>
-        {value.substring(0, maxLength)}...
-      </Box>
-    );
-  };
+  // Filter categories to only show those with results
+  const categoriesWithResults = categories.filter(category => category.checks.length > 0);
 
-  const formatRecordDisplay = (check: CheckResult, checkType: string): React.ReactNode[] => {
-    // Handle array of records
-    if (check.records && Array.isArray(check.records) && check.records.length > 0) {
-      return check.records.map((record: APIRecord, idx: number) => {
-        let displayValue = '';
-        let detailValue = '';
+  // Find issues (warnings and errors) across all checks
+  const issuesData = Object.entries(results.checks)
+    .filter(([, check]) => check.status === 'error' || check.status === 'warning')
+    .filter(([, check]) => check.issues && check.issues.length > 0);
 
-        if (record?.host && record?.priority) {
-          displayValue = `${record.priority} ${record.host}`;
-        } else {
-          displayValue = record?.host || record?.value || JSON.stringify(record);
-        }
-
-        if (record?.ips) {
-          detailValue = record.ips.map((ip: { ip: string; type: string }) => ip?.ip).join(', ');
-        } else {
-          detailValue = record?.ip || record?.ttl?.toString() || '-';
-        }
-
-        return (
-          <TableRow key={`${checkType}-${idx}`} hover>
-            <TableCell 
-              sx={{ 
-                minWidth: '80px',
-                maxWidth: '120px',
-                padding: { xs: '8px 4px', sm: '16px' }
-              }}
-            >
-              <Chip 
-                label={checkType.toUpperCase()} 
-                size="small" 
-                color="primary" 
-                variant="outlined"
-                sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
-              />
-            </TableCell>
-            <TableCell 
-              sx={{ 
-                fontFamily: 'monospace', 
-                fontSize: { xs: '0.75rem', sm: '0.9rem' },
-                wordBreak: 'break-all',
-                maxWidth: { xs: '200px', sm: '300px', md: '400px' },
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                padding: { xs: '8px 4px', sm: '16px' }
-              }}
-            >
-              {formatValue(displayValue, 60)}
-            </TableCell>
-            <TableCell 
-              sx={{ 
-                maxWidth: { xs: '150px', sm: '200px' },
-                wordBreak: 'break-all',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                padding: { xs: '8px 4px', sm: '16px' }
-              }}
-            >
-              {formatValue(detailValue, 40)}
-            </TableCell>
-          </TableRow>
-        );
-      });
+  const formatRecordData = (data: unknown): string => {
+    if (typeof data === 'string') {
+      return data;
     }
-
-    // Handle single record
-    if (check.record) {
-      const recordValue = typeof check.record === 'string' 
-        ? check.record 
-        : JSON.stringify(check.record);
-
-      return [
-        <TableRow key={`${checkType}-single`} hover>
-          <TableCell sx={{ minWidth: '80px', maxWidth: '120px', padding: { xs: '8px 4px', sm: '16px' } }}>
-            <Chip 
-              label={checkType.toUpperCase()} 
-              size="small" 
-              color="primary" 
-              variant="outlined"
-              sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
-            />
-          </TableCell>
-          <TableCell 
-            sx={{ 
-              fontFamily: 'monospace', 
-              fontSize: { xs: '0.75rem', sm: '0.9rem' },
-              wordBreak: 'break-all',
-              maxWidth: { xs: '200px', sm: '300px', md: '400px' },
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              padding: { xs: '8px 4px', sm: '16px' }
-            }}
-          >
-            {formatValue(recordValue, 60)}
-          </TableCell>
-          <TableCell sx={{ padding: { xs: '8px 4px', sm: '16px' } }}>-</TableCell>
-        </TableRow>
-      ];
+    if (typeof data === 'object' && data !== null) {
+      return JSON.stringify(data, null, 2);
     }
-
-    // Handle no records found
-    return [
-      <TableRow key={`${checkType}-empty`}>
-        <TableCell colSpan={3} sx={{ padding: { xs: '8px 4px', sm: '16px' } }}>
-          <Alert severity="info">
-            No records found for {checkType.toUpperCase()}
-          </Alert>
-        </TableCell>
-      </TableRow>
-    ];
+    return String(data);
   };
 
   return (
-    <Box sx={{ width: '100%', overflow: 'hidden' }}>
-      {/* Header */}
-      <Card elevation={2} sx={{ mb: 4, background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)' }}>
+    <Box sx={{ mt: 3 }}>
+      {/* Header Card */}
+      <Card sx={{ 
+        mb: 3,
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white'
+      }}>
         <CardContent sx={{ color: 'white', padding: { xs: 2, sm: 3 } }}>
           <Box display="flex" alignItems="center" gap={2} flexWrap="wrap">
             <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', width: { xs: 48, sm: 56 }, height: { xs: 48, sm: 56 } }}>
@@ -299,8 +199,8 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
                 />
                 {results.summary && (
                   <Chip 
-                    label={`${results.summary.total} checks performed`}
-                    size="small"
+                    label={`${results.summary.total} checks performed`} 
+                    size="small" 
                     sx={{ 
                       bgcolor: 'rgba(255,255,255,0.2)', 
                       color: 'white',
@@ -314,10 +214,10 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
         </CardContent>
       </Card>
 
-      {/* Summary Stats */}
+      {/* Summary Card */}
       {results.summary && (
-        <Card elevation={1} sx={{ mb: 3 }}>
-          <CardContent sx={{ padding: { xs: 2, sm: 3 } }}>
+        <Card sx={{ mb: 3 }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
             <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
               Check Summary
             </Typography>
@@ -356,34 +256,27 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
       )}
 
       {/* DNS Records by Category - Only show categories with results */}
-      <Box display="grid" gap={3} sx={{ width: '100%' }}>
-        {categories.map((category, index) => {
-          const panelKey = `panel-${index}`;
-          const hasErrors = category.checks.some(check => check.status === 'error');
-          const hasWarnings = category.checks.some(check => check.status === 'warning');
-          const overallStatus = hasErrors ? 'error' : hasWarnings ? 'warning' : 'success';
-          
-          return (
-            <Accordion 
-              key={index}
-              expanded={expandedPanels[panelKey] || false}
-              onChange={() => handlePanelChange(panelKey)}
-              elevation={2}
-              sx={{ width: '100%' }}
-            >
-              <AccordionSummary 
-                expandIcon={<ExpandMoreIcon />}
-                sx={{ 
-                  bgcolor: `${category.color}10`,
-                  '&:hover': { bgcolor: `${category.color}20` },
-                  padding: { xs: 1, sm: 2 }
-                }}
-              >
-                <Box display="flex" alignItems="center" width="100%" flexWrap="wrap" gap={1}>
-                  <Avatar sx={{ bgcolor: category.color, mr: { xs: 1, sm: 2 }, width: { xs: 32, sm: 40 }, height: { xs: 32, sm: 40 } }}>
+      {categoriesWithResults.map((category, index) => {
+        const overallStatus = category.checks.some((check: CheckResult) => check.status === 'error') 
+          ? 'error' 
+          : category.checks.some((check: CheckResult) => check.status === 'warning') 
+          ? 'warning' 
+          : 'pass';
+
+        return (
+          <Accordion 
+            key={index}
+            expanded={expandedPanels[category.title] || false}
+            onChange={handlePanelChange(category.title)}
+            sx={{ mb: 2 }}
+          >
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Box display="flex" alignItems="center" gap={2} width="100%">
+                <Box display="flex" alignItems="center" gap={1} flex={1}>
+                  <Avatar sx={{ bgcolor: category.color, width: { xs: 32, sm: 40 }, height: { xs: 32, sm: 40 } }}>
                     {category.icon}
                   </Avatar>
-                  <Box flex={1} minWidth="150px">
+                  <Box>
                     <Typography variant="h6" color={category.color} fontWeight="bold" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                       {category.title}
                     </Typography>
@@ -391,91 +284,152 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
                       {category.description}
                     </Typography>
                   </Box>
-                  <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
-                    {getStatusIcon(overallStatus)}
-                    <Chip 
-                      label={`${category.checks.length} check${category.checks.length !== 1 ? 's' : ''}`}
-                      size="small"
-                      color={overallStatus === 'success' ? 'success' : overallStatus === 'error' ? 'error' : 'warning'}
-                      sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
-                    />
-                  </Box>
                 </Box>
-              </AccordionSummary>
-              
-              <AccordionDetails sx={{ padding: { xs: 1, sm: 2 } }}>
-                <TableContainer 
-                  component={Paper} 
-                  variant="outlined" 
-                  sx={{ 
-                    width: '100%',
-                    overflowX: 'auto',
-                    '& .MuiTable-root': {
-                      minWidth: { xs: '100%', sm: '650px' }
-                    }
-                  }}
-                >
-                  <Table size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' }, minWidth: '80px' }}>
-                          Type
-                        </TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' }, minWidth: '200px' }}>
-                          Value
-                        </TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' }, minWidth: '120px' }}>
-                          Details
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {category.checkTypes.flatMap((checkType) => {
-                        const check = results.checks[checkType];
-                        if (!check) return [];
-                        return formatRecordDisplay(check, checkType);
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
+                  {getStatusIcon(overallStatus)}
+                  <Chip 
+                    label={`${category.checks.length} check${category.checks.length !== 1 ? 's' : ''}`}
+                    size="small"
+                    color={getStatusColor(overallStatus) as 'success' | 'warning' | 'error' | 'info'}
+                    variant="outlined"
+                    sx={{ fontSize: { xs: '0.6rem', sm: '0.75rem' } }}
+                  />
+                </Box>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box sx={{ mt: 1 }}>
+                {category.checkTypes.map((checkType) => {
+                  const check = results.checks[checkType];
+                  if (!check) return null;
 
-                {/* Issues for this category */}
-                {category.checks.some(check => check.issues && check.issues.length > 0) && (
-                  <Box mt={2}>
-                    <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
-                      Issues Found:
-                    </Typography>
-                    {category.checkTypes.map((checkType) => {
-                      const check = results.checks[checkType];
-                      if (!check?.issues || check.issues.length === 0) return null;
-                      
-                      return (
-                        <Alert key={checkType} severity={check.status === 'error' ? 'error' : 'warning'} sx={{ mb: 1 }}>
-                          <Typography variant="subtitle2" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-                            {checkType.toUpperCase()}
+                  return (
+                    <Card key={checkType} variant="outlined" sx={{ mb: 2 }}>
+                      <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+                        <Box display="flex" alignItems="center" gap={2} mb={2} flexWrap="wrap">
+                          {getStatusIcon(check.status)}
+                          <Typography variant="h6" fontWeight="bold" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                            {checkType.toUpperCase()} Records
                           </Typography>
-                          <List dense>
-                            {check.issues.map((issue, idx) => (
-                              <ListItem key={idx} sx={{ padding: { xs: '2px 0', sm: '4px 0' } }}>
-                                <ListItemText 
-                                  primary={issue} 
-                                  primaryTypographyProps={{ 
-                                    fontSize: { xs: '0.75rem', sm: '0.875rem' } 
-                                  }}
-                                />
-                              </ListItem>
-                            ))}
-                          </List>
-                        </Alert>
-                      );
-                    })}
-                  </Box>
-                )}
-              </AccordionDetails>
-            </Accordion>
-          );
-        })}
-      </Box>
+                          <Chip 
+                            label={check.status} 
+                            color={getStatusColor(check.status) as 'success' | 'warning' | 'error' | 'info'} 
+                            size="small"
+                            sx={{ fontSize: { xs: '0.6rem', sm: '0.75rem' } }}
+                          />
+                        </Box>
+
+                        {/* Show records if available */}
+                        {check.records && check.records.length > 0 && (
+                          <TableContainer component={Paper} variant="outlined" sx={{ mb: 2 }}>
+                            <Table size="small">
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Record</TableCell>
+                                  <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Value</TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {check.records.map((record, idx) => (
+                                  <TableRow key={idx}>
+                                    <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                                      {checkType.toUpperCase()} #{idx + 1}
+                                    </TableCell>
+                                    <TableCell sx={{ 
+                                      fontFamily: 'monospace', 
+                                      fontSize: { xs: '0.7rem', sm: '0.8rem' },
+                                      wordBreak: 'break-all'
+                                    }}>
+                                      {formatRecordData(record)}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        )}
+
+                        {/* Show single record if available */}
+                        {check.record && (
+                          <Paper variant="outlined" sx={{ p: 2, mb: 2, bgcolor: 'grey.50' }}>
+                            <Typography variant="subtitle2" gutterBottom sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                              Record Data:
+                            </Typography>
+                            <Typography 
+                              component="pre" 
+                              sx={{ 
+                                fontFamily: 'monospace', 
+                                fontSize: { xs: '0.7rem', sm: '0.8rem' },
+                                whiteSpace: 'pre-wrap',
+                                wordBreak: 'break-all'
+                              }}
+                            >
+                              {formatRecordData(check.record)}
+                            </Typography>
+                          </Paper>
+                        )}
+
+                        {/* Show issues if any */}
+                        {check.issues && check.issues.length > 0 && (
+                          <Alert severity={check.status === 'error' ? 'error' : 'warning'} sx={{ mt: 1 }}>
+                            <Typography variant="subtitle2" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                              Issues Found:
+                            </Typography>
+                            <List dense>
+                              {check.issues.map((issue, idx) => (
+                                <ListItem key={idx} sx={{ padding: { xs: '2px 0', sm: '4px 0' } }}>
+                                  <ListItemText 
+                                    primary={issue} 
+                                    primaryTypographyProps={{ 
+                                      fontSize: { xs: '0.75rem', sm: '0.875rem' } 
+                                    }}
+                                  />
+                                </ListItem>
+                              ))}
+                            </List>
+                          </Alert>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+        );
+      })}
+
+      {/* Issues Summary */}
+      {issuesData.length > 0 && (
+        <Card sx={{ mt: 3 }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Typography variant="h6" gutterBottom color="error" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+              Issues Requiring Attention
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {issuesData.map(([checkType, check]) => (
+                <Alert key={checkType} severity={check.status === 'error' ? 'error' : 'warning'} sx={{ mb: 1 }}>
+                  <Typography variant="subtitle2" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                    {checkType.toUpperCase()}
+                  </Typography>
+                  <List dense>
+                    {check.issues?.map((issue, idx) => (
+                      <ListItem key={idx} sx={{ padding: { xs: '2px 0', sm: '4px 0' } }}>
+                        <ListItemText 
+                          primary={issue} 
+                          primaryTypographyProps={{ 
+                            fontSize: { xs: '0.75rem', sm: '0.875rem' } 
+                          }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Alert>
+              ))}
+            </Box>
+          </CardContent>
+        </Card>
+      )}
     </Box>
   );
 }

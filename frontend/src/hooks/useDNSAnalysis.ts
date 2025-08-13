@@ -11,16 +11,12 @@ export function useDNSAnalysis() {
   const searchDomain = async (domain: string, checks: string[] = []) => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      console.log(`Analyzing domain: ${domain} with checks:`, checks.length === 0 ? 'ALL CHECKS' : checks);
-      const analysisResult = await dnsApi.analyzeDomain(domain, checks);
-      console.log('Analysis completed:', analysisResult);
-      setResults(analysisResult);
+      const response = await dnsApi.checkDomain(domain, checks);
+      setResults(response);
     } catch (err) {
-      console.error('DNS analysis failed:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to analyze domain';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Analysis failed');
       setResults(null);
     } finally {
       setLoading(false);
@@ -32,11 +28,5 @@ export function useDNSAnalysis() {
     setError(null);
   };
 
-  return {
-    results,
-    loading,
-    error,
-    searchDomain,
-    clearResults
-  };
+  return { results, loading, error, searchDomain, clearResults };
 }

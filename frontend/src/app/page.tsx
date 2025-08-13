@@ -1,52 +1,61 @@
 'use client';
 
-import React from 'react';
+import { useState } from 'react';
+import { Container, Typography, Box, Stack, Chip, Alert, AlertTitle } from '@mui/material';
 import { 
-  Container, 
-  Typography, 
-  Box, 
-  Paper,
-  Chip,
-  Stack,
-  Alert,
-  AlertTitle
-} from '@mui/material';
-import { 
-  Dns as DnsIcon,
-  Security as SecurityIcon,
-  Speed as SpeedIcon,
-  CheckCircle as CheckIcon
+  Dns as DnsIcon, 
+  Security as SecurityIcon, 
+  Speed as SpeedIcon, 
+  Check as CheckIcon 
 } from '@mui/icons-material';
 
 import { DomainSearchForm } from '../components/DomainSearchForm';
 import { DNSResults } from '../components/DNSResults';
+import { Footer } from '../components/Footer';
 import { useDNSAnalysis } from '../hooks/useDNSAnalysis';
 
 export default function HomePage() {
-  const {
-    results,
-    loading,
-    error,
-    searchDomain,
-    clearResults
-  } = useDNSAnalysis();
+  const { results, loading, error, searchDomain, clearResults } = useDNSAnalysis();
+  const [resultType, setResultType] = useState<'normal' | 'advanced'>('normal');
+
+  const handleSearch = async (domain: string, checks: string[], type: 'normal' | 'advanced') => {
+    setResultType(type);
+    await searchDomain(domain, checks);
+  };
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Header Section */}
-      <Box textAlign="center" mb={6}>
-        <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
-          <DnsIcon sx={{ fontSize: 48, color: 'primary.main', mr: 2 }} />
-          <Typography variant="h2" component="h1" fontWeight="bold" color="primary">
-            DNSBunch
-          </Typography>
-        </Box>
-        
-        <Typography variant="h5" color="text.secondary" mb={3}>
-          Comprehensive DNS & Mail Server Diagnostics
+      {/* Header */}
+      <Box sx={{ textAlign: 'center', mb: 6 }}>
+        <Typography 
+          variant="h2" 
+          component="h1" 
+          gutterBottom
+          sx={{ 
+            fontWeight: 'bold',
+            background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            mb: 2
+          }}
+        >
+          DNSBunch
         </Typography>
         
-        <Stack direction="row" spacing={1} justifyContent="center" flexWrap="wrap" mb={4}>
+        <Typography variant="h5" color="text.secondary" gutterBottom>
+          Comprehensive DNS Analysis & Mail Server Diagnostics
+        </Typography>
+        
+        <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
+          Analyze DNS records, check mail server configuration, and validate email security settings. 
+          Get detailed reports with actionable recommendations.
+        </Typography>
+      </Box>
+
+      {/* Feature highlights */}
+      <Box sx={{ mb: 4, textAlign: 'center' }}>
+        <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap" useFlexGap>
           <Chip 
             icon={<DnsIcon />} 
             label="DNS Records" 
@@ -82,30 +91,23 @@ export default function HomePage() {
       </Alert>
 
       {/* Search Form */}
-      <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
-        <DomainSearchForm 
-          onSearch={searchDomain}
-          loading={loading}
-          onClear={clearResults}
-          hasResults={!!results}
-        />
-      </Paper>
+      <DomainSearchForm 
+        onSearch={handleSearch}
+        loading={loading} 
+        error={error} 
+      />
 
-      {/* Error Display */}
-      {error && (
-        <Alert severity="error" sx={{ mb: 4 }}>
-          <AlertTitle>Error</AlertTitle>
-          {error}
-        </Alert>
-      )}
-
-      {/* Results Display */}
+      {/* Results */}
       {results && (
         <DNSResults 
-          results={results}
-          loading={loading}
+          data={results} 
+          resultType={resultType}
+          onClear={clearResults} 
         />
       )}
+
+      {/* Footer */}
+      <Footer />
     </Container>
   );
 }
