@@ -21,7 +21,7 @@ import {
   ExpandLess
 } from '@mui/icons-material';
 
-import { NormalResultsProps, NormalTableRow, CheckResult } from '../types/dns';
+import { NormalResultsProps, NormalTableRow, CheckResult, DNSRecord } from '../types/dns';
 
 const getStatusIcon = (status: string) => {
   switch (status) {
@@ -124,7 +124,13 @@ export function NormalResults({ data }: NormalResultsProps) {
   };
 
   const formatCheckResult = (checkType: string, result: CheckResult) => {
-    const status = result.status || 'info';
+    // Normalize status to expected values
+    const originalStatus = result.status || 'info';
+    const status: 'pass' | 'warning' | 'error' | 'info' = 
+      originalStatus === 'success' ? 'pass' : 
+      originalStatus === 'fail' ? 'error' : 
+      originalStatus as 'pass' | 'warning' | 'error' | 'info';
+    
     let information = '';
     let details = '';
 
@@ -132,9 +138,9 @@ export function NormalResults({ data }: NormalResultsProps) {
     switch (checkType) {
       case 'ns':
         if (result.records && result.records.length > 0) {
-          const hosts = result.records.map((ns: Record<string, unknown>) => ns.host as string).filter(Boolean);
+          const hosts = result.records.map((ns: DNSRecord) => ns.host as string).filter(Boolean);
           information = `Found ${result.records.length} nameserver(s): ${hosts.join(', ')}`;
-          details = result.records.map((ns: Record<string, unknown>) => 
+          details = result.records.map((ns: DNSRecord) => 
             `${ns.host as string} [${ns.ip as string || 'No IP'}]`
           ).join('\n');
         }
@@ -151,8 +157,8 @@ export function NormalResults({ data }: NormalResultsProps) {
       case 'mx':
         if (result.records && result.records.length > 0) {
           information = `Found ${result.records.length} mail server(s)`;
-          details = result.records.map((mx: Record<string, unknown>) => 
-            `${mx.priority as string} ${mx.host as string} [${mx.ip as string || 'No IP'}]`
+          details = result.records.map((mx: DNSRecord) => 
+            `${mx.priority || 'N/A'} ${mx.host as string} [${mx.ip as string || 'No IP'}]`
           ).join('\n');
         }
         break;
@@ -160,7 +166,7 @@ export function NormalResults({ data }: NormalResultsProps) {
       case 'a':
       case 'aaaa':
         if (result.records && result.records.length > 0) {
-          const ips = result.records.map((r: Record<string, unknown>) => 
+          const ips = result.records.map((r: DNSRecord) => 
             (r.ip || r.address || r) as string
           ).filter(Boolean);
           information = `Found ${ips.length} IP address(es): ${ips.slice(0, 3).join(', ')}${ips.length > 3 ? '...' : ''}`;
@@ -185,7 +191,7 @@ export function NormalResults({ data }: NormalResultsProps) {
       default:
         if (result.records && Array.isArray(result.records)) {
           information = `Found ${result.records.length} record(s)`;
-          details = result.records.map((r: Record<string, unknown>) => JSON.stringify(r, null, 2)).join('\n');
+          details = result.records.map((r: DNSRecord) => JSON.stringify(r, null, 2)).join('\n');
         } else if (result.record) {
           information = 'Record found';
           details = typeof result.record === 'string' ? result.record : JSON.stringify(result.record, null, 2);

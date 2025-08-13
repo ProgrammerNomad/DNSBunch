@@ -93,7 +93,7 @@ class DNSApi {
     try {
       const response = await this.client.get('/api/health');
       return response.data;
-    } catch (healthError) {
+    } catch {
       throw new Error('Health check failed');
     }
   }
