@@ -1,8 +1,6 @@
-# DNSBunch 🚀
+# DNSBunch
 
-DNSBunch is a modern, comprehensive, open-source web application for DNS and mail server diagnostics. It empowers anyone to enter a domain name and receive a highly detailed, user-friendly analysis of their DNS configuration, mail server setup, and potential issues affecting domain health, email deliverability, or website accessibility.
-
-Built with modern web technologies including React, Material-UI, and Python Flask, DNSBunch provides an intuitive interface that explains complex DNS concepts in plain language, making it accessible to both technical and non-technical users.
+A comprehensive DNS analysis and mail server diagnostics tool built with React, TypeScript, and Python Flask.
 
 ---
 
@@ -11,7 +9,7 @@ Built with modern web technologies including React, Material-UI, and Python Flas
 - **GitHub Repository:** [ProgrammerNomad/DNSBunch](https://github.com/ProgrammerNomad/DNSBunch)
 - **Primary Developer:** Nomad Programmer ([ProgrammerNomad](https://github.com/ProgrammerNomad))
 - **Status:** Active development with modern UI enhancements
-- **Last Updated:** 2025-08-07
+- **Last Updated:** 2025-08-13
 - **Frontend:** React 18 with Material-UI v5 and modern components
 - **Backend:** Python Flask with comprehensive DNS checking capabilities
 
@@ -21,17 +19,17 @@ Built with modern web technologies including React, Material-UI, and Python Flas
 
 DNSBunch is your all-in-one DNS and mail diagnostics platform with a modern, user-friendly interface. It performs deep DNS record lookups, evaluates records for standards and best practices, and returns a categorized report with plain-language explanations.
 
-### ✨ Key Features
+### Key Features
 
 - **Modern UI**: Built with React 18 and Material-UI v5 for a responsive, accessible experience
 - **User-Friendly Explanations**: Complex DNS concepts explained in plain language for non-technical users
 - **Comprehensive Analysis**: Checks 16+ DNS record types including DNSSEC, CAA, SPF, DMARC, and more
 - **Categorized Results**: Results organized into logical categories:
-  - 🏗️ **DNS Foundation** - Core DNS settings (NS, SOA, A, AAAA)
-  - 🌐 **Website & Content** - Website-related configuration (CNAME, TXT, wildcard)
-  - 📧 **Email & Communication** - Email delivery and security (MX, SPF, DMARC, DKIM, PTR)
-  - 🔒 **Security & Protection** - Advanced security features (DNSSEC, CAA, AXFR)
-  - ⚡ **Performance & Optimization** - Speed and efficiency settings (glue records)
+  - **DNS Foundation** - Core DNS settings (NS, SOA, A, AAAA)
+  - **Website & Content** - Website-related configuration (CNAME, TXT, wildcard)
+  - **Email & Communication** - Email delivery and security (MX, SPF, DMARC, DKIM, PTR)
+  - **Security & Protection** - Advanced security features (DNSSEC, CAA, AXFR)
+  - **Performance & Optimization** - Speed and efficiency settings (glue records)
 - **Visual Status Indicators**: Clear pass/warning/error/info status with color coding
 - **Detailed Recommendations**: Actionable advice for fixing issues
 - **No Registration Required**: Instant analysis without signup or data storage
@@ -121,81 +119,178 @@ Below is a complete list of DNS record types checked, **what information is retu
 
 ---
 
-## Tech Stack and Plugin/Library Choices
+## Security Features
 
-### Backend (`/backend`)
-- **Language:** Python 3.9+
-- **Framework:** Flask 2.3.3
-- **Key Libraries:**
-  - [`dnspython`](https://www.dnspython.org/) 2.4.2 — DNS queries (A, AAAA, MX, NS, etc.)
-  - [`Flask`](https://flask.palletsprojects.com/) 2.3.3 — REST API framework
-  - [`Flask-Cors`](https://flask-cors.readthedocs.io/) 4.0.0 — CORS for API
-  - [`gunicorn`](https://gunicorn.org/) 21.2.0 — Production WSGI server
-  - [`python-dotenv`](https://pypi.org/project/python-dotenv/) 1.0.0 — Environment config
-  - [`pytest`](https://docs.pytest.org/) 7.4.2 — Testing framework
-  - [`requests`](https://docs.python-requests.org/) 2.31.0 — HTTP library
-  - [`geoip2`](https://pypi.org/project/geoip2/) 4.7.0 — Geographic IP lookups
+### CSRF Protection
+- Multi-factor token binding (IP + User Agent fingerprinting)
+- JWT-based tokens with HMAC-SHA256 signing
+- Automatic token refresh and validation
+- Short-lived tokens (1 hour expiration)
+- Usage counting and abuse prevention
 
----
+### Rate Limiting
+- 10 requests per 5-minute window per IP
+- Automatic IP blocking for violations (1 hour)
+- Client-side rate limiting for better UX
+- Progressive retry mechanisms
 
-### Frontend (`/frontend`)
-- **Framework:** React 18.2.0
-- **UI Library:** [Material UI (MUI)](https://mui.com/) v5.18.0 — Modern, accessible React components
-- **Build Tool:** [Vite](https://vitejs.dev/) — Fast development and build tool
-- **Key Libraries:**
-  - [`@mui/material`](https://mui.com/) 5.18.0 — Material Design components
-  - [`@mui/icons-material`](https://mui.com/material-ui/material-icons/) 5.18.0 — Material Design icons
-  - [`@emotion/react`](https://emotion.sh/) 11.14.0 — CSS-in-JS styling
-  - [`@emotion/styled`](https://emotion.sh/) 11.14.1 — Styled components
-  - [`axios`](https://axios-http.com/) 1.5.0 — HTTP client for API requests
-  - [`react-hook-form`](https://react-hook-form.com/) 7.62.0 — Form management and validation
-  - [`@hookform/resolvers`](https://github.com/react-hook-form/resolvers) 5.2.1 — Form validation resolvers
-  - [`yup`](https://github.com/jquense/yup) 1.7.0 — Schema validation
-  - [`@tanstack/react-query`](https://tanstack.com/query/latest) 5.84.1 — Data fetching and caching
-  - [`react-toastify`](https://fkhadra.github.io/react-toastify/) 11.0.5 — Toast notifications
-  - [`vite`](https://vitejs.dev/) — Development server and build tool
-  - [`vitest`](https://vitest.dev/) — Testing framework (Vite-native)
-  - [`eslint`](https://eslint.org/) & [`prettier`](https://prettier.io/) — Code linting and formatting
+### Request Validation
+- Domain format validation and sanitization
+- Suspicious pattern detection and blocking
+- User-Agent and Origin validation
+- Content-Type enforcement for API requests
 
----
+## Technology Stack
 
-## Monorepo Structure
+### Frontend
+- **React 18** with TypeScript
+- **Next.js 14** (App Router)
+- **Material-UI (MUI)** for components
+- **Axios** for HTTP requests with CSRF integration
+- **React Hook Form** with Yup validation
 
-This repository contains both frontend and backend code for DNSBunch:
+### Backend
+- **Python Flask** with async DNS operations
+- **dnspython** for DNS queries
+- **PyJWT** for secure token management
+- **Flask-CORS** for cross-origin resource sharing
+- **Gunicorn** for production deployment
+
+### Infrastructure
+- **Frontend**: Deployed on Netlify with custom domain
+- **Backend**: Deployed on Render.com with auto-scaling
+- **DNS**: Cloudflare for domain management and security
+
+## Project Structure
 
 ```
 DNSBunch/
-├── .github/
-│   └── COPILOT_INSTRUCTIONS.md
-├── backend/
-│   ├── app.py                    # Main Flask application
-│   ├── dns_checker.py           # DNS checking logic
-│   ├── requirements.txt         # Python dependencies
-│   ├── render.yaml             # Render deployment config
-│   ├── tests/
-│   │   └── test_dns_checker.py # Backend tests
-│   └── __pycache__/            # Python cache files
-├── frontend/
-│   ├── index.html              # Main HTML file
-│   ├── package.json            # Node.js dependencies
-│   ├── vite.config.js         # Vite configuration
-│   ├── vercel.json            # Vercel deployment config
-│   └── src/
-│       ├── App.jsx            # Main React component
-│       ├── main.jsx           # React entry point
-│       ├── index.css          # Global styles
-│       ├── components/
-│       │   ├── DNSResults.jsx        # Enhanced results display
-│       │   ├── DomainSearchForm.jsx  # Domain input form
-│       │   └── ErrorBoundary.jsx     # Error handling
-│       └── services/
-│           └── api.js         # API communication
-├── README.md                  # This file
-├── DEVELOPMENT.md            # Development notes
+├── frontend/                  # React TypeScript frontend
+│   ├── src/
+│   │   ├── app/              # Next.js app directory
+│   │   │   ├── layout.tsx    # Root layout component
+│   │   │   └── page.tsx      # Home page component
+│   │   ├── components/
+│   │   │   ├── DomainSearchForm.tsx  # Search form with validation
+│   │   │   ├── DNSResults.tsx        # Results display component
+│   │   │   ├── ErrorBoundary.tsx     # Error handling component
+│   │   │   └── Footer.tsx            # Footer component
+│   │   ├── services/
+│   │   │   ├── api.ts        # API client with CSRF protection
+│   │   │   └── csrf.ts       # CSRF token management
+│   │   ├── hooks/
+│   │   │   └── useDNSAnalysis.ts     # DNS analysis hook
+│   │   ├── theme/
+│   │   │   └── theme.ts      # Material-UI theme configuration
+│   │   └── providers/
+│   │       └── QueryProvider.tsx     # React Query provider
+│   ├── public/               # Static assets
+│   ├── package.json          # Dependencies and scripts
+│   └── netlify.toml          # Netlify deployment configuration
+├── backend/                   # Python Flask backend
+│   ├── app.py                # Main Flask application with security
+│   ├── dns_checker.py        # DNS analysis engine
+│   ├── requirements.txt      # Python dependencies
+│   └── render.yaml           # Render deployment configuration
+├── README.md                 # Project documentation
+├── COPILOT_INSTRUCTIONS.md   # Development guidelines
 └── .gitignore               # Git ignore rules
 ```
 
----
+## Quick Start
+
+### Prerequisites
+- Node.js 18+ and npm
+- Python 3.9+ and pip
+- Git
+
+### Local Development
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/ProgrammerNomad/DNSBunch.git
+   cd DNSBunch
+   ```
+
+2. **Setup Frontend**
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+   Frontend will be available at `http://localhost:3000`
+
+3. **Setup Backend**
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   python app.py
+   ```
+   Backend will be available at `http://localhost:5000`
+
+### Environment Variables
+
+#### Frontend (.env.local)
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:5000
+NEXT_PUBLIC_API_TIMEOUT=30000
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+#### Backend (.env)
+```bash
+FLASK_ENV=development
+FLASK_DEBUG=True
+CORS_ORIGINS=http://localhost:3000,https://www.dnsbunch.com
+CSRF_SECRET_KEY=your-secret-key-here
+JWT_SECRET_KEY=your-jwt-secret-here
+RATE_LIMIT_REQUESTS=10
+RATE_LIMIT_WINDOW=300
+```
+
+## Deployment
+
+### Frontend (Netlify)
+1. Connect your GitHub repository to Netlify
+2. Set build command: `npm run build`
+3. Set publish directory: `.next`
+4. Configure environment variables in Netlify dashboard
+5. Deploy with custom domain configuration
+
+### Backend (Render.com)
+1. Connect your GitHub repository to Render
+2. Choose "Web Service" and select Python environment
+3. Set build command: `pip install -r requirements.txt`
+4. Set start command: `gunicorn app:app`
+5. Configure environment variables in Render dashboard
+
+## API Documentation
+
+### Health Check
+```http
+GET /
+```
+Returns server status and timestamp.
+
+### Get CSRF Token
+```http
+GET /api/csrf-token
+```
+Returns a secure CSRF token for protected requests.
+
+### DNS Analysis
+```http
+POST /api/check
+Content-Type: application/json
+X-CSRF-Token: <token>
+
+{
+  "domain": "example.com",
+  "checks": ["ns", "mx", "a"]  // Optional: specific checks
+}
+```
+
+Returns comprehensive DNS analysis results.
 
 ## Sample API Output
 
@@ -229,8 +324,6 @@ DNSBunch/
 }
 ```
 
----
-
 ## How to Use
 
 1. **Enter a domain name** in the search field.
@@ -238,50 +331,99 @@ DNSBunch/
 3. **Read the detailed report** organized by record type.
 4. **Follow recommendations** to fix any warnings or errors.
 
----
+## Security Considerations
 
-## Deployment Instructions
+### Input Validation
+- Domain names are validated against RFC standards
+- Suspicious patterns (localhost, private IPs) are blocked
+- Request payloads are sanitized and validated
 
-### Backend (Render.com)
-1. Push backend code to GitHub.
-2. Create a new Web Service on Render, connect your repo.
-3. Build command: `pip install -r requirements.txt`
-4. Start command: `gunicorn app:app`
-5. Deploy and get your backend URL (e.g. `https://dnsbunch.onrender.com`).
+### Rate Limiting
+- Per-IP rate limiting prevents abuse
+- Progressive blocking for repeated violations
+- Client-side limiting for better user experience
 
-### Frontend (Vercel/Netlify)
-1. Push frontend code to GitHub.
-2. Import your repo to Vercel or Netlify and deploy.
-3. Set backend API URL in frontend config (`.env` or similar).
+### CSRF Protection
+- Tokens bound to IP address and User-Agent
+- Short-lived tokens with automatic refresh
+- Secure storage and transmission
 
----
+## Contributing
 
-## Security & Best Practices
+We welcome contributions! Please follow these guidelines:
 
-- Rigorous domain input validation.
-- No shell execution or untrusted code on server.
-- Rate limiting to prevent abuse.
-- Only public DNS data is fetched; no user data stored.
+### Development Setup
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Make your changes with proper testing
+4. Commit with descriptive messages
+5. Push and create a pull request
 
----
+### Code Standards
+- Use TypeScript for frontend components
+- Follow Material-UI design patterns
+- Write comprehensive error handling
+- Add proper TypeScript interfaces
+- Include security considerations
 
-## Contribution
+### Testing
+- Test all DNS record types
+- Verify error handling scenarios
+- Check mobile responsiveness
+- Validate security features
 
-Contributions are welcome! Please open issues or submit pull requests with improvements, bug fixes, or features.
+## Performance
 
-**Developer:**  
-- Nomad Programmer (GitHub: [ProgrammerNomad](https://github.com/ProgrammerNomad))
+### Frontend Optimization
+- Code splitting with Next.js
+- Lazy loading of components
+- Optimized Material-UI bundle
+- Client-side caching of results
 
-See `COPILOT_INSTRUCTIONS.md` for technical guidelines.
+### Backend Optimization
+- Async DNS operations
+- Request timeout handling
+- Memory-efficient rate limiting
+- Connection pooling for DNS queries
 
----
+## Browser Support
+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+- Mobile browsers (iOS Safari, Chrome Mobile)
+
+## Limitations
+
+- DNS propagation may take time to reflect recent changes
+- Some DNS servers may not respond to certain query types
+- Rate limiting may affect high-volume usage
+- DNSSEC validation requires properly configured resolvers
 
 ## License
 
-MIT License.
+MIT License - see LICENSE file for details.
+
+## Support
+
+- GitHub Issues: Report bugs and feature requests
+- Documentation: Check README and code comments
+- Security Issues: Contact maintainers directly
+
+## Acknowledgments
+
+- Built with modern web technologies
+- DNS analysis powered by dnspython
+- UI components from Material-UI
+- Deployment on Netlify and Render
+
+## Developer
+
+**Nomad Programmer**
+- GitHub: [ProgrammerNomad](https://github.com/ProgrammerNomad)
+- Project: [DNSBunch](https://github.com/ProgrammerNomad/DNSBunch)
 
 ---
 
-## Disclaimer
-
-DNSBunch is for informational purposes only. Always verify important results with authoritative sources.
+**Disclaimer**: DNSBunch is for informational purposes only. Always verify critical DNS configurations with authoritative sources and multiple tools.
