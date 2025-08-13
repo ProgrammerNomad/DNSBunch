@@ -358,4 +358,126 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
       {/* DNS Records by Category */}
       <Box display="grid" gap={3} sx={{ width: '100%' }}>
         {categories.map((category, index) => {
-          if
+          if (category.checks.length === 0) return null;
+          
+          const panelKey = `panel-${index}`;
+          const hasErrors = category.checks.some(check => check.status === 'error');
+          const hasWarnings = category.checks.some(check => check.status === 'warning');
+          const overallStatus = hasErrors ? 'error' : hasWarnings ? 'warning' : 'success';
+          
+          return (
+            <Accordion 
+              key={index}
+              expanded={expandedPanels[panelKey] || false}
+              onChange={() => handlePanelChange(panelKey)}
+              elevation={2}
+              sx={{ width: '100%' }}
+            >
+              <AccordionSummary 
+                expandIcon={<ExpandMoreIcon />}
+                sx={{ 
+                  bgcolor: `${category.color}10`,
+                  '&:hover': { bgcolor: `${category.color}20` },
+                  padding: { xs: 1, sm: 2 }
+                }}
+              >
+                <Box display="flex" alignItems="center" width="100%" flexWrap="wrap" gap={1}>
+                  <Avatar sx={{ bgcolor: category.color, mr: { xs: 1, sm: 2 }, width: { xs: 32, sm: 40 }, height: { xs: 32, sm: 40 } }}>
+                    {category.icon}
+                  </Avatar>
+                  <Box flex={1} minWidth="150px">
+                    <Typography variant="h6" color={category.color} fontWeight="bold" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                      {category.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                      {category.description}
+                    </Typography>
+                  </Box>
+                  <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
+                    {getStatusIcon(overallStatus)}
+                    <Chip 
+                      label={`${category.checks.length} check${category.checks.length !== 1 ? 's' : ''}`}
+                      size="small"
+                      color={overallStatus === 'success' ? 'success' : overallStatus === 'error' ? 'error' : 'warning'}
+                      sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+                    />
+                  </Box>
+                </Box>
+              </AccordionSummary>
+              
+              <AccordionDetails sx={{ padding: { xs: 1, sm: 2 } }}>
+                <TableContainer 
+                  component={Paper} 
+                  variant="outlined" 
+                  sx={{ 
+                    width: '100%',
+                    overflowX: 'auto',
+                    '& .MuiTable-root': {
+                      minWidth: { xs: '100%', sm: '650px' }
+                    }
+                  }}
+                >
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' }, minWidth: '80px' }}>
+                          Type
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' }, minWidth: '200px' }}>
+                          Value
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' }, minWidth: '120px' }}>
+                          Details
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {category.checkTypes.flatMap((checkType) => {
+                        const check = results.checks[checkType];
+                        if (!check) return [];
+                        return formatRecordDisplay(check, checkType);
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+                {/* Issues for this category */}
+                {category.checks.some(check => check.issues && check.issues.length > 0) && (
+                  <Box mt={2}>
+                    <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                      Issues Found:
+                    </Typography>
+                    {category.checkTypes.map((checkType) => {
+                      const check = results.checks[checkType];
+                      if (!check?.issues || check.issues.length === 0) return null;
+                      
+                      return (
+                        <Alert key={checkType} severity={check.status === 'error' ? 'error' : 'warning'} sx={{ mb: 1 }}>
+                          <Typography variant="subtitle2" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                            {checkType.toUpperCase()}
+                          </Typography>
+                          <List dense>
+                            {check.issues.map((issue, idx) => (
+                              <ListItem key={idx} sx={{ padding: { xs: '2px 0', sm: '4px 0' } }}>
+                                <ListItemText 
+                                  primary={issue} 
+                                  primaryTypographyProps={{ 
+                                    fontSize: { xs: '0.75rem', sm: '0.875rem' } 
+                                  }}
+                                />
+                              </ListItem>
+                            ))}
+                          </List>
+                        </Alert>
+                      );
+                    })}
+                  </Box>
+                )}
+              </AccordionDetails>
+            </Accordion>
+          );
+        })}
+      </Box>
+    </Box>
+  );
+}
