@@ -15,9 +15,19 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-# Configure CORS from environment variables
-cors_origins = os.getenv('CORS_ORIGINS', 'http://localhost:3000').split(',')
-CORS(app, origins=cors_origins)
+# Configure CORS to allow your frontend domain
+cors_origins = [
+    'https://www.dnsbunch.com',
+    'https://dnsbunch.com', 
+    'http://localhost:3000',
+    'http://127.0.0.1:3000'
+]
+
+# If CORS_ORIGINS environment variable is set, use it
+if os.getenv('CORS_ORIGINS'):
+    cors_origins = os.getenv('CORS_ORIGINS').split(',')
+
+CORS(app, origins=cors_origins, methods=['GET', 'POST', 'OPTIONS'])
 
 @app.route('/', methods=['GET'])
 def health_check():
@@ -25,52 +35,52 @@ def health_check():
     return jsonify({
         "status": "healthy",
         "service": "DNSBunch API",
-        "version": "1.0.0"
+        "version": "1.0.0",
+        "cors_origins": cors_origins
     })
 
-@app.route('/api/check', methods=['POST'])
+@app.route('/api/check', methods=['POST', 'OPTIONS'])
 def check_domain():
-    """
-    Main endpoint for DNS domain checking
+    """DNS analysis endpoint"""
     
-    Expected JSON payload:
-    {
-        "domain": "example.com",
-        "checks": ["all"] or ["ns", "soa", "mx", ...]  # optional, defaults to all
-    }
-    """
+    # Handle preflight request
+    if request.method == 'OPTIONS':
+        return '', 200
+        
     try:
         data = request.get_json()
         
         if not data or 'domain' not in data:
             return jsonify({
-                "error": "Domain is required",
+                "error": "Domain parameter is required",
                 "code": "MISSING_DOMAIN"
             }), 400
         
         domain = data['domain'].strip().lower()
         
-        # Validate domain format
+        if not domain:
+            return jsonify({
+                "error": "Domain cannot be empty",
+                "code": "EMPTY_DOMAIN"
+            }), 400
+        
         if not _is_valid_domain(domain):
             return jsonify({
                 "error": "Invalid domain format",
                 "code": "INVALID_DOMAIN"
             }), 400
         
-        # Get requested checks (default to all)
-        requested_checks = data.get('checks', ['all'])
+        logger.info(f"Starting DNS check for domain: {domain}")
         
-        # Initialize DNS checker
-        checker = DNSChecker(domain)
-        
-        # Run DNS checks
         try:
-            results = asyncio.run(checker.run_all_checks(requested_checks))
+            # Perform DNS analysis
+            checker = DNSChecker()
+            results = asyncio.run(checker.analyze_domain(domain))
             
             return jsonify({
                 "domain": domain,
                 "timestamp": results.get('timestamp'),
-                "status": "completed",
+                "status": "completed", 
                 "checks": results.get('checks', {}),
                 "summary": results.get('summary', {})
             })
@@ -92,16 +102,8 @@ def check_domain():
 def _is_valid_domain(domain):
     """Basic domain validation"""
     import re
-    
-    # Basic domain regex pattern
-    domain_pattern = re.compile(
-        r'^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$'
-    )
-    
-    if not domain or len(domain) > 253:
-        return False
-    
-    return bool(domain_pattern.match(domain))
+    pattern = r'^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$'
+    return re.match(pattern, domain) is not None and len(domain) <= 253
 
 @app.errorhandler(404)
 def not_found(error):
@@ -120,5 +122,4 @@ def internal_error(error):
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
-    
     app.run(host='0.0.0.0', port=port, debug=debug)

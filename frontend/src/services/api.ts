@@ -1,28 +1,16 @@
 import axios from 'axios';
 
-// Validate required environment variables
-if (!process.env.NEXT_PUBLIC_API_URL) {
-  throw new Error('NEXT_PUBLIC_API_URL environment variable is required');
-}
-
-if (!process.env.NEXT_PUBLIC_API_TIMEOUT) {
-  throw new Error('NEXT_PUBLIC_API_TIMEOUT environment variable is required');
-}
-
-// Get API configuration from environment variables only
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
-const apiTimeout = parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT);
-
-// Create axios instance with strict environment-based configuration
+// Create axios instance with proxy configuration for Netlify
 const api = axios.create({
-  baseURL: `${apiBaseUrl}/api`, // Use backend URL directly from environment
-  timeout: apiTimeout,
+  // Use relative URLs so requests go through Netlify proxy
+  baseURL: '/api',
+  timeout: parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '30000'),
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor
+// Request interceptor for logging
 api.interceptors.request.use(
   (config) => {
     console.log(`Making API request to: ${config.baseURL}${config.url}`);
@@ -34,7 +22,7 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
+// Response interceptor for error handling
 api.interceptors.response.use(
   (response) => {
     console.log(`API response from: ${response.config.url}`, response.data);
@@ -87,34 +75,31 @@ export const dnsApi = {
 export interface DNSRecord {
   host?: string;
   ip?: string;
-  ips?: { type: string; ip: string }[];
-  priority?: number;
-  value?: string;
-  ttl?: number;
   type?: string;
+  value?: string;
+  priority?: number;
+  target?: string;
+  ttl?: number;
 }
 
 export interface CheckResult {
   status: 'pass' | 'warning' | 'error' | 'info';
-  records?: DNSRecord[];
-  record?: any;
-  issues?: string[];
+  records: DNSRecord[] | any;
+  issues: string[];
   count?: number;
-  error?: string;
 }
 
 export interface DNSAnalysisResult {
   domain: string;
-  timestamp: string;
   status: string;
-  checks: {
-    [key: string]: CheckResult;
-  };
-  summary?: {
+  timestamp: string;
+  checks: Record<string, CheckResult>;
+  summary: {
     total: number;
     passed: number;
     warnings: number;
     errors: number;
+    info: number;
   };
 }
 
