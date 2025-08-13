@@ -55,10 +55,20 @@ api.interceptors.response.use(
 // DNS Analysis API functions
 export const dnsApi = {
   /**
-   * Analyze DNS records for a domain
+   * Analyze DNS records for a domain with specific checks
    */
-  analyzeDomain: async (domain: string): Promise<DNSAnalysisResult> => {
-    const response = await api.post('/check', { domain });
+  analyzeDomain: async (domain: string, checks: string[] = []): Promise<DNSAnalysisResult> => {
+    const payload: { domain: string; checks?: string[] } = { domain };
+    
+    // Only send checks array if specific checks are requested (not empty)
+    if (checks.length > 0) {
+      payload.checks = checks;
+      console.log('Sending DNS analysis request with specific checks:', payload);
+    } else {
+      console.log('Sending DNS analysis request for all checks:', payload);
+    }
+    
+    const response = await api.post('/check', payload);
     return response.data;
   },
 

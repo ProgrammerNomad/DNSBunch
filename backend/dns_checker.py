@@ -1,17 +1,10 @@
 import dns.resolver
-import dns.query
-import dns.zone
-import dns.rdatatype
 import dns.reversename
 import asyncio
-import logging
+import ipaddress
 import re
 from datetime import datetime
 from typing import Dict, List, Any, Optional
-import socket
-import ipaddress
-
-logger = logging.getLogger(__name__)
 
 class DNSChecker:
     """
@@ -21,32 +14,46 @@ class DNSChecker:
     
     def __init__(self, domain: str):
         self.domain = domain.lower().strip()
-        self.results = {}
         self.resolver = dns.resolver.Resolver()
         self.resolver.timeout = 10
         self.resolver.lifetime = 30
-        
+
     async def run_all_checks(self, requested_checks: List[str] = None) -> Dict[str, Any]:
-        """Run all DNS checks for the domain"""
-        
-        if requested_checks is None or 'all' in requested_checks:
-            checks_to_run = [
-                'ns', 'soa', 'a', 'aaaa', 'mx', 'spf', 'txt', 'cname',
-                'ptr', 'caa', 'dmarc', 'dkim', 'glue', 'dnssec', 'axfr', 'wildcard'
-            ]
-        else:
-            checks_to_run = requested_checks
-        
+        """Run DNS checks for the domain - only requested checks if specified"""
         results = {
-            'timestamp': datetime.utcnow().isoformat(),
+            'domain': self.domain,
+            'timestamp': datetime.now().isoformat(),
+            'status': 'completed',
             'checks': {},
-            'summary': {'total': 0, 'passed': 0, 'warnings': 0, 'errors': 0}
+            'summary': {
+                'total': 0,
+                'passed': 0,
+                'warnings': 0,
+                'errors': 0,
+                'info': 0
+            }
         }
         
-        # Run each check
+        # Define all available check types
+        all_check_types = [
+            'ns', 'soa', 'a', 'aaaa', 'mx', 'spf', 'txt', 'cname', 
+            'ptr', 'caa', 'dmarc', 'dkim', 'glue', 'dnssec', 'axfr', 'wildcard'
+        ]
+        
+        # Determine which checks to run
+        if requested_checks and len(requested_checks) > 0:
+            # Filter to only valid check types
+            checks_to_run = [check for check in requested_checks if check in all_check_types]
+            print(f"Running requested checks: {checks_to_run}")
+        else:
+            # Run all checks if none specified
+            checks_to_run = all_check_types
+            print("Running all available checks")
+        
+        # Run only the requested checks
         for check_type in checks_to_run:
             try:
-                logger.info(f"Running {check_type} check for {self.domain}")
+                print(f"Running {check_type} check for {self.domain}")
                 
                 if check_type == 'ns':
                     results['checks']['ns'] = await self._check_ns_records()
@@ -79,69 +86,82 @@ class DNSChecker:
                 elif check_type == 'axfr':
                     results['checks']['axfr'] = await self._check_axfr()
                 elif check_type == 'wildcard':
-                    results['checks']['wildcard'] = await self._check_wildcard()
-                    
+                    results['checks']['wildcard'] = await self._check_wildcard_records()
+                
+                print(f"Completed {check_type} check")
+                
             except Exception as e:
-                logger.error(f"Error in {check_type} check: {str(e)}")
+                print(f"Error in {check_type} check: {str(e)}")
                 results['checks'][check_type] = {
                     'status': 'error',
-                    'error': str(e),
                     'records': [],
-                    'issues': [f"Failed to perform {check_type} check: {str(e)}"]
+                    'issues': [f"Check failed: {str(e)}"]
                 }
         
-        # Calculate summary
-        self._calculate_summary(results)
+        # Calculate summary statistics
+        for check_name, check_result in results['checks'].items():
+            results['summary']['total'] += 1
+            status = check_result.get('status', 'error')
+            
+            if status == 'pass':
+                results['summary']['passed'] += 1
+            elif status == 'warning':
+                results['summary']['warnings'] += 1
+            elif status == 'error':
+                results['summary']['errors'] += 1
+            elif status == 'info':
+                results['summary']['info'] += 1
         
+        print(f"DNS analysis completed for {self.domain}. Summary: {results['summary']}")
         return results
-    
+
     async def _check_ns_records(self) -> Dict[str, Any]:
         """Check NS (Nameserver) records"""
         try:
             answers = self.resolver.resolve(self.domain, 'NS')
+            
             ns_records = []
             issues = []
             
             for rdata in answers:
                 ns_host = str(rdata).rstrip('.')
-                ns_info = {'host': ns_host, 'ips': []}
+                ns_info = {
+                    'host': ns_host,
+                    'ips': []
+                }
                 
-                # Resolve NS to IPs
+                # Get A records for each nameserver
                 try:
-                    # IPv4
-                    try:
-                        a_answers = self.resolver.resolve(ns_host, 'A')
-                        for a_rdata in a_answers:
-                            ns_info['ips'].append({'type': 'A', 'ip': str(a_rdata)})
-                    except:
-                        pass
-                    
-                    # IPv6
-                    try:
-                        aaaa_answers = self.resolver.resolve(ns_host, 'AAAA')
-                        for aaaa_rdata in aaaa_answers:
-                            ns_info['ips'].append({'type': 'AAAA', 'ip': str(aaaa_rdata)})
-                    except:
-                        pass
-                        
-                    if not ns_info['ips']:
-                        issues.append(f"Nameserver {ns_host} does not resolve to any IP")
-                        
-                except Exception as e:
-                    issues.append(f"Failed to resolve nameserver {ns_host}: {str(e)}")
+                    a_answers = self.resolver.resolve(ns_host, 'A')
+                    for a_rdata in a_answers:
+                        ns_info['ips'].append({
+                            'ip': str(a_rdata),
+                            'type': 'A'
+                        })
+                except:
+                    pass
+                
+                # Check AAAA records too
+                try:
+                    aaaa_answers = self.resolver.resolve(ns_host, 'AAAA')
+                    for aaaa_rdata in aaaa_answers:
+                        ns_info['ips'].append({
+                            'ip': str(aaaa_rdata),
+                            'type': 'AAAA'
+                        })
+                except:
+                    pass
+                
+                if not ns_info['ips']:
+                    issues.append(f"Nameserver {ns_host} has no A/AAAA records")
                 
                 ns_records.append(ns_info)
             
-            # Validations
+            # Check for minimum nameservers
             if len(ns_records) < 2:
-                issues.append("Less than 2 nameservers found - single point of failure")
+                issues.append("Less than 2 nameservers found (recommended: 2+)")
             
-            # Check for duplicates
-            ns_hosts = [ns['host'] for ns in ns_records]
-            if len(ns_hosts) != len(set(ns_hosts)):
-                issues.append("Duplicate nameserver entries found")
-            
-            status = 'pass' if not issues else 'warning' if len(issues) <= 2 else 'error'
+            status = 'pass' if ns_records and not issues else 'warning' if ns_records else 'error'
             
             return {
                 'status': status,
@@ -150,14 +170,21 @@ class DNSChecker:
                 'count': len(ns_records)
             }
             
+        except dns.resolver.NXDOMAIN:
+            return {
+                'status': 'error',
+                'records': [],
+                'issues': ["Domain does not exist"],
+                'count': 0
+            }
         except Exception as e:
             return {
                 'status': 'error',
-                'error': str(e),
                 'records': [],
-                'issues': [f"Failed to query NS records: {str(e)}"]
+                'issues': [f"NS lookup failed: {str(e)}"],
+                'count': 0
             }
-    
+
     async def _check_soa_record(self) -> Dict[str, Any]:
         """Check SOA (Start of Authority) record"""
         try:
@@ -1139,22 +1166,3 @@ class DNSChecker:
                 'records': [],
                 'issues': [f"Wildcard check failed: {str(e)}"]
             }
-    
-    def _calculate_summary(self, results: Dict[str, Any]) -> None:
-        """Calculate summary statistics"""
-        summary = {'total': 0, 'passed': 0, 'warnings': 0, 'errors': 0, 'info': 0}
-        
-        for check_name, check_result in results['checks'].items():
-            summary['total'] += 1
-            status = check_result.get('status', 'unknown')
-            
-            if status == 'pass':
-                summary['passed'] += 1
-            elif status == 'warning':
-                summary['warnings'] += 1
-            elif status == 'error':
-                summary['errors'] += 1
-            elif status == 'info':
-                summary['info'] += 1
-        
-        results['summary'] = summary

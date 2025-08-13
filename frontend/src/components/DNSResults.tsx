@@ -110,7 +110,7 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
     }
   };
 
-  // Group checks by category
+  // Group checks by category - only show categories that have actual results
   const categories: RecordCategory[] = [
     {
       title: 'Basic DNS Records',
@@ -144,7 +144,7 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
       checkTypes: ['dnssec', 'caa', 'axfr', 'glue'],
       checks: ['dnssec', 'caa', 'axfr', 'glue'].map(type => results.checks[type]).filter(Boolean)
     }
-  ];
+  ].filter(category => category.checks.length > 0); // Only show categories with actual results
 
   // Helper function to truncate long text with tooltip-like display
   const formatValue = (value: string, maxLength: number = 50) => {
@@ -355,11 +355,9 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
         </Card>
       )}
 
-      {/* DNS Records by Category */}
+      {/* DNS Records by Category - Only show categories with results */}
       <Box display="grid" gap={3} sx={{ width: '100%' }}>
         {categories.map((category, index) => {
-          if (category.checks.length === 0) return null;
-          
           const panelKey = `panel-${index}`;
           const hasErrors = category.checks.some(check => check.status === 'error');
           const hasWarnings = category.checks.some(check => check.status === 'warning');

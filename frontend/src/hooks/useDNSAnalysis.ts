@@ -1,42 +1,42 @@
 'use client';
 
 import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
 import { dnsApi, DNSAnalysisResult } from '../services/api';
 
 export function useDNSAnalysis() {
   const [results, setResults] = useState<DNSAnalysisResult | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const mutation = useMutation({
-    mutationFn: (domain: string) => dnsApi.analyzeDomain(domain),
-    onSuccess: (data) => {
-      setResults(data);
-    },
-    onError: (error) => {
-      console.error('DNS analysis failed:', error);
+  const searchDomain = async (domain: string, checks: string[] = []) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      console.log(`Analyzing domain: ${domain} with checks:`, checks.length === 0 ? 'ALL CHECKS' : checks);
+      const analysisResult = await dnsApi.analyzeDomain(domain, checks);
+      console.log('Analysis completed:', analysisResult);
+      setResults(analysisResult);
+    } catch (err) {
+      console.error('DNS analysis failed:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to analyze domain';
+      setError(errorMessage);
       setResults(null);
-    },
-  });
-
-  const searchDomain = (domain: string) => {
-    if (!domain.trim()) {
-      return;
+    } finally {
+      setLoading(false);
     }
-    mutation.mutate(domain.trim());
   };
 
   const clearResults = () => {
     setResults(null);
-    mutation.reset();
+    setError(null);
   };
 
   return {
     results,
-    loading: mutation.isPending,
-    error: mutation.error?.message || null,
+    loading,
+    error,
     searchDomain,
-    clearResults,
-    isSuccess: mutation.isSuccess,
-    isError: mutation.isError,
+    clearResults
   };
 }
