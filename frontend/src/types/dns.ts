@@ -98,27 +98,6 @@ export interface DNSAnalysisResult {
   summary?: AnalysisSummary;
 }
 
-export interface NormalTableRow {
-  category: string;
-  status: 'pass' | 'warning' | 'error' | 'info';
-  testName: string;
-  information: string;
-  details?: string;
-}
-
-export interface DNSResultsProps {
-  data: DNSAnalysisResult;
-  loading?: boolean;
-  error?: string | null;
-  resultType?: 'normal' | 'advanced';
-  onRetry?: () => void;
-  onClear?: () => void;
-}
-
-export interface NormalResultsProps {
-  data: DNSAnalysisResult;
-}
-
 export interface DomainSearchFormProps {
   onSearch: (domain: string, checks: string[], resultType: 'normal' | 'advanced') => void;
   loading?: boolean;
