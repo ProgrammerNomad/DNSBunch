@@ -349,9 +349,9 @@ def get_csrf_token():
         app.logger.error(f"CSRF token generation failed: {e}")
         return jsonify({'error': 'Token generation failed'}), 500
 
-# Fixed main API endpoint - FIXED DECORATOR NAME
+# Fixed main API endpoint - FIXED DNSChecker instantiation
 @app.route('/api/check', methods=['POST', 'OPTIONS'])
-@rate_limit  # Fixed: was @rate_limit_decorator, now @rate_limit
+@rate_limit
 @validate_request
 @csrf_required
 def check_dns():
@@ -379,9 +379,9 @@ def check_dns():
         if not is_valid_domain(domain):
             return jsonify({'error': 'Invalid domain format'}), 400
         
-        # Run DNS analysis
-        checker = DNSChecker()
-        results = asyncio.run(checker.check_domain(domain, checks))
+        # FIXED: Pass domain to DNSChecker constructor
+        checker = DNSChecker(domain)
+        results = asyncio.run(checker.run_all_checks(checks))
         
         response = jsonify(results)
         origin = request.headers.get('Origin')
