@@ -9,13 +9,26 @@
 [build.environment]
   NODE_VERSION = "18"
   NEXT_PUBLIC_API_URL = "https://api2.dnsbunch.com"
+  NEXT_PUBLIC_API_TIMEOUT = "30000"
+  NEXT_PUBLIC_SITE_URL = "https://www.dnsbunch.com"
 
-# API Proxy Configuration
+# API Proxy with security headers
 [[redirects]]
   from = "/api/*"
   to = "https://api2.dnsbunch.com/api/:splat"
   status = 200
   force = true
+  headers = {X-Frame-Options = "DENY", X-Content-Type-Options = "nosniff"}
+
+# Security headers for all pages
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api2.dnsbunch.com"
 
 # Handle client-side routing
 [[redirects]]
