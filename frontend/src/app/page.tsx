@@ -24,7 +24,7 @@ export default function HomePage() {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <Box sx={{ textAlign: 'center', mb: 6 }}>
         <Typography 
@@ -90,23 +90,26 @@ export default function HomePage() {
         Perform mail server diagnostics and DNS propagation analysis.
       </Alert>
 
-      {/* Search Form */}
-      <DomainSearchForm 
-        onSearch={handleSearch}
-        loading={loading} 
-        error={error} 
-      />
-
-      {/* Results */}
-      {results && (
-        <DNSResults 
-          data={results} 
-          resultType={resultType}
-          onClear={clearResults} 
+      {/* Main Content Area - this will grow to fill available space */}
+      <Box sx={{ flex: 1 }}>
+        {/* Search Form */}
+        <DomainSearchForm 
+          onSearch={handleSearch}
+          loading={loading} 
+          error={error} 
         />
-      )}
 
-      {/* Footer */}
+        {/* Results */}
+        {results && (
+          <DNSResults 
+            data={results} 
+            resultType={resultType}
+            onClear={clearResults} 
+          />
+        )}
+      </Box>
+
+      {/* Footer - Only one footer here */}
       <Footer />
     </Container>
   );
