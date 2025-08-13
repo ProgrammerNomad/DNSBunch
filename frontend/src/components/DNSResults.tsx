@@ -146,52 +146,114 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
     }
   ];
 
+  // Helper function to truncate long text with tooltip-like display
+  const formatValue = (value: string, maxLength: number = 50) => {
+    if (!value) return '-';
+    if (value.length <= maxLength) return value;
+    return (
+      <Box component="span" title={value}>
+        {value.substring(0, maxLength)}...
+      </Box>
+    );
+  };
+
   const formatRecordDisplay = (check: CheckResult, checkType: string): React.ReactNode[] => {
     // Handle array of records
     if (check.records && Array.isArray(check.records) && check.records.length > 0) {
-      return check.records.map((record: APIRecord, idx: number) => (
-        <TableRow key={`${checkType}-${idx}`} hover>
-          <TableCell>
-            <Chip 
-              label={checkType.toUpperCase()} 
-              size="small" 
-              color="primary" 
-              variant="outlined"
-            />
-          </TableCell>
-          <TableCell sx={{ fontFamily: 'monospace', fontSize: '0.9rem' }}>
-            {record?.host && record?.priority 
-              ? `${record.priority} ${record.host}`
-              : record?.host || record?.value || JSON.stringify(record)
-            }
-          </TableCell>
-          <TableCell>
-            {record?.ips ? record.ips.map((ip: { ip: string; type: string }) => ip?.ip).join(', ') : 
-             record?.ip || record?.ttl || '-'}
-          </TableCell>
-        </TableRow>
-      ));
+      return check.records.map((record: APIRecord, idx: number) => {
+        let displayValue = '';
+        let detailValue = '';
+
+        if (record?.host && record?.priority) {
+          displayValue = `${record.priority} ${record.host}`;
+        } else {
+          displayValue = record?.host || record?.value || JSON.stringify(record);
+        }
+
+        if (record?.ips) {
+          detailValue = record.ips.map((ip: { ip: string; type: string }) => ip?.ip).join(', ');
+        } else {
+          detailValue = record?.ip || record?.ttl?.toString() || '-';
+        }
+
+        return (
+          <TableRow key={`${checkType}-${idx}`} hover>
+            <TableCell 
+              sx={{ 
+                minWidth: '80px',
+                maxWidth: '120px',
+                padding: { xs: '8px 4px', sm: '16px' }
+              }}
+            >
+              <Chip 
+                label={checkType.toUpperCase()} 
+                size="small" 
+                color="primary" 
+                variant="outlined"
+                sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+              />
+            </TableCell>
+            <TableCell 
+              sx={{ 
+                fontFamily: 'monospace', 
+                fontSize: { xs: '0.75rem', sm: '0.9rem' },
+                wordBreak: 'break-all',
+                maxWidth: { xs: '200px', sm: '300px', md: '400px' },
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                padding: { xs: '8px 4px', sm: '16px' }
+              }}
+            >
+              {formatValue(displayValue, 60)}
+            </TableCell>
+            <TableCell 
+              sx={{ 
+                maxWidth: { xs: '150px', sm: '200px' },
+                wordBreak: 'break-all',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                padding: { xs: '8px 4px', sm: '16px' }
+              }}
+            >
+              {formatValue(detailValue, 40)}
+            </TableCell>
+          </TableRow>
+        );
+      });
     }
 
     // Handle single record
     if (check.record) {
+      const recordValue = typeof check.record === 'string' 
+        ? check.record 
+        : JSON.stringify(check.record);
+
       return [
         <TableRow key={`${checkType}-single`} hover>
-          <TableCell>
+          <TableCell sx={{ minWidth: '80px', maxWidth: '120px', padding: { xs: '8px 4px', sm: '16px' } }}>
             <Chip 
               label={checkType.toUpperCase()} 
               size="small" 
               color="primary" 
               variant="outlined"
+              sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
             />
           </TableCell>
-          <TableCell sx={{ fontFamily: 'monospace', fontSize: '0.9rem' }}>
-            {typeof check.record === 'string' 
-              ? check.record 
-              : JSON.stringify(check.record)
-            }
+          <TableCell 
+            sx={{ 
+              fontFamily: 'monospace', 
+              fontSize: { xs: '0.75rem', sm: '0.9rem' },
+              wordBreak: 'break-all',
+              maxWidth: { xs: '200px', sm: '300px', md: '400px' },
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              padding: { xs: '8px 4px', sm: '16px' }
+            }}
+          >
+            {formatValue(recordValue, 60)}
           </TableCell>
-          <TableCell>-</TableCell>
+          <TableCell sx={{ padding: { xs: '8px 4px', sm: '16px' } }}>-</TableCell>
         </TableRow>
       ];
     }
@@ -199,7 +261,7 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
     // Handle no records found
     return [
       <TableRow key={`${checkType}-empty`}>
-        <TableCell colSpan={3}>
+        <TableCell colSpan={3} sx={{ padding: { xs: '8px 4px', sm: '16px' } }}>
           <Alert severity="info">
             No records found for {checkType.toUpperCase()}
           </Alert>
@@ -209,33 +271,41 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
   };
 
   return (
-    <Box>
+    <Box sx={{ width: '100%', overflow: 'hidden' }}>
       {/* Header */}
       <Card elevation={2} sx={{ mb: 4, background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)' }}>
-        <CardContent sx={{ color: 'white' }}>
-          <Box display="flex" alignItems="center" gap={2}>
-            <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', width: 56, height: 56 }}>
-              <PublicIcon sx={{ fontSize: 32 }} />
+        <CardContent sx={{ color: 'white', padding: { xs: 2, sm: 3 } }}>
+          <Box display="flex" alignItems="center" gap={2} flexWrap="wrap">
+            <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', width: { xs: 48, sm: 56 }, height: { xs: 48, sm: 56 } }}>
+              <PublicIcon sx={{ fontSize: { xs: 24, sm: 32 } }} />
             </Avatar>
-            <Box flex={1}>
-              <Typography variant="h4" fontWeight="bold">
+            <Box flex={1} minWidth="200px">
+              <Typography variant="h4" fontWeight="bold" sx={{ fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' } }}>
                 {results.domain}
               </Typography>
-              <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
+              <Typography variant="subtitle1" sx={{ opacity: 0.9, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
                 DNS Analysis Report - {results.status}
               </Typography>
-              <Stack direction="row" spacing={1} mt={1}>
+              <Stack direction="row" spacing={1} mt={1} flexWrap="wrap" gap={1}>
                 <Chip 
                   icon={<TimeIcon />} 
                   label={clientTimestamp || 'Loading...'} 
                   size="small" 
-                  sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}
+                  sx={{ 
+                    bgcolor: 'rgba(255,255,255,0.2)', 
+                    color: 'white',
+                    fontSize: { xs: '0.7rem', sm: '0.75rem' }
+                  }}
                 />
                 {results.summary && (
                   <Chip 
                     label={`${results.summary.total} checks performed`}
                     size="small"
-                    sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}
+                    sx={{ 
+                      bgcolor: 'rgba(255,255,255,0.2)', 
+                      color: 'white',
+                      fontSize: { xs: '0.7rem', sm: '0.75rem' }
+                    }}
                   />
                 )}
               </Stack>
@@ -247,24 +317,38 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
       {/* Summary Stats */}
       {results.summary && (
         <Card elevation={1} sx={{ mb: 3 }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>Check Summary</Typography>
-            <Box display="grid" gridTemplateColumns="repeat(auto-fit, minmax(200px, 1fr))" gap={2}>
+          <CardContent sx={{ padding: { xs: 2, sm: 3 } }}>
+            <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+              Check Summary
+            </Typography>
+            <Box 
+              display="grid" 
+              gridTemplateColumns={{ xs: 'repeat(2, 1fr)', sm: 'repeat(auto-fit, minmax(180px, 1fr))' }} 
+              gap={2}
+            >
               <Box display="flex" alignItems="center">
-                <CheckCircleIcon color="success" sx={{ mr: 1 }} />
-                <Typography>Passed: {results.summary.passed}</Typography>
+                <CheckCircleIcon color="success" sx={{ mr: 1, fontSize: { xs: '1rem', sm: '1.25rem' } }} />
+                <Typography sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                  Passed: {results.summary.passed}
+                </Typography>
               </Box>
               <Box display="flex" alignItems="center">
-                <WarningIcon color="warning" sx={{ mr: 1 }} />
-                <Typography>Warnings: {results.summary.warnings}</Typography>
+                <WarningIcon color="warning" sx={{ mr: 1, fontSize: { xs: '1rem', sm: '1.25rem' } }} />
+                <Typography sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                  Warnings: {results.summary.warnings}
+                </Typography>
               </Box>
               <Box display="flex" alignItems="center">
-                <ErrorIcon color="error" sx={{ mr: 1 }} />
-                <Typography>Errors: {results.summary.errors}</Typography>
+                <ErrorIcon color="error" sx={{ mr: 1, fontSize: { xs: '1rem', sm: '1.25rem' } }} />
+                <Typography sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                  Errors: {results.summary.errors}
+                </Typography>
               </Box>
               <Box display="flex" alignItems="center">
-                <InfoIcon color="info" sx={{ mr: 1 }} />
-                <Typography>Total: {results.summary.total}</Typography>
+                <InfoIcon color="info" sx={{ mr: 1, fontSize: { xs: '1rem', sm: '1.25rem' } }} />
+                <Typography sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                  Total: {results.summary.total}
+                </Typography>
               </Box>
             </Box>
           </CardContent>
@@ -272,101 +356,6 @@ export function DNSResults({ results, loading = false }: DNSResultsProps) {
       )}
 
       {/* DNS Records by Category */}
-      <Box display="grid" gap={3}>
+      <Box display="grid" gap={3} sx={{ width: '100%' }}>
         {categories.map((category, index) => {
-          if (category.checks.length === 0) return null;
-          
-          const panelKey = `panel-${index}`;
-          const hasErrors = category.checks.some(check => check.status === 'error');
-          const hasWarnings = category.checks.some(check => check.status === 'warning');
-          const overallStatus = hasErrors ? 'error' : hasWarnings ? 'warning' : 'success';
-          
-          return (
-            <Accordion 
-              key={index}
-              expanded={expandedPanels[panelKey] || false}
-              onChange={() => handlePanelChange(panelKey)}
-              elevation={2}
-            >
-              <AccordionSummary 
-                expandIcon={<ExpandMoreIcon />}
-                sx={{ 
-                  bgcolor: `${category.color}10`,
-                  '&:hover': { bgcolor: `${category.color}20` }
-                }}
-              >
-                <Box display="flex" alignItems="center" width="100%">
-                  <Avatar sx={{ bgcolor: category.color, mr: 2, width: 40, height: 40 }}>
-                    {category.icon}
-                  </Avatar>
-                  <Box flex={1}>
-                    <Typography variant="h6" color={category.color} fontWeight="bold">
-                      {category.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {category.description}
-                    </Typography>
-                  </Box>
-                  <Box display="flex" alignItems="center" mr={2}>
-                    {getStatusIcon(overallStatus)}
-                    <Chip 
-                      label={`${category.checks.length} check${category.checks.length !== 1 ? 's' : ''}`}
-                      size="small"
-                      sx={{ ml: 1 }}
-                      color={overallStatus === 'success' ? 'success' : overallStatus === 'error' ? 'error' : 'warning'}
-                    />
-                  </Box>
-                </Box>
-              </AccordionSummary>
-              
-              <AccordionDetails>
-                <TableContainer component={Paper} variant="outlined">
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell><strong>Type</strong></TableCell>
-                        <TableCell><strong>Value</strong></TableCell>
-                        <TableCell><strong>Details</strong></TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {category.checkTypes.flatMap((checkType) => {
-                        const check = results.checks[checkType];
-                        if (!check) return [];
-                        return formatRecordDisplay(check, checkType);
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-
-                {/* Issues for this category */}
-                {category.checks.some(check => check.issues && check.issues.length > 0) && (
-                  <Box mt={2}>
-                    <Typography variant="h6" gutterBottom>Issues Found:</Typography>
-                    {category.checkTypes.map((checkType) => {
-                      const check = results.checks[checkType];
-                      if (!check?.issues || check.issues.length === 0) return null;
-                      
-                      return (
-                        <Alert key={checkType} severity={check.status === 'error' ? 'error' : 'warning'} sx={{ mb: 1 }}>
-                          <Typography variant="subtitle2">{checkType.toUpperCase()}</Typography>
-                          <List dense>
-                            {check.issues.map((issue, idx) => (
-                              <ListItem key={idx}>
-                                <ListItemText primary={issue} />
-                              </ListItem>
-                            ))}
-                          </List>
-                        </Alert>
-                      );
-                    })}
-                  </Box>
-                )}
-              </AccordionDetails>
-            </Accordion>
-          );
-        })}
-      </Box>
-    </Box>
-  );
-}
+          if
