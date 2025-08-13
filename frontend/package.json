@@ -30,13 +30,13 @@
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.62.0",
     "react-toastify": "^11.0.5",
-    "yup": "^1.7.0"
+    "yup": "^1.7.0",
+    "typescript": "^5.9.2",
+    "@types/node": "^24.2.1",
+    "@types/react": "^19.1.10"
   },
   "devDependencies": {
-    "@types/node": "^24.2.1",
-    "@types/react": "^19.1.10",
     "eslint": "^9.33.0",
-    "eslint-config-next": "^15.4.6",
-    "typescript": "^5.9.2"
+    "eslint-config-next": "^15.4.6"
   }
 }
