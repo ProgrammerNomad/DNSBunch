@@ -16,7 +16,8 @@ def health_check():
     return jsonify({
         'status': 'healthy',
         'service': 'DNSBunch API',
-        'timestamp': datetime.now().isoformat()
+        'timestamp': datetime.now().isoformat(),
+        'version': '1.0.0'
     })
 
 @app.route('/api/check', methods=['POST'])
@@ -53,4 +54,15 @@ def check_dns():
         return jsonify({'error': f'DNS check failed: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Use PORT environment variable if available (for Render), otherwise default to 5000
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_ENV') != 'production'
+    
+    print(f"Starting DNSBunch API server on port {port}")
+    print(f"Debug mode: {debug}")
+    
+    app.run(
+        host='0.0.0.0', 
+        port=port, 
+        debug=debug
+    )
