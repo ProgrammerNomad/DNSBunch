@@ -106,16 +106,6 @@ export default function HomePage() {
           loading={loading}
         />
       )}
-
-      {/* Footer */}
-      <Box textAlign="center" mt={8} py={3} borderTop={1} borderColor="divider">
-        <Typography variant="body2" color="text.secondary">
-          DNSBunch - Professional DNS & Mail Server Diagnostics Tool
-        </Typography>
-        <Typography variant="caption" color="text.secondary">
-          Built with Next.js, Material-UI, and Python Flask
-        </Typography>
-      </Box>
     </Container>
   );
 }
