@@ -3,11 +3,13 @@ import dns.reversename
 import dns.message
 import dns.query
 import dns.rdatatype
+import dns.zone  # Add this import for AXFR check
 import asyncio
 import ipaddress
 import re
 import json
 import os
+import random  # Add this import
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 
