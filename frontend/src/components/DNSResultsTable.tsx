@@ -337,6 +337,33 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
 
   const testSections = generateTestRows();
 
+  // Update the NS section rendering
+  const renderNSSection = (nsData: any) => {
+    if (!nsData || !nsData.checks) return null;
+    
+    return nsData.checks.map((check: any, index: number) => (
+      <tr key={`ns-${index}`} className={getRowClass(check.status)}>
+        {index === 0 && (
+          <td rowSpan={nsData.checks.length} className="category-cell">
+            {check.category}
+          </td>
+        )}
+        <td className="status-cell">
+          <img 
+            src={`/images/${getStatusIcon(check.status)}.gif`} 
+            alt={check.status}
+            className="status-icon"
+          />
+        </td>
+        <td className="test-name">{check.name}</td>
+        <td 
+          className="test-info"
+          dangerouslySetInnerHTML={{ __html: check.info }}
+        />
+      </tr>
+    ));
+  };
+
   return (
     <Paper elevation={2} sx={{ mt: 3 }}>
       <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
@@ -396,6 +423,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
                 </TableRow>
               ))
             )}
+            {results.ns && renderNSSection(results.ns)}
           </TableBody>
         </Table>
       </TableContainer>
