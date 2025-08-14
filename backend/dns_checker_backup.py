@@ -163,105 +163,48 @@ class DNSChecker:
     async def _check_ns_records(self):
         """Enhanced NS records check matching intoDNS structure"""
         try:
+            result = {
+                "status": "pass",
+                "count": 0,
+                "records": [],
+                "parent_delegation": {},
+                "domain_nameservers": {},
+                "comparisons": {},
+                "checks": []
+            }
+            
             # 1. Get TLD parent delegation (like intoDNS "Parent" section)
             parent_result = await self._get_parent_delegation()
+            result["parent_delegation"] = parent_result
             
             # 2. Get NS records from domain's own nameservers  
             domain_ns_result = await self._get_domain_nameservers()
+            result["domain_nameservers"] = domain_ns_result
             
-            # 3. Compare and analyze manually (without helper method)
-            parent_records = set(parent_result.get("records", []))
-            domain_records = set(domain_ns_result.get("records", []))
-            match = parent_records == domain_records
+            # 3. Compare and analyze
+            comparison_result = self._compare_ns_records(parent_result, domain_ns_result)
+            result["comparisons"] = comparison_result
             
-            # 4. Generate detailed checks manually (without helper method)
-            checks = []
+            # 4. Generate detailed checks (like intoDNS table rows)
+            result["checks"] = self._generate_ns_checks(parent_result, domain_ns_result, comparison_result)
             
-            # Parent delegation check
-            if parent_result.get("status") == "pass":
-                checks.append({
-                    "type": "parent_delegation",
-                    "status": "pass",
-                    "message": f"Found {len(parent_result.get('records', []))} NS records from TLD delegation",
-                    "details": parent_result.get("records", []),
-                    "server_used": parent_result.get("tld_server_used")
-                })
+            # Overall status and count
+            if parent_result.get("records") and domain_ns_result.get("records"):
+                result["status"] = "pass"
+                result["count"] = len(set(parent_result.get("records", []) + domain_ns_result.get("records", [])))
+                result["records"] = list(set(parent_result.get("records", []) + domain_ns_result.get("records", [])))
             else:
-                checks.append({
-                    "type": "parent_delegation", 
-                    "status": "error",
-                    "message": f"Failed to get parent delegation: {parent_result.get('error', 'Unknown error')}",
-                    "details": []
-                })
-            
-            # Domain nameservers check
-            if domain_ns_result.get("status") == "pass":
-                checks.append({
-                    "type": "domain_nameservers",
-                    "status": "pass", 
-                    "message": f"Found {len(domain_ns_result.get('records', []))} NS records from domain query",
-                    "details": domain_ns_result.get("records", []),
-                    "resolver_used": domain_ns_result.get("resolver_used")
-                })
-            else:
-                checks.append({
-                    "type": "domain_nameservers",
-                    "status": "error",
-                    "message": f"Failed to get domain NS records: {domain_ns_result.get('error', 'Unknown error')}",
-                    "details": []
-                })
-            
-            # Comparison check
-            if match:
-                checks.append({
-                    "type": "comparison",
-                    "status": "pass",
-                    "message": "Parent delegation and domain NS records match",
-                    "details": {
-                        "match": True,
-                        "parent_count": len(parent_records),
-                        "domain_count": len(domain_records)
-                    }
-                })
-            else:
-                checks.append({
-                    "type": "comparison",
-                    "status": "warning",
-                    "message": "Parent delegation and domain NS records differ",
-                    "details": {
-                        "match": False,
-                        "parent_count": len(parent_records),
-                        "domain_count": len(domain_records),
-                        "only_in_parent": list(parent_records - domain_records),
-                        "only_in_domain": list(domain_records - parent_records)
-                    }
-                })
-            
-            # Build final result
-            result = {
-                "status": "pass" if parent_result.get("records") and domain_ns_result.get("records") else "error",
-                "count": len(set(parent_result.get("records", []) + domain_ns_result.get("records", []))),
-                "records": list(set(parent_result.get("records", []) + domain_ns_result.get("records", []))),
-                "parent_delegation": parent_result,
-                "domain_nameservers": domain_ns_result,
-                "comparisons": {
-                    "match": match,
-                    "parent_count": len(parent_records),
-                    "domain_count": len(domain_records)
-                },
-                "checks": checks
-            }
+                result["status"] = "error"
                 
             return result
             
         except Exception as e:
-            print(f"[!] Error in _check_ns_records: {e}")
             return {
                 "status": "error",
                 "error": str(e),
                 "count": 0,
                 "records": [],
-                "issues": [{"message": str(e), "severity": "error"}]
+                "checks": []
             }
 
     async def _get_parent_delegation(self):
@@ -1575,80 +1518,3 @@ class DNSChecker:
                 'records': [],
                 'issues': [f"Wildcard check failed: {str(e)}"]
             }
-
-    def _compare_ns_records(self, parent_result, domain_result):
-        """Compare parent delegation with domain NS records"""
-        try:
-            parent_records = set(parent_result.get("records", []))
-            domain_records = set(domain_result.get("records", []))
-            
-            match = parent_records == domain_records
-            only_in_parent = parent_records - domain_records
-            only_in_domain = domain_records - parent_records
-            
-            return {
-                "match": match,
-                "parent_count": len(parent_records),
-                "domain_count": len(domain_records),
-                "only_in_parent": list(only_in_parent),
-                "only_in_domain": list(only_in_domain),
-                "intersection": list(parent_records & domain_records)
-            }
-        except Exception as e:
-            return {"match": False, "error": str(e)}
-
-    def _generate_ns_checks(self, parent_result, domain_result, comparison_result):
-        """Generate intoDNS-style check results"""
-        checks = []
-        
-        # Parent delegation check
-        if parent_result.get("status") == "pass":
-            checks.append({
-                "type": "parent_delegation",
-                "status": "pass",
-                "message": f"Found {len(parent_result.get('records', []))} NS records from TLD delegation",
-                "details": parent_result.get("records", []),
-                "server_used": parent_result.get("tld_server_used")
-            })
-        else:
-            checks.append({
-                "type": "parent_delegation", 
-                "status": "error",
-                "message": f"Failed to get parent delegation: {parent_result.get('error', 'Unknown error')}",
-                "details": []
-            })
-        
-        # Domain nameservers check
-        if domain_result.get("status") == "pass":
-            checks.append({
-                "type": "domain_nameservers",
-                "status": "pass", 
-                "message": f"Found {len(domain_result.get('records', []))} NS records from domain query",
-                "details": domain_result.get("records", []),
-                "resolver_used": domain_result.get("resolver_used")
-            })
-        else:
-            checks.append({
-                "type": "domain_nameservers",
-                "status": "error",
-                "message": f"Failed to get domain NS records: {domain_result.get('error', 'Unknown error')}",
-                "details": []
-            })
-        
-        # Comparison check
-        if comparison_result.get("match"):
-            checks.append({
-                "type": "comparison",
-                "status": "pass",
-                "message": "Parent delegation and domain NS records match",
-                "details": comparison_result
-            })
-        elif "error" not in comparison_result:
-            checks.append({
-                "type": "comparison",
-                "status": "warning",
-                "message": "Parent delegation and domain NS records differ",
-                "details": comparison_result
-            })
-        
-        return checks
