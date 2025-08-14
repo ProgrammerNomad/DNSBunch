@@ -135,7 +135,7 @@ export function DomainSearchForm({ onSearch, loading = false, error = null }: Do
   };
 
   return (
-    <Paper elevation={2} sx={{ px: '25%' }}>
+    <Paper elevation={2} sx={{ px: '25%', py: 4 }}>
       <form onSubmit={handleSubmit}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {/* Compact Domain Input + Button Row */}
