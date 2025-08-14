@@ -211,7 +211,7 @@ class DNSChecker:
                     "details": []
                 })
             
-            # Comparison check
+            # Comparison check - should be ERROR not warning when NS records don't match
             if match:
                 checks.append({
                     "type": "comparison",
@@ -224,9 +224,10 @@ class DNSChecker:
                     }
                 })
             else:
+                # This is an ERROR according to intoDNS standards
                 checks.append({
-                    "type": "comparison",
-                    "status": "warning",
+                    "type": "comparison", 
+                    "status": "error",
                     "message": "Parent delegation and domain NS records differ",
                     "details": {
                         "match": False,
@@ -236,10 +237,33 @@ class DNSChecker:
                         "only_in_domain": list(domain_records - parent_records)
                     }
                 })
+                
+                # Add specific error messages like intoDNS
+                if parent_records - domain_records:
+                    checks.append({
+                        "type": "missing_at_domain",
+                        "status": "error", 
+                        "message": "Missing nameservers reported by your nameservers",
+                        "details": f"ERROR: One or more of the nameservers listed at the parent servers are not listed as NS records at your nameservers. The problem NS records are: {', '.join(parent_records - domain_records)}"
+                    })
+                
+                if domain_records - parent_records:
+                    checks.append({
+                        "type": "missing_at_parent",
+                        "status": "error",
+                        "message": "Missing nameservers reported by parent", 
+                        "details": f"FAIL: The following nameservers are listed at your nameservers as nameservers for your domain, but are not listed at the parent nameservers. You need to make sure that these nameservers are working: {', '.join(domain_records - parent_records)}"
+                    })
             
-            # Build final result
+            # Build final result - overall status should be error if NS records don't match
+            overall_status = "pass"
+            if not parent_result.get("records") or not domain_ns_result.get("records"):
+                overall_status = "error"
+            elif not match:
+                overall_status = "error"  # Changed from warning to error
+                
             result = {
-                "status": "pass" if parent_result.get("records") and domain_ns_result.get("records") else "error",
+                "status": overall_status,
                 "count": len(set(parent_result.get("records", []) + domain_ns_result.get("records", []))),
                 "records": list(set(parent_result.get("records", []) + domain_ns_result.get("records", []))),
                 "parent_delegation": parent_result,
@@ -361,74 +385,6 @@ class DNSChecker:
                 "records": []
             }
 
-    async def _check_ns_records(self):
-        """Enhanced NS records check with proper data structure for frontend"""
-        try:
-            # 1. Get TLD parent delegation
-            parent_result = await self._get_parent_delegation()
-            
-            # 2. Get NS records from domain's own nameservers  
-            domain_ns_result = await self._get_domain_nameservers()
-            
-            # 3. Compare and analyze
-            comparison_result = self._compare_ns_records(parent_result, domain_ns_result)
-            
-            # 4. Create records list in the format frontend expects
-            all_records = []
-            
-            # Add parent delegation records
-            if parent_result.get("records"):
-                for ns in parent_result["records"]:
-                    ips = parent_result.get("nameserver_ips", {}).get(ns, [])
-                    all_records.append({
-                        "host": ns,
-                        "ips": ips,
-                        "ttl": parent_result.get("ttl"),
-                        "source": "parent"
-                    })
-            
-            # Add domain nameserver records if different
-            if domain_ns_result.get("records"):
-                for ns in domain_ns_result["records"]:
-                    # Check if already added from parent
-                    if not any(record["host"] == ns for record in all_records):
-                        ips = domain_ns_result.get("nameserver_ips", {}).get(ns, [])
-                        all_records.append({
-                            "host": ns,
-                            "ips": ips,
-                            "ttl": domain_ns_result.get("ttl"),
-                            "source": "domain"
-                        })
-            
-            # Determine overall status
-            overall_status = "pass"
-            if parent_result.get("status") == "error" or domain_ns_result.get("status") == "error":
-                overall_status = "error"
-            elif not comparison_result.get("match"):
-                overall_status = "warning"
-                
-            return {
-                "status": overall_status,
-                "count": len(all_records),
-                "records": all_records,
-                "parent_delegation": parent_result,
-                "domain_nameservers": domain_ns_result,
-                "comparisons": comparison_result,
-                "parent_server": parent_result.get("tld_server_used"),
-                "glue_records": len([r for r in all_records if r.get("ips")]) > 0,
-                "issues": []
-            }
-            
-        except Exception as e:
-            print(f"[!] Error in _check_ns_records: {e}")
-            return {
-                "status": "error",
-                "error": str(e),
-                "count": 0,
-                "records": [],
-                "issues": [{"message": str(e), "severity": "error"}]
-            }
-
     async def _get_parent_delegation(self):
         """Get NS delegation from TLD parent servers using your working approach"""
         try:
@@ -524,74 +480,6 @@ class DNSChecker:
                 "status": "error",
                 "error": str(e),
                 "records": []
-            }
-
-    async def _check_ns_records(self):
-        """Enhanced NS records check with proper data structure for frontend"""
-        try:
-            # 1. Get TLD parent delegation
-            parent_result = await self._get_parent_delegation()
-            
-            # 2. Get NS records from domain's own nameservers  
-            domain_ns_result = await self._get_domain_nameservers()
-            
-            # 3. Compare and analyze
-            comparison_result = self._compare_ns_records(parent_result, domain_ns_result)
-            
-            # 4. Create records list in the format frontend expects
-            all_records = []
-            
-            # Add parent delegation records
-            if parent_result.get("records"):
-                for ns in parent_result["records"]:
-                    ips = parent_result.get("nameserver_ips", {}).get(ns, [])
-                    all_records.append({
-                        "host": ns,
-                        "ips": ips,
-                        "ttl": parent_result.get("ttl"),
-                        "source": "parent"
-                    })
-            
-            # Add domain nameserver records if different
-            if domain_ns_result.get("records"):
-                for ns in domain_ns_result["records"]:
-                    # Check if already added from parent
-                    if not any(record["host"] == ns for record in all_records):
-                        ips = domain_ns_result.get("nameserver_ips", {}).get(ns, [])
-                        all_records.append({
-                            "host": ns,
-                            "ips": ips,
-                            "ttl": domain_ns_result.get("ttl"),
-                            "source": "domain"
-                        })
-            
-            # Determine overall status
-            overall_status = "pass"
-            if parent_result.get("status") == "error" or domain_ns_result.get("status") == "error":
-                overall_status = "error"
-            elif not comparison_result.get("match"):
-                overall_status = "warning"
-                
-            return {
-                "status": overall_status,
-                "count": len(all_records),
-                "records": all_records,
-                "parent_delegation": parent_result,
-                "domain_nameservers": domain_ns_result,
-                "comparisons": comparison_result,
-                "parent_server": parent_result.get("tld_server_used"),
-                "glue_records": len([r for r in all_records if r.get("ips")]) > 0,
-                "issues": []
-            }
-            
-        except Exception as e:
-            print(f"[!] Error in _check_ns_records: {e}")
-            return {
-                "status": "error",
-                "error": str(e),
-                "count": 0,
-                "records": [],
-                "issues": [{"message": str(e), "severity": "error"}]
             }
 
     async def _check_soa_record(self) -> Dict[str, Any]:
