@@ -255,7 +255,34 @@ class DNSChecker:
                         "details": f"FAIL: The following nameservers are listed at your nameservers as nameservers for your domain, but are not listed at the parent nameservers. You need to make sure that these nameservers are working: {', '.join(domain_records - parent_records)}"
                     })
             
-            # Build final result - overall status should be error if NS records don't match
+            # Build final result with frontend-compatible record structure
+            all_records = []
+            
+            # Add parent delegation records with IPs and TTLs
+            if parent_result.get("records"):
+                for ns in parent_result["records"]:
+                    ips = parent_result.get("nameserver_ips", {}).get(ns, [])
+                    all_records.append({
+                        "host": ns,
+                        "ips": ips,
+                        "ttl": parent_result.get("ttl"),
+                        "source": "parent"
+                    })
+            
+            # Add domain nameserver records if different
+            if domain_ns_result.get("records"):
+                for ns in domain_ns_result["records"]:
+                    # Check if already added from parent
+                    if not any(record["host"] == ns for record in all_records):
+                        ips = domain_ns_result.get("nameserver_ips", {}).get(ns, [])
+                        all_records.append({
+                            "host": ns,
+                            "ips": ips,
+                            "ttl": domain_ns_result.get("ttl"),
+                            "source": "domain"
+                        })
+            
+            # Overall status should be error if NS records don't match
             overall_status = "pass"
             if not parent_result.get("records") or not domain_ns_result.get("records"):
                 overall_status = "error"
@@ -264,8 +291,8 @@ class DNSChecker:
                 
             result = {
                 "status": overall_status,
-                "count": len(set(parent_result.get("records", []) + domain_ns_result.get("records", []))),
-                "records": list(set(parent_result.get("records", []) + domain_ns_result.get("records", []))),
+                "count": len(all_records),
+                "records": all_records,
                 "parent_delegation": parent_result,
                 "domain_nameservers": domain_ns_result,
                 "comparisons": {
@@ -273,6 +300,8 @@ class DNSChecker:
                     "parent_count": len(parent_records),
                     "domain_count": len(domain_records)
                 },
+                "parent_server": parent_result.get("tld_server_used"),
+                "glue_records": len([r for r in all_records if r.get("ips")]) > 0,
                 "checks": checks
             }
                 
