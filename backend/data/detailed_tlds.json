@@ -1,0 +1,5926 @@
+{
+  "aaa": {
+    "tld": "aaa",
+    "organisation": {
+      "name": "American Automobile Association, Inc.",
+      "organisation": "American Automobile Association, Inc.",
+      "address": {
+        "city": "1000 AAA Drive Heathrow",
+        "state": "FL",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Chris Niemi",
+      "e-mail": "gtldservices@markmonitor.com",
+      "phone": "+1(208) 389-5740",
+      "organisation": "Markmonitor Inc.",
+      "address": {
+        "city": "1120 S. Rackham Way, Suite 300 Meridian",
+        "state": "ID",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.aaa",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.aaa",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.aaa",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "ns1.dns.nic.aaa",
+        "ipv6": "2610:a1:1071:0:0:0:0:2",
+        "ipv4": "156.154.144.2"
+      },
+      {
+        "hostname": "ns2.dns.nic.aaa",
+        "ipv6": "2610:a1:1072:0:0:0:0:2",
+        "ipv4": "156.154.145.2"
+      },
+      {
+        "hostname": "ns3.dns.nic.aaa",
+        "ipv6": "2610:a1:1073:0:0:0:0:2",
+        "ipv4": "156.154.159.2"
+      }
+    ],
+    "whois": "whois.nic.aaa",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-08-13",
+    "changed": "2024-12-11",
+    "source": "iana"
+  },
+  "aarp": {
+    "tld": "aarp",
+    "organisation": {
+      "name": "AARP",
+      "organisation": "AARP",
+      "address": {
+        "city": "601 E Street Northwest Washington",
+        "state": "DC",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Managing Partner",
+      "e-mail": "aarpregistry@fairwindspartners.com",
+      "phone": "202 223 9252",
+      "fax-no": "202 223 9256",
+      "organisation": "FairWinds Partners, LLC",
+      "address": {
+        "city": "1000 Potomac Street NW #350 Washington",
+        "state": "DC",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.aarp",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.aarp",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.aarp",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "x.nic.aarp",
+        "ipv6": "2610:a1:1074:0:0:0:1:82",
+        "ipv4": "156.154.172.82"
+      },
+      {
+        "hostname": "y.nic.aarp",
+        "ipv6": "2610:a1:1075:0:0:0:1:82",
+        "ipv4": "156.154.173.82"
+      },
+      {
+        "hostname": "z.nic.aarp",
+        "ipv6": "2610:a1:1076:0:0:0:1:82",
+        "ipv4": "156.154.174.82"
+      }
+    ],
+    "whois": "whois.nic.aarp",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-10-22",
+    "changed": "2024-08-23",
+    "source": "iana"
+  },
+  "abb": {
+    "tld": "abb",
+    "organisation": {
+      "name": "ABB Ltd",
+      "organisation": "Switzerland"
+    },
+    "administrative": {
+      "name": "Domain Administration",
+      "e-mail": "ngtld-abb@cscinfo.com",
+      "phone": "+41 58 585 56 34",
+      "fax-no": "+41 58 585 76 55",
+      "organisation": "ABB Schweiz AG"
+    },
+    "technical": {
+      "name": "Howard Eland, Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Inc.",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.nic.abb",
+        "ipv6": "2a01:8840:6e:0:0:0:0:41",
+        "ipv4": "65.22.112.41"
+      },
+      {
+        "hostname": "a2.nic.abb",
+        "ipv6": "2a01:8840:71:0:0:0:0:41",
+        "ipv4": "65.22.115.41"
+      },
+      {
+        "hostname": "b0.nic.abb",
+        "ipv6": "2a01:8840:6f:0:0:0:0:41",
+        "ipv4": "65.22.113.41"
+      },
+      {
+        "hostname": "c0.nic.abb",
+        "ipv6": "2a01:8840:70:0:0:0:0:41",
+        "ipv4": "65.22.114.41"
+      }
+    ],
+    "whois": "whois.nic.abb",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-04-09",
+    "changed": "2023-08-11",
+    "source": "iana"
+  },
+  "abbott": {
+    "tld": "abbott",
+    "organisation": {
+      "name": "Abbott Laboratories, Inc.",
+      "organisation": "Abbott Laboratories, Inc.",
+      "address": {
+        "city": "100 Abbott Park Road Abbott Park",
+        "state": "IL",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Senior Associate",
+      "e-mail": "abbottregistry@fairwindspartners.com",
+      "phone": "+1 202 223 9252",
+      "fax-no": "+1 202 223 9256",
+      "organisation": "FairWinds Partners",
+      "address": {
+        "city": "1000 Potomac Street NW #350 Washington",
+        "state": "DC",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tld-tech-poc@afilias.info",
+      "organisation": "Afilias",
+      "address": {
+        "city": "300 Welsh Road Horsham",
+        "state": "PA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.nic.abbott",
+        "ipv6": "2a01:8840:9a:0:0:0:0:41",
+        "ipv4": "65.22.156.41"
+      },
+      {
+        "hostname": "a2.nic.abbott",
+        "ipv6": "2a01:8840:9d:0:0:0:0:41",
+        "ipv4": "65.22.159.41"
+      },
+      {
+        "hostname": "b0.nic.abbott",
+        "ipv6": "2a01:8840:9b:0:0:0:0:41",
+        "ipv4": "65.22.157.41"
+      },
+      {
+        "hostname": "c0.nic.abbott",
+        "ipv6": "2a01:8840:9c:0:0:0:0:41",
+        "ipv4": "65.22.158.41"
+      }
+    ],
+    "whois": "whois.nic.abbott",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-11-20",
+    "changed": "2023-08-16",
+    "source": "iana"
+  },
+  "abbvie": {
+    "tld": "abbvie",
+    "organisation": {
+      "name": "AbbVie Inc.",
+      "organisation": "AbbVie Inc.",
+      "address": {
+        "city": "1 N. Waukegan Road North Chicago",
+        "state": "IL",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Domain Manager",
+      "e-mail": "technical@valideus.com",
+      "phone": "+44 2074218299",
+      "fax-no": "+44 8700118187",
+      "organisation": "Valideus",
+      "address": {
+        "city": "28-30 Little Russell Street",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "technical": {
+      "name": "TLD Registry Services Technical",
+      "e-mail": "registrytechnical@nominet.uk",
+      "organisation": "Nominet",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "dns1.nic.abbvie",
+        "ipv6": "2a01:618:403:0:0:0:0:41",
+        "ipv4": "213.248.219.41"
+      },
+      {
+        "hostname": "dns2.nic.abbvie",
+        "ipv6": "2401:fd80:403:0:0:0:0:41",
+        "ipv4": "103.49.83.41"
+      },
+      {
+        "hostname": "dns3.nic.abbvie",
+        "ipv6": "2a01:618:407:0:0:0:0:41",
+        "ipv4": "213.248.223.41"
+      },
+      {
+        "hostname": "dns4.nic.abbvie",
+        "ipv6": "2401:fd80:407:0:0:0:0:41",
+        "ipv4": "43.230.51.41"
+      },
+      {
+        "hostname": "dnsa.nic.abbvie",
+        "ipv6": "2001:502:ad09:0:0:0:0:3",
+        "ipv4": "156.154.100.3"
+      },
+      {
+        "hostname": "dnsb.nic.abbvie",
+        "ipv6": "2001:502:2eda:0:0:0:0:3",
+        "ipv4": "156.154.101.3"
+      },
+      {
+        "hostname": "dnsc.nic.abbvie",
+        "ipv6": "2610:a1:1009:0:0:0:0:3",
+        "ipv4": "156.154.102.3"
+      },
+      {
+        "hostname": "dnsd.nic.abbvie",
+        "ipv6": "2610:a1:1010:0:0:0:0:3",
+        "ipv4": "156.154.103.3"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-02-26",
+    "changed": "2025-01-28",
+    "source": "iana"
+  },
+  "abc": {
+    "tld": "abc",
+    "organisation": {
+      "name": "Disney Enterprises, Inc.",
+      "organisation": "Disney Enterprises, Inc.",
+      "address": {
+        "city": "500 South Buena Vista Street Burbank",
+        "state": "CA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Executive Director of Technology",
+      "e-mail": "ngtld-abc@cscglobal.com",
+      "phone": "+1 818 560 1000",
+      "fax-no": "+1 818 553 7210",
+      "organisation": "Disney Enterprises, Inc.",
+      "address": {
+        "city": "500 South Buena Vista Street Burbank",
+        "state": "CA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Howard Eland, Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Inc.",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.abc",
+        "ipv6": "2a01:8840:66:0:0:0:0:28",
+        "ipv4": "65.22.104.28"
+      },
+      {
+        "hostname": "v0n1.nic.abc",
+        "ipv6": "2a01:8840:67:0:0:0:0:28",
+        "ipv4": "65.22.105.28"
+      },
+      {
+        "hostname": "v0n2.nic.abc",
+        "ipv6": "2a01:8840:68:0:0:0:0:28",
+        "ipv4": "65.22.106.28"
+      },
+      {
+        "hostname": "v0n3.nic.abc",
+        "ipv6": "2a01:8840:106:0:0:0:0:28",
+        "ipv4": "161.232.30.28"
+      },
+      {
+        "hostname": "v2n0.nic.abc",
+        "ipv6": "2a01:8840:69:0:0:0:0:28",
+        "ipv4": "65.22.107.28"
+      },
+      {
+        "hostname": "v2n1.nic.abc",
+        "ipv6": "2a01:8840:107:0:0:0:0:28",
+        "ipv4": "161.232.31.28"
+      }
+    ],
+    "whois": "whois.nic.abc",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-07-21",
+    "changed": "2024-07-25",
+    "source": "iana"
+  },
+  "able": {
+    "tld": "able",
+    "organisation": {
+      "name": "Able Inc.",
+      "organisation": "Japan"
+    },
+    "administrative": {
+      "name": "Jacob Williams",
+      "e-mail": "able-registry@interlink.ad.jp",
+      "phone": "+81 50-5525-7438",
+      "fax-no": "+81 3-5979-2337",
+      "organisation": "Interlink Co., Ltd."
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.able",
+        "ipv6": "2001:dcd:1:0:0:0:0:10",
+        "ipv4": "37.209.192.10"
+      },
+      {
+        "hostname": "b.nic.able",
+        "ipv6": "2001:dcd:2:0:0:0:0:10",
+        "ipv4": "37.209.194.10"
+      },
+      {
+        "hostname": "c.nic.able",
+        "ipv6": "2001:dcd:3:0:0:0:0:10",
+        "ipv4": "37.209.196.10"
+      },
+      {
+        "hostname": "ns1.dns.nic.able",
+        "ipv6": "2610:a1:1071:0:0:0:0:3",
+        "ipv4": "156.154.144.3"
+      },
+      {
+        "hostname": "ns2.dns.nic.able",
+        "ipv6": "2610:a1:1072:0:0:0:0:3",
+        "ipv4": "156.154.145.3"
+      },
+      {
+        "hostname": "ns3.dns.nic.able",
+        "ipv6": "2610:a1:1073:0:0:0:0:3",
+        "ipv4": "156.154.159.3"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-03-03",
+    "changed": "2024-05-11",
+    "source": "iana"
+  },
+  "abogado": {
+    "tld": "abogado",
+    "organisation": {
+      "name": "Registry Services, LLC",
+      "organisation": "Registry Services, LLC",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480-505-8800",
+      "fax-no": "+1 480-624-2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480-505-8800",
+      "fax-no": "+1 480-624-2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.abogado",
+        "ipv6": "2001:dcd:1:0:0:0:0:10",
+        "ipv4": "37.209.192.10"
+      },
+      {
+        "hostname": "b.nic.abogado",
+        "ipv6": "2001:dcd:2:0:0:0:0:10",
+        "ipv4": "37.209.194.10"
+      },
+      {
+        "hostname": "c.nic.abogado",
+        "ipv6": "2001:dcd:3:0:0:0:0:10",
+        "ipv4": "37.209.196.10"
+      },
+      {
+        "hostname": "x.nic.abogado",
+        "ipv6": "2610:a1:1074:0:0:0:1:82",
+        "ipv4": "156.154.172.82"
+      },
+      {
+        "hostname": "y.nic.abogado",
+        "ipv6": "2610:a1:1075:0:0:0:1:82",
+        "ipv4": "156.154.173.82"
+      },
+      {
+        "hostname": "z.nic.abogado",
+        "ipv6": "2610:a1:1076:0:0:0:1:82",
+        "ipv4": "156.154.174.82"
+      }
+    ],
+    "whois": "whois.nic.abogado",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-07-10",
+    "changed": "2024-04-16",
+    "source": "iana"
+  },
+  "abudhabi": {
+    "tld": "abudhabi",
+    "organisation": {
+      "name": "Abu Dhabi Systems and Information Centre",
+      "organisation": "Abu Dhabi Systems &amp; Information Centre"
+    },
+    "administrative": {
+      "name": "Khadeeja Mohsen Al Faqeeh",
+      "e-mail": "adtld@adsic.abudhabi.ae",
+      "phone": "+97126961146",
+      "fax-no": "+97126717333",
+      "organisation": "Abu Dhabi Systems &amp; Information Centre"
+    },
+    "technical": {
+      "name": "Manager Systems, ae Domain Administration",
+      "e-mail": "gtldsupport@aeda.ae",
+      "phone": "+97142300018",
+      "fax-no": "+97142300011",
+      "organisation": "Telecommunications Regulatory Authority of UAE"
+    },
+    "nserver": [
+      {
+        "hostname": "gtld.alpha.aridns.net.au",
+        "ipv6": "2001:dcd:1:0:0:0:0:10",
+        "ipv4": "37.209.192.10"
+      },
+      {
+        "hostname": "gtld.beta.aridns.net.au",
+        "ipv6": "2001:dcd:2:0:0:0:0:10",
+        "ipv4": "37.209.194.10"
+      },
+      {
+        "hostname": "gtld.delta.aridns.net.au",
+        "ipv6": "2001:dcd:4:0:0:0:0:10",
+        "ipv4": "37.209.198.10"
+      },
+      {
+        "hostname": "gtld.gamma.aridns.net.au",
+        "ipv6": "2001:dcd:3:0:0:0:0:10",
+        "ipv4": "37.209.196.10"
+      }
+    ],
+    "whois": "whois.nic.abudhabi",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-02-26",
+    "changed": "2019-11-26",
+    "source": "iana"
+  },
+  "ac": {
+    "tld": "ac",
+    "organisation": {},
+    "administrative": {
+      "name": "Managing Director",
+      "e-mail": "administrator@nic.ac",
+      "organisation": "Internet Computer Bureau Limited"
+    },
+    "technical": {
+      "name": "Technical Director",
+      "e-mail": "admin@icb.co.uk",
+      "phone": "+44 (0)1689 827505",
+      "fax-no": "+44 (0)1689 831478",
+      "organisation": "Internet Computer Bureau Limited",
+      "address": {
+        "city": "Greytown House, 221-227 High Street",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.nic.ac",
+        "ipv6": "2a01:8840:9e:0:0:0:0:1",
+        "ipv4": "65.22.160.1"
+      },
+      {
+        "hostname": "a2.nic.ac",
+        "ipv6": "2a01:8840:a1:0:0:0:0:1",
+        "ipv4": "65.22.163.1"
+      },
+      {
+        "hostname": "b0.nic.ac",
+        "ipv6": "2a01:8840:9f:0:0:0:0:1",
+        "ipv4": "65.22.161.1"
+      },
+      {
+        "hostname": "c0.nic.ac",
+        "ipv6": "2a01:8840:a0:0:0:0:0:1",
+        "ipv4": "65.22.162.1"
+      }
+    ],
+    "whois": "whois.nic.ac",
+    "status": "active",
+    "remarks": "",
+    "created": "1997-12-19",
+    "changed": "2023-03-07",
+    "source": "iana"
+  },
+  "academy": {
+    "tld": "academy",
+    "organisation": {
+      "name": "Binky Moon, LLC",
+      "organisation": "c/o Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Vice President, Engineering",
+      "e-mail": "tldadmin@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.academy",
+        "ipv6": "2a01:8840:1a:0:0:0:0:37",
+        "ipv4": "65.22.24.37"
+      },
+      {
+        "hostname": "v0n1.nic.academy",
+        "ipv6": "2a01:8840:1b:0:0:0:0:37",
+        "ipv4": "65.22.25.37"
+      },
+      {
+        "hostname": "v0n2.nic.academy",
+        "ipv6": "2a01:8840:1c:0:0:0:0:37",
+        "ipv4": "65.22.26.37"
+      },
+      {
+        "hostname": "v0n3.nic.academy",
+        "ipv6": "2a01:8840:f6:0:0:0:0:37",
+        "ipv4": "161.232.12.37"
+      },
+      {
+        "hostname": "v2n0.nic.academy",
+        "ipv6": "2a01:8840:1d:0:0:0:0:37",
+        "ipv4": "65.22.27.37"
+      },
+      {
+        "hostname": "v2n1.nic.academy",
+        "ipv6": "2a01:8840:f7:0:0:0:0:37",
+        "ipv4": "161.232.13.37"
+      }
+    ],
+    "whois": "whois.nic.academy",
+    "status": "active",
+    "remarks": "",
+    "created": "2013-12-12",
+    "changed": "2023-09-12",
+    "source": "iana"
+  },
+  "accenture": {
+    "tld": "accenture",
+    "organisation": {
+      "name": "Accenture plc",
+      "organisation": "Ireland"
+    },
+    "administrative": {
+      "name": "Senior Manager, Digital Marketing",
+      "e-mail": "ngtld-accenture@cscinfo.com",
+      "phone": "+1 353 1 646-2000",
+      "organisation": "Accenture plc"
+    },
+    "technical": {
+      "name": "Howard Eland, Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Inc.",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.accenture",
+        "ipv6": "2a01:8840:6a:0:0:0:0:8",
+        "ipv4": "65.22.108.8"
+      },
+      {
+        "hostname": "v0n1.nic.accenture",
+        "ipv6": "2a01:8840:6b:0:0:0:0:8",
+        "ipv4": "65.22.109.8"
+      },
+      {
+        "hostname": "v0n2.nic.accenture",
+        "ipv6": "2a01:8840:6c:0:0:0:0:8",
+        "ipv4": "65.22.110.8"
+      },
+      {
+        "hostname": "v0n3.nic.accenture",
+        "ipv6": "2a01:8840:108:0:0:0:0:8",
+        "ipv4": "161.232.32.8"
+      },
+      {
+        "hostname": "v2n0.nic.accenture",
+        "ipv6": "2a01:8840:6d:0:0:0:0:8",
+        "ipv4": "65.22.111.8"
+      },
+      {
+        "hostname": "v2n1.nic.accenture",
+        "ipv6": "2a01:8840:109:0:0:0:0:8",
+        "ipv4": "161.232.33.8"
+      }
+    ],
+    "whois": "whois.nic.accenture",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-04-30",
+    "changed": "2024-03-31",
+    "source": "iana"
+  },
+  "accountant": {
+    "tld": "accountant",
+    "organisation": {
+      "name": "dot Accountant Limited",
+      "organisation": "Gibraltar"
+    },
+    "administrative": {
+      "name": "Edgar Charles Andrew Lavarello",
+      "e-mail": "edgar.c.lavarello@gi.pwc.com",
+      "phone": "+350 200 73520",
+      "organisation": "Pricewaterhousecoopers Ltd.",
+      "address": {
+        "city": "327 Main Street",
+        "state": "",
+        "country": ""
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.accountant",
+        "ipv6": "2001:dcd:1:0:0:0:0:10",
+        "ipv4": "37.209.192.10"
+      },
+      {
+        "hostname": "b.nic.accountant",
+        "ipv6": "2001:dcd:2:0:0:0:0:10",
+        "ipv4": "37.209.194.10"
+      },
+      {
+        "hostname": "c.nic.accountant",
+        "ipv6": "2001:dcd:3:0:0:0:0:10",
+        "ipv4": "37.209.196.10"
+      },
+      {
+        "hostname": "ns1.dns.nic.accountant",
+        "ipv6": "2610:a1:1071:0:0:0:0:c3",
+        "ipv4": "156.154.144.195"
+      },
+      {
+        "hostname": "ns2.dns.nic.accountant",
+        "ipv6": "2610:a1:1072:0:0:0:0:c3",
+        "ipv4": "156.154.145.195"
+      },
+      {
+        "hostname": "ns3.dns.nic.accountant",
+        "ipv6": "2610:a1:1073:0:0:0:0:c3",
+        "ipv4": "156.154.159.195"
+      }
+    ],
+    "whois": "whois.nic.accountant",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-02-05",
+    "changed": "2024-05-11",
+    "source": "iana"
+  },
+  "accountants": {
+    "tld": "accountants",
+    "organisation": {
+      "name": "Binky Moon, LLC",
+      "organisation": "c/o Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Vice President, Engineering",
+      "e-mail": "tldadmin@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.accountants",
+        "ipv6": "2a01:8840:22:0:0:0:0:31",
+        "ipv4": "65.22.32.31"
+      },
+      {
+        "hostname": "v0n1.nic.accountants",
+        "ipv6": "2a01:8840:23:0:0:0:0:31",
+        "ipv4": "65.22.33.31"
+      },
+      {
+        "hostname": "v0n2.nic.accountants",
+        "ipv6": "2a01:8840:24:0:0:0:0:31",
+        "ipv4": "65.22.34.31"
+      },
+      {
+        "hostname": "v0n3.nic.accountants",
+        "ipv6": "2a01:8840:fa:0:0:0:0:31",
+        "ipv4": "161.232.16.31"
+      },
+      {
+        "hostname": "v2n0.nic.accountants",
+        "ipv6": "2a01:8840:25:0:0:0:0:31",
+        "ipv4": "65.22.35.31"
+      },
+      {
+        "hostname": "v2n1.nic.accountants",
+        "ipv6": "2a01:8840:fb:0:0:0:0:31",
+        "ipv4": "161.232.17.31"
+      }
+    ],
+    "whois": "whois.nic.accountants",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-04-24",
+    "changed": "2023-09-12",
+    "source": "iana"
+  },
+  "aco": {
+    "tld": "aco",
+    "organisation": {
+      "name": "ACO Severin Ahlmann GmbH &amp; Co. KG",
+      "organisation": "Am Ahlmannkai",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "Germany"
+      }
+    },
+    "administrative": {
+      "name": "CEO",
+      "e-mail": "acoregistry@lemarit.com",
+      "phone": "+49 461 5050 35 - 0",
+      "organisation": "LEMARIT GmbH",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "Germany"
+      }
+    },
+    "technical": {
+      "name": "CTO",
+      "e-mail": "acoregistry@lemarit.com",
+      "phone": "+49 4615050350",
+      "fax-no": "+49 461 50503535",
+      "organisation": "LEMARIT GmbH",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "Germany"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.dns.nic.aco",
+        "ipv6": "2001:678:20:0:0:0:0:32",
+        "ipv4": "194.0.25.32"
+      },
+      {
+        "hostname": "m.dns.nic.aco",
+        "ipv6": "2001:67c:10e0:0:0:0:0:12",
+        "ipv4": "194.0.26.12"
+      },
+      {
+        "hostname": "n.dns.nic.aco",
+        "ipv6": "2001:678:24:0:0:0:0:12",
+        "ipv4": "194.0.24.12"
+      }
+    ],
+    "whois": "whois.nic.aco",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-07-16",
+    "changed": "2022-06-22",
+    "source": "iana"
+  },
+  "actor": {
+    "tld": "actor",
+    "organisation": {
+      "name": "Dog Beach, LLC",
+      "organisation": "c/o Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Vice President, Engineering",
+      "e-mail": "tldadmin@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.actor",
+        "ipv6": "2a01:8840:22:0:0:0:0:60",
+        "ipv4": "65.22.32.60"
+      },
+      {
+        "hostname": "v0n1.nic.actor",
+        "ipv6": "2a01:8840:23:0:0:0:0:60",
+        "ipv4": "65.22.33.60"
+      },
+      {
+        "hostname": "v0n2.nic.actor",
+        "ipv6": "2a01:8840:24:0:0:0:0:60",
+        "ipv4": "65.22.34.60"
+      },
+      {
+        "hostname": "v0n3.nic.actor",
+        "ipv6": "2a01:8840:fa:0:0:0:0:60",
+        "ipv4": "161.232.16.60"
+      },
+      {
+        "hostname": "v2n0.nic.actor",
+        "ipv6": "2a01:8840:25:0:0:0:0:60",
+        "ipv4": "65.22.35.60"
+      },
+      {
+        "hostname": "v2n1.nic.actor",
+        "ipv6": "2a01:8840:fb:0:0:0:0:60",
+        "ipv4": "161.232.17.60"
+      }
+    ],
+    "whois": "whois.nic.actor",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-02-20",
+    "changed": "2023-09-12",
+    "source": "iana"
+  },
+  "ad": {
+    "tld": "ad",
+    "organisation": {},
+    "administrative": {
+      "name": "Joan-Marc Lauga Courtil",
+      "e-mail": "joan-marc.lauga@andorratelecom.ad",
+      "phone": "+376 875274",
+      "fax-no": "+376 863667",
+      "organisation": "Andorra Telecom"
+    },
+    "technical": {
+      "name": "Fabrici Rossell",
+      "e-mail": "fabrici.rossell@andorratelecom.ad",
+      "phone": "+376 875481",
+      "fax-no": "+376 725001",
+      "organisation": "Andorra Telecom"
+    },
+    "nserver": [
+      {
+        "hostname": "ad.ns.nic.es",
+        "ipv6": "2001:67c:21cc:2000:0:0:64:47",
+        "ipv4": "194.69.254.15"
+      },
+      {
+        "hostname": "anycast23.irondns.net",
+        "ipv6": "2a01:5b0:5:0:0:0:0:b",
+        "ipv4": "195.253.65.11"
+      },
+      {
+        "hostname": "anycast9.irondns.net",
+        "ipv6": "2a01:5b0:4:0:0:0:0:b",
+        "ipv4": "195.253.64.11"
+      },
+      {
+        "hostname": "ns3.nic.fr",
+        "ipv6": "2001:660:3006:1:0:0:1:1",
+        "ipv4": "192.134.0.49"
+      }
+    ],
+    "whois": "whois.nic.ad",
+    "status": "active",
+    "remarks": "",
+    "created": "1996-01-09",
+    "changed": "2024-09-16",
+    "source": "iana"
+  },
+  "ads": {
+    "tld": "ads",
+    "organisation": {
+      "name": "Charleston Road Registry Inc.",
+      "organisation": "Charleston Road Registry Inc.",
+      "address": {
+        "city": "1600 Amphitheatre Parkway Mountain View",
+        "state": "CA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "TLD Admin",
+      "e-mail": "iana-contact@google.com",
+      "phone": "+1 404 978 8419",
+      "fax-no": "+1 650 492 5631",
+      "organisation": "Google Inc.",
+      "address": {
+        "city": "111 8th Avenue New York",
+        "state": "NY",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "TLD Engineering",
+      "e-mail": "crr-tech@google.com",
+      "phone": "+1 404 978 8419",
+      "fax-no": "+1 650 492 5631",
+      "organisation": "Google Inc.",
+      "address": {
+        "city": "76 Ninth Avenue, 4th Floor New York",
+        "state": "NY",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "ns-tld1.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4802:32:0:0:0:69",
+        "ipv4": "216.239.32.105"
+      },
+      {
+        "hostname": "ns-tld2.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4802:34:0:0:0:69",
+        "ipv4": "216.239.34.105"
+      },
+      {
+        "hostname": "ns-tld3.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4802:36:0:0:0:69",
+        "ipv4": "216.239.36.105"
+      },
+      {
+        "hostname": "ns-tld4.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4802:38:0:0:0:69",
+        "ipv4": "216.239.38.105"
+      },
+      {
+        "hostname": "ns-tld5.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4805:0:0:0:0:69",
+        "ipv4": "216.239.60.105"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-02-05",
+    "changed": "2025-04-11",
+    "source": "iana"
+  },
+  "adult": {
+    "tld": "adult",
+    "organisation": {
+      "name": "ICM Registry AD LLC",
+      "organisation": "ICM Registry AD LLC",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480-505-8800",
+      "fax-no": "+1 480-624-2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480-505-8800",
+      "fax-no": "+1 480-624-2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.adult",
+        "ipv6": "2001:dcd:1:0:0:0:0:10",
+        "ipv4": "37.209.192.10"
+      },
+      {
+        "hostname": "b.nic.adult",
+        "ipv6": "2001:dcd:2:0:0:0:0:10",
+        "ipv4": "37.209.194.10"
+      },
+      {
+        "hostname": "c.nic.adult",
+        "ipv6": "2001:dcd:3:0:0:0:0:10",
+        "ipv4": "37.209.196.10"
+      },
+      {
+        "hostname": "x.nic.adult",
+        "ipv6": "2610:a1:1074:0:0:0:1:82",
+        "ipv4": "156.154.172.82"
+      },
+      {
+        "hostname": "y.nic.adult",
+        "ipv6": "2610:a1:1075:0:0:0:1:82",
+        "ipv4": "156.154.173.82"
+      },
+      {
+        "hostname": "z.nic.adult",
+        "ipv6": "2610:a1:1076:0:0:0:1:82",
+        "ipv4": "156.154.174.82"
+      }
+    ],
+    "whois": "whois.nic.adult",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-11-26",
+    "changed": "2024-04-16",
+    "source": "iana"
+  },
+  "ae": {
+    "tld": "ae",
+    "organisation": {},
+    "administrative": {
+      "name": "Director Policies and Programs",
+      "e-mail": "iana@tdra.gov.ae",
+      "phone": "+971 4 7774018",
+      "organisation": "Dubai"
+    },
+    "technical": {
+      "name": "Senior Manager .aeDA",
+      "e-mail": "dns@aeda.ae",
+      "phone": "+971 4 7774018",
+      "organisation": ".ae Domain Administration (.aeDA)"
+    },
+    "nserver": [
+      {
+        "hostname": "ns1.aedns.ae",
+        "ipv6": "2a00:d30:120:0:0:0:0:73",
+        "ipv4": "79.98.120.73"
+      },
+      {
+        "hostname": "ns2.aedns.ae",
+        "ipv6": "2a00:d30:121:0:0:0:0:73",
+        "ipv4": "79.98.121.73"
+      },
+      {
+        "hostname": "ns4.apnic.net",
+        "ipv6": "2001:dd8:12:0:0:0:0:53",
+        "ipv4": "202.12.31.53"
+      },
+      {
+        "hostname": "nsext-pch.aedns.ae",
+        "ipv6": "2001:500:7d:0:0:0:0:1",
+        "ipv4": "199.4.137.1"
+      }
+    ],
+    "whois": "whois.aeda.net.ae",
+    "status": "active",
+    "remarks": "",
+    "created": "1992-12-01",
+    "changed": "2021-10-19",
+    "source": "iana"
+  },
+  "aeg": {
+    "tld": "aeg",
+    "organisation": {
+      "name": "Aktiebolaget Electrolux",
+      "organisation": "Sweden"
+    },
+    "administrative": {
+      "name": "IP Legal Department",
+      "e-mail": "ngtld-aeg@cscinfo.com",
+      "fax-no": "+46 (0) 8 738 68 13",
+      "organisation": "AB Electrolux"
+    },
+    "technical": {
+      "name": "Howard Eland, Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Inc.",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.aeg",
+        "ipv6": "2a01:8840:6a:0:0:0:0:2",
+        "ipv4": "65.22.108.2"
+      },
+      {
+        "hostname": "v0n1.nic.aeg",
+        "ipv6": "2a01:8840:6b:0:0:0:0:2",
+        "ipv4": "65.22.109.2"
+      },
+      {
+        "hostname": "v0n2.nic.aeg",
+        "ipv6": "2a01:8840:6c:0:0:0:0:2",
+        "ipv4": "65.22.110.2"
+      },
+      {
+        "hostname": "v0n3.nic.aeg",
+        "ipv6": "2a01:8840:108:0:0:0:0:2",
+        "ipv4": "161.232.32.2"
+      },
+      {
+        "hostname": "v2n0.nic.aeg",
+        "ipv6": "2a01:8840:6d:0:0:0:0:2",
+        "ipv4": "65.22.111.2"
+      },
+      {
+        "hostname": "v2n1.nic.aeg",
+        "ipv6": "2a01:8840:109:0:0:0:0:2",
+        "ipv4": "161.232.33.2"
+      }
+    ],
+    "whois": "whois.nic.aeg",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-06-11",
+    "changed": "2023-12-05",
+    "source": "iana"
+  },
+  "aero": {
+    "tld": "aero",
+    "organisation": {
+      "name": "Societe Internationale de Telecommunications Aeronautique (SITA INC USA)",
+      "organisation": "Societe Internationale de Telecommunications Aeronautique (SITA INC USA)",
+      "address": {
+        "city": "3100 Cumberland Boulevard Atlanta",
+        "state": "GA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": ".AERO Office",
+      "e-mail": "aero.enquiries@sita.aero",
+      "phone": "+41 22 747 60 00",
+      "fax-no": "+41 22 747 63 33",
+      "organisation": "SITA SC"
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tld-tech-poc@afilias.info",
+      "phone": "+1 215 706 5700",
+      "fax-no": "+1 215 706 5701",
+      "organisation": "Afilias",
+      "address": {
+        "city": "300 Welsh Road Horsham",
+        "state": "PA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.nic.aero",
+        "ipv6": "2001:500:1d:0:0:0:0:1",
+        "ipv4": "199.254.51.1"
+      },
+      {
+        "hostname": "a2.nic.aero",
+        "ipv6": "2001:500:43:0:0:0:0:1",
+        "ipv4": "199.249.115.1"
+      },
+      {
+        "hostname": "b0.nic.aero",
+        "ipv6": "2001:500:1e:0:0:0:0:1",
+        "ipv4": "199.254.52.1"
+      },
+      {
+        "hostname": "b2.nic.aero",
+        "ipv6": "2001:500:4b:0:0:0:0:1",
+        "ipv4": "199.249.123.1"
+      },
+      {
+        "hostname": "c0.nic.aero",
+        "ipv6": "2001:500:20:0:0:0:0:1",
+        "ipv4": "199.254.54.1"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2001-12-21",
+    "changed": "2023-08-08",
+    "source": "iana"
+  },
+  "aetna": {
+    "tld": "aetna",
+    "organisation": {
+      "name": "Aetna Life Insurance Company",
+      "organisation": "Aetna Life Insurance Company",
+      "address": {
+        "city": "151 Farmington Avenue Hartford",
+        "state": "CT",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Jeff Muehlhausen",
+      "e-mail": "domains@aetna.com",
+      "phone": "+011 860 273 0123",
+      "organisation": "Aetna Life Insurance Company",
+      "address": {
+        "city": "151 Farmington Avenue Hartford",
+        "state": "CT",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.aetna",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.aetna",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.aetna",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "ns1.dns.nic.aetna",
+        "ipv6": "2610:a1:1071:0:0:0:0:5",
+        "ipv4": "156.154.144.5"
+      },
+      {
+        "hostname": "ns2.dns.nic.aetna",
+        "ipv6": "2610:a1:1072:0:0:0:0:5",
+        "ipv4": "156.154.145.5"
+      },
+      {
+        "hostname": "ns3.dns.nic.aetna",
+        "ipv6": "2610:a1:1073:0:0:0:0:5",
+        "ipv4": "156.154.159.5"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-04-21",
+    "changed": "2024-05-11",
+    "source": "iana"
+  },
+  "af": {
+    "tld": "af",
+    "organisation": {},
+    "administrative": {
+      "name": "General Manager .AF",
+      "e-mail": "registry@nic.af",
+      "phone": "+93 70 6604794",
+      "organisation": "Ministry of Communications and IT"
+    },
+    "technical": {
+      "name": "General Manager .AF",
+      "e-mail": "registry@nic.af",
+      "phone": "+93 70 6604794",
+      "organisation": "Ministry of Communications and IT"
+    },
+    "nserver": [
+      {
+        "hostname": "ns.anycast.nic.af",
+        "ipv6": "2001:500:14:6013:ad:0:0:1",
+        "ipv4": "204.61.216.13"
+      },
+      {
+        "hostname": "ns1.anycastdns.cz",
+        "ipv6": "2a00:fea0:dead:0:0:0:0:beef",
+        "ipv4": "185.38.108.108"
+      },
+      {
+        "hostname": "ns2.anycastdns.cz",
+        "ipv6": "",
+        "ipv4": "185.28.194.194"
+      }
+    ],
+    "whois": "whois.nic.af",
+    "status": "active",
+    "remarks": "",
+    "created": "1997-10-16",
+    "changed": "2022-11-21",
+    "source": "iana"
+  },
+  "afl": {
+    "tld": "afl",
+    "organisation": {
+      "name": "Australian Football League",
+      "organisation": "Australia"
+    },
+    "administrative": {
+      "name": "Simon Clarke",
+      "e-mail": "ngtld-afl@cscinfo.com",
+      "phone": "+61394796684",
+      "fax-no": "+61396431871",
+      "organisation": "Australian Football League"
+    },
+    "technical": {
+      "name": "Anne-Mette Roed",
+      "e-mail": "ngtld-afl@cscinfo.com",
+      "phone": "+442070151717",
+      "organisation": "CSC Digital Brand Services",
+      "address": {
+        "city": " Wilmington",
+        "state": "DE",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.afl",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.afl",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.afl",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "x.nic.afl",
+        "ipv6": "2610:a1:1074:0:0:0:1:82",
+        "ipv4": "156.154.172.82"
+      },
+      {
+        "hostname": "y.nic.afl",
+        "ipv6": "2610:a1:1075:0:0:0:1:82",
+        "ipv4": "156.154.173.82"
+      },
+      {
+        "hostname": "z.nic.afl",
+        "ipv6": "2610:a1:1076:0:0:0:1:82",
+        "ipv4": "156.154.174.82"
+      }
+    ],
+    "whois": "whois.nic.afl",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-02-19",
+    "changed": "2023-11-30",
+    "source": "iana"
+  },
+  "africa": {
+    "tld": "africa",
+    "organisation": {
+      "name": "ZA Central Registry NPC trading as Registry.Africa",
+      "organisation": "South Africa",
+      "address": {
+        "city": "Halfway House 1685",
+        "state": "",
+        "country": ""
+      }
+    },
+    "administrative": {
+      "name": "Neil Duncan Dundas",
+      "e-mail": "icann@registry.net.za",
+      "phone": "+27113140077",
+      "fax-no": "+27113140088",
+      "organisation": "DNS Africa Ltd"
+    },
+    "technical": {
+      "name": "Theo Kramer",
+      "e-mail": "icann@registry.net.za",
+      "phone": "+27115682800",
+      "fax-no": "+27115681492",
+      "organisation": "DNS Africa Ltd"
+    },
+    "nserver": [
+      {
+        "hostname": "coza1.dnsnode.net",
+        "ipv6": "2001:67c:1010:18:0:0:0:53",
+        "ipv4": "194.146.106.74"
+      },
+      {
+        "hostname": "ns.coza.net.za",
+        "ipv6": "2001:43f8:30:0:0:0:0:200",
+        "ipv4": "206.223.136.200"
+      },
+      {
+        "hostname": "ns4.dns.net.za",
+        "ipv6": "2a01:3f0:0:314:0:0:0:53",
+        "ipv4": "77.72.229.251"
+      }
+    ],
+    "whois": "whois.nic.africa",
+    "status": "active",
+    "remarks": "",
+    "created": "2017-02-11",
+    "changed": "2025-08-05",
+    "source": "iana"
+  },
+  "ag": {
+    "tld": "ag",
+    "organisation": {},
+    "administrative": {
+      "name": "George S. Daniel",
+      "e-mail": "daniel@uhsa.edu.ag",
+      "phone": "+1 268 460 1391",
+      "fax-no": "+1 268 460 1477",
+      "organisation": "UHSA School of Medicine"
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tld-tech-poc@afilias.info",
+      "phone": "+1 215 706 5700",
+      "fax-no": "+1 215 706 5701",
+      "organisation": "Afilias Limited",
+      "address": {
+        "city": "300 Welsh Road Horsham",
+        "state": "PA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.cctld.afilias-nst.info",
+        "ipv6": "2001:500:25:0:0:0:0:1",
+        "ipv4": "199.254.59.1"
+      },
+      {
+        "hostname": "a2.cctld.afilias-nst.info",
+        "ipv6": "2001:500:44:0:0:0:0:1",
+        "ipv4": "199.249.116.1"
+      },
+      {
+        "hostname": "b0.cctld.afilias-nst.org",
+        "ipv6": "2001:500:26:0:0:0:0:1",
+        "ipv4": "199.254.60.1"
+      },
+      {
+        "hostname": "b2.cctld.afilias-nst.org",
+        "ipv6": "2001:500:4c:0:0:0:0:1",
+        "ipv4": "199.249.124.1"
+      },
+      {
+        "hostname": "c0.cctld.afilias-nst.info",
+        "ipv6": "2001:500:27:0:0:0:0:1",
+        "ipv4": "199.254.61.1"
+      },
+      {
+        "hostname": "d0.cctld.afilias-nst.org",
+        "ipv6": "2001:500:28:0:0:0:0:1",
+        "ipv4": "199.254.62.1"
+      }
+    ],
+    "whois": "whois.nic.ag",
+    "status": "active",
+    "remarks": "",
+    "created": "1991-09-03",
+    "changed": "2021-02-08",
+    "source": "iana"
+  },
+  "agakhan": {
+    "tld": "agakhan",
+    "organisation": {
+      "name": "Fondation Aga Khan (Aga Khan Foundation)",
+      "organisation": "Switzerland",
+      "address": {
+        "city": "1 - 3 avenue de la Paix",
+        "state": "",
+        "country": ""
+      }
+    },
+    "administrative": {
+      "name": "Director of Finance",
+      "e-mail": "akftld.agakhan@akdn.org",
+      "phone": "+41 22 909 7200",
+      "fax-no": "+41 22 909 7292",
+      "organisation": "Fondation Aga Khan (Aga Khan Foundation)",
+      "address": {
+        "city": "1 - 3 avenue de la Paix",
+        "state": "",
+        "country": ""
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tld-tech-poc@afilias.info",
+      "organisation": "Afilias",
+      "address": {
+        "city": "300 Welsh Road Horsham",
+        "state": "PA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.nic.agakhan",
+        "ipv6": "2a01:8840:2a:0:0:0:0:1",
+        "ipv4": "65.22.44.1"
+      },
+      {
+        "hostname": "a2.nic.agakhan",
+        "ipv6": "2a01:8840:2d:0:0:0:0:1",
+        "ipv4": "65.22.47.1"
+      },
+      {
+        "hostname": "b0.nic.agakhan",
+        "ipv6": "2a01:8840:2b:0:0:0:0:1",
+        "ipv4": "65.22.45.1"
+      },
+      {
+        "hostname": "c0.nic.agakhan",
+        "ipv6": "2a01:8840:2c:0:0:0:0:1",
+        "ipv4": "65.22.46.1"
+      }
+    ],
+    "whois": "whois.nic.agakhan",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-03-31",
+    "changed": "2023-08-25",
+    "source": "iana"
+  },
+  "agency": {
+    "tld": "agency",
+    "organisation": {
+      "name": "Binky Moon, LLC",
+      "organisation": "c/o Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Vice President, Engineering",
+      "e-mail": "tldadmin@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.agency",
+        "ipv6": "2a01:8840:1a:0:0:0:0:2",
+        "ipv4": "65.22.24.2"
+      },
+      {
+        "hostname": "v0n1.nic.agency",
+        "ipv6": "2a01:8840:1b:0:0:0:0:2",
+        "ipv4": "65.22.25.2"
+      },
+      {
+        "hostname": "v0n2.nic.agency",
+        "ipv6": "2a01:8840:1c:0:0:0:0:2",
+        "ipv4": "65.22.26.2"
+      },
+      {
+        "hostname": "v0n3.nic.agency",
+        "ipv6": "2a01:8840:f6:0:0:0:0:2",
+        "ipv4": "161.232.12.2"
+      },
+      {
+        "hostname": "v2n0.nic.agency",
+        "ipv6": "2a01:8840:1d:0:0:0:0:2",
+        "ipv4": "65.22.27.2"
+      },
+      {
+        "hostname": "v2n1.nic.agency",
+        "ipv6": "2a01:8840:f7:0:0:0:0:2",
+        "ipv4": "161.232.13.2"
+      }
+    ],
+    "whois": "whois.nic.agency",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-01-09",
+    "changed": "2023-09-12",
+    "source": "iana"
+  },
+  "ai": {
+    "tld": "ai",
+    "organisation": {},
+    "administrative": {
+      "name": "Telecommunications Officer",
+      "e-mail": "telecommunications.office@gov.ai",
+      "phone": "+1 264 497 5233",
+      "organisation": "Anguilla",
+      "address": {
+        "city": "Coronation Avenue, PO Box 60",
+        "state": "",
+        "country": ""
+      }
+    },
+    "technical": {
+      "name": "Telecommunications Officer",
+      "e-mail": "telecommunications.office@gov.ai",
+      "phone": "+12644975233",
+      "organisation": "Government of Anguilla",
+      "address": {
+        "city": "Coronation Avenue, PO Box 60",
+        "state": "",
+        "country": ""
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.ai",
+        "ipv6": "2001:500:a0:0:0:0:0:1",
+        "ipv4": "199.115.152.1"
+      },
+      {
+        "hostname": "v0n1.nic.ai",
+        "ipv6": "2001:500:a1:0:0:0:0:1",
+        "ipv4": "199.115.153.1"
+      },
+      {
+        "hostname": "v0n2.nic.ai",
+        "ipv6": "2001:500:a2:0:0:0:0:1",
+        "ipv4": "199.115.154.1"
+      },
+      {
+        "hostname": "v0n3.nic.ai",
+        "ipv6": "2001:500:a3:0:0:0:0:1",
+        "ipv4": "199.115.155.1"
+      },
+      {
+        "hostname": "v2n0.nic.ai",
+        "ipv6": "2001:500:a4:0:0:0:0:1",
+        "ipv4": "199.115.156.1"
+      },
+      {
+        "hostname": "v2n1.nic.ai",
+        "ipv6": "2001:500:a5:0:0:0:0:1",
+        "ipv4": "199.115.157.1"
+      }
+    ],
+    "whois": "whois.nic.ai",
+    "status": "active",
+    "remarks": "",
+    "created": "1995-02-16",
+    "changed": "2025-02-11",
+    "source": "iana"
+  },
+  "aig": {
+    "tld": "aig",
+    "organisation": {
+      "name": "American International Group, Inc.",
+      "organisation": "American International Group, Inc.",
+      "address": {
+        "city": "80 Pine Street, 30th Floor",
+        "state": "",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "GDS Governance",
+      "e-mail": "dmsgovernance@aig.com",
+      "phone": "+1 212 770 7000",
+      "fax-no": "+1 212 458 1942",
+      "organisation": "GDS Governance",
+      "address": {
+        "city": "80 Pine Street, 30th Floor",
+        "state": "",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.aig",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.aig",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.aig",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "ns1.dns.nic.aig",
+        "ipv6": "2610:a1:1071:0:0:0:0:6",
+        "ipv4": "156.154.144.6"
+      },
+      {
+        "hostname": "ns2.dns.nic.aig",
+        "ipv6": "2610:a1:1072:0:0:0:0:6",
+        "ipv4": "156.154.145.6"
+      },
+      {
+        "hostname": "ns3.dns.nic.aig",
+        "ipv6": "2610:a1:1073:0:0:0:0:6",
+        "ipv4": "156.154.159.6"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-04-09",
+    "changed": "2024-05-11",
+    "source": "iana"
+  },
+  "airbus": {
+    "tld": "airbus",
+    "organisation": {
+      "name": "Airbus S.A.S.",
+      "organisation": "Airbus S.A.S.",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "France"
+      }
+    },
+    "administrative": {
+      "name": "Head of Web &amp; Images",
+      "e-mail": "ngtld-airbus@cscinfo.com",
+      "phone": "+33 561933333",
+      "fax-no": "+33 561935948",
+      "organisation": "Airbus S.A.S.",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "France"
+      }
+    },
+    "technical": {
+      "name": "Howard Eland, Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Inc.",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.airbus",
+        "ipv6": "2a01:8840:6a:0:0:0:0:10",
+        "ipv4": "65.22.108.10"
+      },
+      {
+        "hostname": "v0n1.nic.airbus",
+        "ipv6": "2a01:8840:6b:0:0:0:0:10",
+        "ipv4": "65.22.109.10"
+      },
+      {
+        "hostname": "v0n2.nic.airbus",
+        "ipv6": "2a01:8840:6c:0:0:0:0:10",
+        "ipv4": "65.22.110.10"
+      },
+      {
+        "hostname": "v0n3.nic.airbus",
+        "ipv6": "2a01:8840:108:0:0:0:0:10",
+        "ipv4": "161.232.32.10"
+      },
+      {
+        "hostname": "v2n0.nic.airbus",
+        "ipv6": "2a01:8840:6d:0:0:0:0:10",
+        "ipv4": "65.22.111.10"
+      },
+      {
+        "hostname": "v2n1.nic.airbus",
+        "ipv6": "2a01:8840:109:0:0:0:0:10",
+        "ipv4": "161.232.33.10"
+      }
+    ],
+    "whois": "whois.nic.airbus",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-05-26",
+    "changed": "2024-11-15",
+    "source": "iana"
+  },
+  "airforce": {
+    "tld": "airforce",
+    "organisation": {
+      "name": "Dog Beach, LLC",
+      "organisation": "c/o Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Vice President, Engineering",
+      "e-mail": "tldadmin@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.airforce",
+        "ipv6": "2a01:8840:22:0:0:0:0:34",
+        "ipv4": "65.22.32.34"
+      },
+      {
+        "hostname": "v0n1.nic.airforce",
+        "ipv6": "2a01:8840:23:0:0:0:0:34",
+        "ipv4": "65.22.33.34"
+      },
+      {
+        "hostname": "v0n2.nic.airforce",
+        "ipv6": "2a01:8840:24:0:0:0:0:34",
+        "ipv4": "65.22.34.34"
+      },
+      {
+        "hostname": "v0n3.nic.airforce",
+        "ipv6": "2a01:8840:fa:0:0:0:0:34",
+        "ipv4": "161.232.16.34"
+      },
+      {
+        "hostname": "v2n0.nic.airforce",
+        "ipv6": "2a01:8840:25:0:0:0:0:34",
+        "ipv4": "65.22.35.34"
+      },
+      {
+        "hostname": "v2n1.nic.airforce",
+        "ipv6": "2a01:8840:fb:0:0:0:0:34",
+        "ipv4": "161.232.17.34"
+      }
+    ],
+    "whois": "whois.nic.airforce",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-04-17",
+    "changed": "2023-09-12",
+    "source": "iana"
+  },
+  "airtel": {
+    "tld": "airtel",
+    "organisation": {
+      "name": "Bharti Airtel Limited",
+      "organisation": "Bharti Crescent,",
+      "address": {
+        "city": "1, Nelson Mandela Road",
+        "state": "",
+        "country": ""
+      }
+    },
+    "administrative": {
+      "name": "Aditi Sharma Wadhwa",
+      "e-mail": "aditi.sharmawadhwa@airtel.com",
+      "phone": "+91 99 53990071",
+      "fax-no": "+91 11 41666149",
+      "organisation": "Bharti Airtel",
+      "address": {
+        "city": "1, Nelson Mandela Road",
+        "state": "",
+        "country": ""
+      }
+    },
+    "technical": {
+      "name": "Bonnie Bryant",
+      "e-mail": "info@verisign-grs.com",
+      "phone": "1-703-925-6999",
+      "fax-no": "1-703-948-3978",
+      "organisation": "Verisign, Inc.",
+      "address": {
+        "city": "12061 Bluemont Way Reston",
+        "state": "VA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "ac1.nstld.com",
+        "ipv6": "2001:500:120:0:0:0:0:30",
+        "ipv4": "192.42.173.30"
+      },
+      {
+        "hostname": "ac2.nstld.com",
+        "ipv6": "2001:500:121:0:0:0:0:30",
+        "ipv4": "192.42.174.30"
+      },
+      {
+        "hostname": "ac3.nstld.com",
+        "ipv6": "2001:500:122:0:0:0:0:30",
+        "ipv4": "192.42.175.30"
+      },
+      {
+        "hostname": "ac4.nstld.com",
+        "ipv6": "2001:500:123:0:0:0:0:30",
+        "ipv4": "192.42.176.30"
+      }
+    ],
+    "whois": "whois.nic.airtel",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-06-18",
+    "changed": "2023-11-21",
+    "source": "iana"
+  },
+  "akdn": {
+    "tld": "akdn",
+    "organisation": {
+      "name": "Fondation Aga Khan (Aga Khan Foundation)",
+      "organisation": "Switzerland",
+      "address": {
+        "city": "1 - 3 avenue de la Paix",
+        "state": "",
+        "country": ""
+      }
+    },
+    "administrative": {
+      "name": "Director of Finance",
+      "e-mail": "akftld.akdn@akdn.org",
+      "phone": "+41 22 909 7200",
+      "fax-no": "+41 22 909 7292",
+      "organisation": "Fondation Aga Khan (Aga Khan Foundation)",
+      "address": {
+        "city": "1 - 3 avenue de la Paix",
+        "state": "",
+        "country": ""
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tld-tech-poc@afilias.info",
+      "organisation": "Afilias",
+      "address": {
+        "city": "300 Welsh Road Horsham",
+        "state": "PA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.nic.akdn",
+        "ipv6": "2a01:8840:2a:0:0:0:0:17",
+        "ipv4": "65.22.44.17"
+      },
+      {
+        "hostname": "a2.nic.akdn",
+        "ipv6": "2a01:8840:2d:0:0:0:0:17",
+        "ipv4": "65.22.47.17"
+      },
+      {
+        "hostname": "b0.nic.akdn",
+        "ipv6": "2a01:8840:2b:0:0:0:0:17",
+        "ipv4": "65.22.45.17"
+      },
+      {
+        "hostname": "c0.nic.akdn",
+        "ipv6": "2a01:8840:2c:0:0:0:0:17",
+        "ipv4": "65.22.46.17"
+      }
+    ],
+    "whois": "whois.nic.akdn",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-03-31",
+    "changed": "2023-08-25",
+    "source": "iana"
+  },
+  "al": {
+    "tld": "al",
+    "organisation": {},
+    "administrative": {
+      "name": "Technical Director",
+      "e-mail": "domain@akep.al",
+      "phone": "+355 4 2250926",
+      "fax-no": "+ 355 4 2259106",
+      "organisation": "Albania"
+    },
+    "technical": {
+      "name": "Arli Minga",
+      "e-mail": "arli.minga@akep.al",
+      "phone": "+355 4 2250926",
+      "fax-no": "+355 4 2259106",
+      "organisation": "Albania"
+    },
+    "nserver": [
+      {
+        "hostname": "munnari.oz.au",
+        "ipv6": "2001:3c8:9007:1:0:0:0:21",
+        "ipv4": "202.29.151.3"
+      },
+      {
+        "hostname": "ns1.nic.al",
+        "ipv6": "",
+        "ipv4": "194.1.149.230"
+      },
+      {
+        "hostname": "nsx.nic.al",
+        "ipv6": "2001:678:e:108:0:0:0:53",
+        "ipv4": "194.0.11.108"
+      },
+      {
+        "hostname": "rip.psg.com",
+        "ipv6": "2001:418:1:0:0:0:0:39",
+        "ipv4": "147.28.0.39"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "1992-04-21",
+    "changed": "2023-10-12",
+    "source": "iana"
+  },
+  "alibaba": {
+    "tld": "alibaba",
+    "organisation": {
+      "name": "Alibaba Group Holding Limited",
+      "organisation": "Cayman Islands (the)"
+    },
+    "administrative": {
+      "name": "Project &amp; Process Manager",
+      "e-mail": "ngtld-alibaba@cscglobal.com",
+      "organisation": "Alibaba Group Holding Limited"
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tld-tech-poc@afilias.info",
+      "organisation": "Afilias",
+      "address": {
+        "city": "300 Welsh Road Horsham",
+        "state": "PA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.nic.alibaba",
+        "ipv6": "2a01:8840:82:0:0:0:0:9",
+        "ipv4": "65.22.132.9"
+      },
+      {
+        "hostname": "a2.nic.alibaba",
+        "ipv6": "2a01:8840:85:0:0:0:0:9",
+        "ipv4": "65.22.135.9"
+      },
+      {
+        "hostname": "b0.nic.alibaba",
+        "ipv6": "2a01:8840:83:0:0:0:0:9",
+        "ipv4": "65.22.133.9"
+      },
+      {
+        "hostname": "c0.nic.alibaba",
+        "ipv6": "2a01:8840:84:0:0:0:0:9",
+        "ipv4": "65.22.134.9"
+      }
+    ],
+    "whois": "whois.nic.alibaba",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-01-08",
+    "changed": "2023-08-11",
+    "source": "iana"
+  },
+  "alipay": {
+    "tld": "alipay",
+    "organisation": {
+      "name": "Alibaba Group Holding Limited",
+      "organisation": "Cayman Islands (the)"
+    },
+    "administrative": {
+      "name": "Project &amp; Process Manager",
+      "e-mail": "ngtld-alipay@cscglobal.com",
+      "phone": "+442070151717",
+      "organisation": "Alibaba Group Holding Limited"
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tld-tech-poc@afilias.info",
+      "organisation": "Afilias",
+      "address": {
+        "city": "300 Welsh Road Horsham",
+        "state": "PA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.nic.alipay",
+        "ipv6": "2a01:8840:7e:0:0:0:0:25",
+        "ipv4": "65.22.128.25"
+      },
+      {
+        "hostname": "a2.nic.alipay",
+        "ipv6": "2a01:8840:81:0:0:0:0:25",
+        "ipv4": "65.22.131.25"
+      },
+      {
+        "hostname": "b0.nic.alipay",
+        "ipv6": "2a01:8840:7f:0:0:0:0:25",
+        "ipv4": "65.22.129.25"
+      },
+      {
+        "hostname": "c0.nic.alipay",
+        "ipv6": "2a01:8840:80:0:0:0:0:25",
+        "ipv4": "65.22.130.25"
+      }
+    ],
+    "whois": "whois.nic.alipay",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-01-08",
+    "changed": "2023-08-11",
+    "source": "iana"
+  },
+  "allfinanz": {
+    "tld": "allfinanz",
+    "organisation": {
+      "name": "Allfinanz Deutsche Vermögensberatung Aktiengesellschaft",
+      "organisation": "Hessen",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "Germany"
+      }
+    },
+    "administrative": {
+      "name": "Director, Digital Media",
+      "e-mail": "mail@allfinanz-registry.de",
+      "organisation": "Allfinanz Deutsche Vermögensberatung Aktiengesellschaft",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "Germany"
+      }
+    },
+    "technical": {
+      "name": "CTO",
+      "e-mail": "tld.ops@centralnic.com",
+      "phone": "+44 20 33 88 0600",
+      "fax-no": "+44 20 33 88 0601",
+      "organisation": "CentralNic",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.allfinanz",
+        "ipv6": "2001:67c:13cc:0:0:0:1:75",
+        "ipv4": "194.169.218.75"
+      },
+      {
+        "hostname": "b.nic.allfinanz",
+        "ipv6": "2a04:2b00:13cc:0:0:0:1:75",
+        "ipv4": "185.24.64.75"
+      },
+      {
+        "hostname": "c.nic.allfinanz",
+        "ipv6": "2a04:2b00:13ee:0:0:0:0:75",
+        "ipv4": "212.18.248.75"
+      },
+      {
+        "hostname": "d.nic.allfinanz",
+        "ipv6": "2a04:2b00:13ff:0:0:0:0:75",
+        "ipv4": "212.18.249.75"
+      }
+    ],
+    "whois": "whois.nic.allfinanz",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-09-25",
+    "changed": "2023-11-06",
+    "source": "iana"
+  },
+  "allstate": {
+    "tld": "allstate",
+    "organisation": {
+      "name": "Allstate Fire and Casualty Insurance Company",
+      "organisation": "Allstate Fire and Casualty Insurance Company",
+      "address": {
+        "city": "3075 Sanders Road Suite H1A Northbrook",
+        "state": "IL",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Marketing Manager, Domain Name Portfolio",
+      "e-mail": "allstategtld@brandsight.com",
+      "phone": "1 847 402 5000",
+      "fax-no": "1 847 326 7524",
+      "organisation": "Allstate Fire and Casualty Insurance Company",
+      "address": {
+        "city": "3075 Sanders Road Suite H1A Northbrook",
+        "state": "IL",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tld-tech-poc@afilias.info",
+      "organisation": "Afilias",
+      "address": {
+        "city": "300 Welsh Road Horsham",
+        "state": "PA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.nic.allstate",
+        "ipv6": "2a01:8840:2e:0:0:0:0:9",
+        "ipv4": "65.22.48.9"
+      },
+      {
+        "hostname": "a2.nic.allstate",
+        "ipv6": "2a01:8840:31:0:0:0:0:9",
+        "ipv4": "65.22.51.9"
+      },
+      {
+        "hostname": "b0.nic.allstate",
+        "ipv6": "2a01:8840:2f:0:0:0:0:9",
+        "ipv4": "65.22.49.9"
+      },
+      {
+        "hostname": "c0.nic.allstate",
+        "ipv6": "2a01:8840:30:0:0:0:0:9",
+        "ipv4": "65.22.50.9"
+      }
+    ],
+    "whois": "whois.nic.allstate",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-02-05",
+    "changed": "2023-08-16",
+    "source": "iana"
+  },
+  "ally": {
+    "tld": "ally",
+    "organisation": {
+      "name": "Ally Financial Inc.",
+      "organisation": "Ally Financial Inc.",
+      "address": {
+        "city": " Detroit",
+        "state": "MI",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Director, Shared Services | Email, Preferences, Domain and Brand Monitoring",
+      "e-mail": "allygtld@brandsight.com",
+      "organisation": "Ally Financial Inc.",
+      "address": {
+        "city": " Detroit",
+        "state": "MI",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.ally",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.ally",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.ally",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "x.nic.ally",
+        "ipv6": "2610:a1:1074:0:0:0:1:82",
+        "ipv4": "156.154.172.82"
+      },
+      {
+        "hostname": "y.nic.ally",
+        "ipv6": "2610:a1:1075:0:0:0:1:82",
+        "ipv4": "156.154.173.82"
+      },
+      {
+        "hostname": "z.nic.ally",
+        "ipv6": "2610:a1:1076:0:0:0:1:82",
+        "ipv4": "156.154.174.82"
+      }
+    ],
+    "whois": "whois.nic.ally",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-10-22",
+    "changed": "2024-07-18",
+    "source": "iana"
+  },
+  "alsace": {
+    "tld": "alsace",
+    "organisation": {
+      "name": "REGION GRAND EST",
+      "organisation": "REGION GRAND EST",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "France"
+      }
+    },
+    "administrative": {
+      "name": "David FIGUIER",
+      "e-mail": "contact@mondomaine.alsace",
+      "phone": "+33 388156540",
+      "fax-no": "++33388156815",
+      "organisation": "REGION GRAND EST",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "France"
+      }
+    },
+    "technical": {
+      "name": "TLD Technical Contact",
+      "e-mail": "pocalsace@afnic.fr",
+      "phone": "+33 1 39 30 83 00",
+      "fax-no": "+33 1 39 30 83 01",
+      "organisation": "TLD Technical Contact",
+      "address": {
+        "city": "7, avenue du 8 mai 1945",
+        "state": "",
+        "country": "France"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "d.nic.fr",
+        "ipv6": "2001:678:c:0:0:0:0:1",
+        "ipv4": "194.0.9.1"
+      },
+      {
+        "hostname": "f.ext.nic.fr",
+        "ipv6": "2001:67c:1010:11:0:0:0:53",
+        "ipv4": "194.146.106.46"
+      },
+      {
+        "hostname": "g.ext.nic.fr",
+        "ipv6": "2001:678:4c:0:0:0:0:1",
+        "ipv4": "194.0.36.1"
+      }
+    ],
+    "whois": "whois.nic.alsace",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-09-18",
+    "changed": "2024-09-16",
+    "source": "iana"
+  },
+  "alstom": {
+    "tld": "alstom",
+    "organisation": {
+      "name": "ALSTOM",
+      "organisation": "ALSTOM",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "France"
+      }
+    },
+    "administrative": {
+      "name": ".alstom Admin Contact",
+      "e-mail": "alstom-tld@nameshield.net",
+      "organisation": "ALSTOM",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "France"
+      }
+    },
+    "technical": {
+      "name": ".alstom Tech Contact",
+      "e-mail": "dnsmaster@corenic.org",
+      "phone": "+41 22 312 5610",
+      "fax-no": "+41 22 312 5612",
+      "organisation": "CORE Association"
+    },
+    "nserver": [
+      {
+        "hostname": "anycast10.irondns.net",
+        "ipv6": "2a01:5b0:4:0:0:0:0:c",
+        "ipv4": "195.253.64.12"
+      },
+      {
+        "hostname": "anycast23.irondns.net",
+        "ipv6": "2a01:5b0:5:0:0:0:0:b",
+        "ipv4": "195.253.65.11"
+      },
+      {
+        "hostname": "anycast24.irondns.net",
+        "ipv6": "2a01:5b0:5:0:0:0:0:c",
+        "ipv4": "195.253.65.12"
+      },
+      {
+        "hostname": "anycast9.irondns.net",
+        "ipv6": "2a01:5b0:4:0:0:0:0:b",
+        "ipv4": "195.253.64.11"
+      }
+    ],
+    "whois": "whois.nic.alstom",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-12-04",
+    "changed": "2022-01-07",
+    "source": "iana"
+  },
+  "am": {
+    "tld": "am",
+    "organisation": {},
+    "administrative": {
+      "name": "Igor Mkrtumyan",
+      "e-mail": "imkrtumyan@isoc.am",
+      "phone": "+374 91 415539",
+      "fax-no": "+374 6027 2271",
+      "organisation": "&quot;Internet Society&quot; Non-governmental Organization"
+    },
+    "technical": {
+      "name": "Misak Khachatryan",
+      "e-mail": "misak@amnic.net",
+      "phone": "+374 93 199840",
+      "organisation": "&quot;Internet Society&quot; Non-governmental Organization"
+    },
+    "nserver": [
+      {
+        "hostname": "fork.sth.dnsnode.net",
+        "ipv6": "2a01:3f0:0:306:0:0:0:53",
+        "ipv4": "77.72.229.254"
+      },
+      {
+        "hostname": "ns-cdn.amnic.net",
+        "ipv6": "2001:678:4:0:0:0:0:1a",
+        "ipv4": "194.0.1.26"
+      },
+      {
+        "hostname": "ns-pch.amnic.net",
+        "ipv6": "2001:500:14:6096:ad:0:0:1",
+        "ipv4": "204.61.216.96"
+      },
+      {
+        "hostname": "ns-pri.nic.am",
+        "ipv6": "2001:7f9:8:53:0:0:0:1",
+        "ipv4": "195.43.75.53"
+      }
+    ],
+    "whois": "whois.amnic.net",
+    "status": "active",
+    "remarks": "",
+    "created": "1994-08-26",
+    "changed": "2024-11-27",
+    "source": "iana"
+  },
+  "amazon": {
+    "tld": "amazon",
+    "organisation": {
+      "name": "Amazon Registry Services, Inc.",
+      "organisation": "Amazon Registry Services, Inc.",
+      "address": {
+        "city": "410 Terry Avenue North Seattle",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Program Manager, Registry",
+      "e-mail": "arsi-rzm@amazon.com",
+      "phone": "+1 206 646 5990",
+      "fax-no": "+1-206-946-7702",
+      "organisation": "Amazon Registry Services, Inc",
+      "address": {
+        "city": "410 Terry Avenue North Seattle",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "TLD Registry Services Technical",
+      "e-mail": "registrytechnical@nominet.uk",
+      "organisation": "Nominet",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "dns1.nic.amazon",
+        "ipv6": "2a01:618:402:0:0:0:0:90",
+        "ipv4": "213.248.218.90"
+      },
+      {
+        "hostname": "dns2.nic.amazon",
+        "ipv6": "2401:fd80:402:0:0:0:0:90",
+        "ipv4": "103.49.82.90"
+      },
+      {
+        "hostname": "dns3.nic.amazon",
+        "ipv6": "2a01:618:406:0:0:0:0:90",
+        "ipv4": "213.248.222.90"
+      },
+      {
+        "hostname": "dns4.nic.amazon",
+        "ipv6": "2401:fd80:406:0:0:0:0:90",
+        "ipv4": "43.230.50.90"
+      },
+      {
+        "hostname": "dnsa.nic.amazon",
+        "ipv6": "2001:502:ad09:0:0:0:0:3",
+        "ipv4": "156.154.100.3"
+      },
+      {
+        "hostname": "dnsb.nic.amazon",
+        "ipv6": "2001:502:2eda:0:0:0:0:3",
+        "ipv4": "156.154.101.3"
+      },
+      {
+        "hostname": "dnsc.nic.amazon",
+        "ipv6": "2610:a1:1009:0:0:0:0:3",
+        "ipv4": "156.154.102.3"
+      },
+      {
+        "hostname": "dnsd.nic.amazon",
+        "ipv6": "2610:a1:1010:0:0:0:0:3",
+        "ipv4": "156.154.103.3"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2020-05-28",
+    "changed": "2025-02-14",
+    "source": "iana"
+  },
+  "americanexpress": {
+    "tld": "americanexpress",
+    "organisation": {
+      "name": "American Express Travel Related Services Company, Inc.",
+      "organisation": "American Express Travel Related Services Company, Inc.",
+      "address": {
+        "city": "200 Vesey Street New York",
+        "state": "NY",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Admin",
+      "e-mail": "ngtld-amex@cscglobal.com",
+      "phone": "+1 212 640 2000",
+      "fax-no": "+1 212 640 9212",
+      "organisation": "Admin",
+      "address": {
+        "city": "200 Vesey Street New York",
+        "state": "NY",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.americanexpress",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.americanexpress",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.americanexpress",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "ns1.dns.nic.americanexpress",
+        "ipv6": "2610:a1:1071:0:0:0:0:9",
+        "ipv4": "156.154.144.9"
+      },
+      {
+        "hostname": "ns2.dns.nic.americanexpress",
+        "ipv6": "2610:a1:1072:0:0:0:0:9",
+        "ipv4": "156.154.145.9"
+      },
+      {
+        "hostname": "ns3.dns.nic.americanexpress",
+        "ipv6": "2610:a1:1073:0:0:0:0:9",
+        "ipv4": "156.154.159.9"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-07-22",
+    "changed": "2024-05-11",
+    "source": "iana"
+  },
+  "americanfamily": {
+    "tld": "americanfamily",
+    "organisation": {
+      "name": "AmFam, Inc.",
+      "organisation": "AmFam, Inc.",
+      "address": {
+        "city": "6000 American Parkway Madison",
+        "state": "WI",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Vice President",
+      "e-mail": "amfamregistries@fairwindspartners.com",
+      "phone": "+1 202 223 9252",
+      "fax-no": "+1 202 223 9256",
+      "organisation": "FairWinds Partners, LLC",
+      "address": {
+        "city": "1000 Potomac Street NW #350 Washington",
+        "state": "DC",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.americanfamily",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.americanfamily",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.americanfamily",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "x.nic.americanfamily",
+        "ipv6": "2610:a1:1074:0:0:0:1:82",
+        "ipv4": "156.154.172.82"
+      },
+      {
+        "hostname": "y.nic.americanfamily",
+        "ipv6": "2610:a1:1075:0:0:0:1:82",
+        "ipv4": "156.154.173.82"
+      },
+      {
+        "hostname": "z.nic.americanfamily",
+        "ipv6": "2610:a1:1076:0:0:0:1:82",
+        "ipv4": "156.154.174.82"
+      }
+    ],
+    "whois": "whois.nic.americanfamily",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-07-14",
+    "changed": "2024-08-23",
+    "source": "iana"
+  },
+  "amex": {
+    "tld": "amex",
+    "organisation": {
+      "name": "American Express Travel Related Services Company, Inc.",
+      "organisation": "American Express Travel Related Services Company, Inc.",
+      "address": {
+        "city": "200 Vesey Street New York",
+        "state": "NY",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Admin",
+      "e-mail": "ngtld-amex@cscglobal.com",
+      "phone": "+1 212 640 2000",
+      "fax-no": "+1 212 640 9212",
+      "organisation": "Admin",
+      "address": {
+        "city": "200 Vesey Street New York",
+        "state": "NY",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.amex",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.amex",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.amex",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "ns1.dns.nic.amex",
+        "ipv6": "2610:a1:1071:0:0:0:0:a",
+        "ipv4": "156.154.144.10"
+      },
+      {
+        "hostname": "ns2.dns.nic.amex",
+        "ipv6": "2610:a1:1072:0:0:0:0:a",
+        "ipv4": "156.154.145.10"
+      },
+      {
+        "hostname": "ns3.dns.nic.amex",
+        "ipv6": "2610:a1:1073:0:0:0:0:a",
+        "ipv4": "156.154.159.10"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-07-21",
+    "changed": "2024-05-11",
+    "source": "iana"
+  },
+  "amfam": {
+    "tld": "amfam",
+    "organisation": {
+      "name": "AmFam, Inc.",
+      "organisation": "AmFam, Inc.",
+      "address": {
+        "city": "6000 American Parkway Madison",
+        "state": "WI",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Vice President",
+      "e-mail": "amfamregistries@fairwindspartners.com",
+      "phone": "+1 202 223 9252",
+      "fax-no": "+1 202 223 9256",
+      "organisation": "FairWinds Partners, LLC",
+      "address": {
+        "city": "1000 Potomac Street NW #350 Washington",
+        "state": "DC",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.amfam",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.amfam",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.amfam",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "x.nic.amfam",
+        "ipv6": "2610:a1:1074:0:0:0:1:82",
+        "ipv4": "156.154.172.82"
+      },
+      {
+        "hostname": "y.nic.amfam",
+        "ipv6": "2610:a1:1075:0:0:0:1:82",
+        "ipv4": "156.154.173.82"
+      },
+      {
+        "hostname": "z.nic.amfam",
+        "ipv6": "2610:a1:1076:0:0:0:1:82",
+        "ipv4": "156.154.174.82"
+      }
+    ],
+    "whois": "whois.nic.amfam",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-07-14",
+    "changed": "2024-08-23",
+    "source": "iana"
+  },
+  "amica": {
+    "tld": "amica",
+    "organisation": {
+      "name": "Amica Mutual Insurance Company",
+      "organisation": "Amica Mutual Insurance Company",
+      "address": {
+        "city": "100 Amica Way Lincoln",
+        "state": "RI",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Craig Phelps",
+      "e-mail": "dotamica_questions@amica.com",
+      "fax-no": "+1 401 333-5349",
+      "organisation": "Amica Mutual Insurance Company",
+      "address": {
+        "city": "100 Amica Way Lincoln",
+        "state": "RI",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.amica",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.amica",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.amica",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "ns1.dns.nic.amica",
+        "ipv6": "2610:a1:1071:0:0:0:0:b",
+        "ipv4": "156.154.144.11"
+      },
+      {
+        "hostname": "ns2.dns.nic.amica",
+        "ipv6": "2610:a1:1072:0:0:0:0:b",
+        "ipv4": "156.154.145.11"
+      },
+      {
+        "hostname": "ns3.dns.nic.amica",
+        "ipv6": "2610:a1:1073:0:0:0:0:b",
+        "ipv4": "156.154.159.11"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-08-06",
+    "changed": "2024-05-11",
+    "source": "iana"
+  },
+  "amsterdam": {
+    "tld": "amsterdam",
+    "organisation": {
+      "name": "Gemeente Amsterdam",
+      "organisation": "Netherlands (the)"
+    },
+    "administrative": {
+      "name": "Managing Director",
+      "e-mail": "admin@sidn.nl",
+      "phone": "+31 26 3525500",
+      "organisation": "SIDN (Stichting Internet Domeinregistratie Nederland)"
+    },
+    "technical": {
+      "name": "Operational Director",
+      "e-mail": "tech@sidn.nl",
+      "phone": "+31 26 3525500",
+      "organisation": "SIDN (Stichting Internet Domeinregistratie Nederland)"
+    },
+    "nserver": [
+      {
+        "hostname": "ns1.dns.amsterdam",
+        "ipv6": "2001:678:2c:0:194:0:28:4",
+        "ipv4": "194.0.28.4"
+      },
+      {
+        "hostname": "ns3.dns.amsterdam",
+        "ipv6": "2001:678:20:0:0:0:0:26",
+        "ipv4": "194.0.25.26"
+      },
+      {
+        "hostname": "ns4.dns.amsterdam",
+        "ipv6": "2620:10a:80ac:0:0:0:0:202",
+        "ipv4": "185.159.199.202"
+      }
+    ],
+    "whois": "whois.nic.amsterdam",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-11-20",
+    "changed": "2023-07-18",
+    "source": "iana"
+  },
+  "analytics": {
+    "tld": "analytics",
+    "organisation": {
+      "name": "Campus IP LLC",
+      "organisation": "Campus IP LLC",
+      "address": {
+        "city": "100 Matrix Drive Cary",
+        "state": "NC",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Karen Day",
+      "e-mail": "gtldinfo@sas.com",
+      "phone": "+19195316016",
+      "fax-no": "+19196774444",
+      "organisation": "SAS Institute Inc.",
+      "address": {
+        "city": " Cary",
+        "state": "NC",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.analytics",
+        "ipv6": "2001:dcd:1:0:0:0:0:10",
+        "ipv4": "37.209.192.10"
+      },
+      {
+        "hostname": "b.nic.analytics",
+        "ipv6": "2001:dcd:2:0:0:0:0:10",
+        "ipv4": "37.209.194.10"
+      },
+      {
+        "hostname": "c.nic.analytics",
+        "ipv6": "2001:dcd:3:0:0:0:0:10",
+        "ipv4": "37.209.196.10"
+      },
+      {
+        "hostname": "ns1.dns.nic.analytics",
+        "ipv6": "2610:a1:1071:0:0:0:0:c",
+        "ipv4": "156.154.144.12"
+      },
+      {
+        "hostname": "ns2.dns.nic.analytics",
+        "ipv6": "2610:a1:1072:0:0:0:0:c",
+        "ipv4": "156.154.145.12"
+      },
+      {
+        "hostname": "ns3.dns.nic.analytics",
+        "ipv6": "2610:a1:1073:0:0:0:0:c",
+        "ipv4": "156.154.159.12"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-11-20",
+    "changed": "2024-05-11",
+    "source": "iana"
+  },
+  "android": {
+    "tld": "android",
+    "organisation": {
+      "name": "Charleston Road Registry Inc.",
+      "organisation": "Charleston Road Registry Inc.",
+      "address": {
+        "city": "1600 Amphitheatre Parkway Mountain View",
+        "state": "CA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "TLD Admin",
+      "e-mail": "iana-contact@google.com",
+      "phone": "+1 404 978 8419",
+      "fax-no": "+1 650 492 5631",
+      "organisation": "Google Inc",
+      "address": {
+        "city": "111 8th Avenue New York",
+        "state": "NY",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "TLD Engineering",
+      "e-mail": "crr-tech@google.com",
+      "phone": "+1 404 978 8419",
+      "fax-no": "+1 650 492 5631",
+      "organisation": "Google Inc",
+      "address": {
+        "city": "76 Ninth Avenue, 4th Floor New York",
+        "state": "NY",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "ns-tld1.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4802:32:0:0:0:69",
+        "ipv4": "216.239.32.105"
+      },
+      {
+        "hostname": "ns-tld2.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4802:34:0:0:0:69",
+        "ipv4": "216.239.34.105"
+      },
+      {
+        "hostname": "ns-tld3.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4802:36:0:0:0:69",
+        "ipv4": "216.239.36.105"
+      },
+      {
+        "hostname": "ns-tld4.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4802:38:0:0:0:69",
+        "ipv4": "216.239.38.105"
+      },
+      {
+        "hostname": "ns-tld5.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4805:0:0:0:0:69",
+        "ipv4": "216.239.60.105"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-10-30",
+    "changed": "2025-04-11",
+    "source": "iana"
+  },
+  "anquan": {
+    "tld": "anquan",
+    "organisation": {
+      "name": "QIHOO 360 TECHNOLOGY CO. LTD.",
+      "organisation": "Chaoyang District",
+      "address": {
+        "city": "Building #2, No. 6 Jiuxianqiao Road",
+        "state": "",
+        "country": ""
+      }
+    },
+    "administrative": {
+      "name": "Senior Operation Manager",
+      "e-mail": "newgtld@360.cn",
+      "phone": "+86 10 5244 7383",
+      "organisation": "Beijing Qihu Keji Co., Ltd.",
+      "address": {
+        "city": "Building #2, No. 6 Jiuxianqiao Road",
+        "state": "",
+        "country": ""
+      }
+    },
+    "technical": {
+      "name": "CTO",
+      "e-mail": "gtld@teleinfo.cn",
+      "phone": "+86 18910283591",
+      "organisation": "Beijing Tele-info Technology Co., Ltd.",
+      "address": {
+        "city": "21st Floor, Block D, Beihang Zhizhen Building, No. 7 Zhichun Road, Haidan District",
+        "state": "",
+        "country": ""
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "ns1.teleinfo.cn",
+        "ipv6": "2402:7d80:0:0:0:0:0:1",
+        "ipv4": "103.61.60.1"
+      },
+      {
+        "hostname": "ns2.teleinfoo.com",
+        "ipv6": "2402:7d80:8888:0:0:0:0:1",
+        "ipv4": "103.61.61.1"
+      },
+      {
+        "hostname": "ns3.teleinfo.cn",
+        "ipv6": "",
+        "ipv4": "103.61.62.1"
+      },
+      {
+        "hostname": "ns4.teleinfoo.com",
+        "ipv6": "",
+        "ipv4": "103.61.63.1"
+      }
+    ],
+    "whois": "whois.teleinfo.cn",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-03-18",
+    "changed": "2025-04-30",
+    "source": "iana"
+  },
+  "anz": {
+    "tld": "anz",
+    "organisation": {
+      "name": "Australia and New Zealand Banking Group Limited",
+      "organisation": "Australia"
+    },
+    "administrative": {
+      "name": "Head of Customer Insights and Digital Strategy, Group Marketing",
+      "e-mail": "ngtld-anz@cscinfo.com",
+      "phone": "+61 3 9273 5555",
+      "fax-no": "+61 3 8654 1922",
+      "organisation": "Australia"
+    },
+    "technical": {
+      "name": "Project &amp; Process Manager",
+      "e-mail": "ngtld-anz@cscinfo.com",
+      "phone": "+442070151717",
+      "organisation": "CSC Digital Brand Services",
+      "address": {
+        "city": " Wilmington",
+        "state": "DE",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.anz",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.anz",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.anz",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "x.nic.anz",
+        "ipv6": "2610:a1:1074:0:0:0:1:82",
+        "ipv4": "156.154.172.82"
+      },
+      {
+        "hostname": "y.nic.anz",
+        "ipv6": "2610:a1:1075:0:0:0:1:82",
+        "ipv4": "156.154.173.82"
+      },
+      {
+        "hostname": "z.nic.anz",
+        "ipv6": "2610:a1:1076:0:0:0:1:82",
+        "ipv4": "156.154.174.82"
+      }
+    ],
+    "whois": "whois.nic.anz",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-06-09",
+    "changed": "2023-11-30",
+    "source": "iana"
+  },
+  "ao": {
+    "tld": "ao",
+    "organisation": {},
+    "administrative": {
+      "name": "Mr. Andre Pedro (Eng.)",
+      "e-mail": "andre.pedro@infosi.gov.ao",
+      "phone": "+244 927 217 021",
+      "organisation": "Cidade Alta"
+    },
+    "technical": {
+      "name": "Marcos Damiao",
+      "e-mail": "ao@dns.ao",
+      "phone": "+244927991964",
+      "fax-no": "(+244)927 991964",
+      "organisation": "Cidade Alta Luanda"
+    },
+    "nserver": [
+      {
+        "hostname": "a.ns.ao",
+        "ipv6": "2620:171:804:ad2:0:0:0:4",
+        "ipv4": "206.51.254.4"
+      },
+      {
+        "hostname": "ao-e.ns.nic.cz",
+        "ipv6": "2001:148f:fffd:0:0:0:0:13",
+        "ipv4": "185.43.134.13"
+      },
+      {
+        "hostname": "ao02.dns.pt",
+        "ipv6": "2a04:6d80:0:0:0:0:0:29",
+        "ipv4": "185.39.208.29"
+      },
+      {
+        "hostname": "etld-1.anycast.net",
+        "ipv6": "2607:f740:45:0:0:0:0:54",
+        "ipv4": "45.54.45.54"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "1995-11-15",
+    "changed": "2024-09-09",
+    "source": "iana"
+  },
+  "aol": {
+    "tld": "aol",
+    "organisation": {
+      "name": "Yahoo Inc.",
+      "organisation": "Yahoo Inc.",
+      "address": {
+        "city": "770 Broadway New York",
+        "state": "NY",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "General Counsel",
+      "e-mail": "ngtld-aol@cscinfo.com",
+      "phone": "+1 212 206 4400",
+      "organisation": "General Counsel",
+      "address": {
+        "city": "770 Broadway New York",
+        "state": "NY",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Howard Eland, Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Inc.",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.nic.aol",
+        "ipv6": "2a01:8840:6e:0:0:0:0:42",
+        "ipv4": "65.22.112.42"
+      },
+      {
+        "hostname": "a2.nic.aol",
+        "ipv6": "2a01:8840:71:0:0:0:0:42",
+        "ipv4": "65.22.115.42"
+      },
+      {
+        "hostname": "b0.nic.aol",
+        "ipv6": "2a01:8840:6f:0:0:0:0:42",
+        "ipv4": "65.22.113.42"
+      },
+      {
+        "hostname": "c0.nic.aol",
+        "ipv6": "2a01:8840:70:0:0:0:0:42",
+        "ipv4": "65.22.114.42"
+      }
+    ],
+    "whois": "whois.nic.aol",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-10-27",
+    "changed": "2024-05-15",
+    "source": "iana"
+  },
+  "apartments": {
+    "tld": "apartments",
+    "organisation": {
+      "name": "Binky Moon, LLC",
+      "organisation": "c/o Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Vice President, Engineering",
+      "e-mail": "tldadmin@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.apartments",
+        "ipv6": "2a01:8840:1e:0:0:0:0:56",
+        "ipv4": "65.22.28.56"
+      },
+      {
+        "hostname": "v0n1.nic.apartments",
+        "ipv6": "2a01:8840:1f:0:0:0:0:56",
+        "ipv4": "65.22.29.56"
+      },
+      {
+        "hostname": "v0n2.nic.apartments",
+        "ipv6": "2a01:8840:20:0:0:0:0:56",
+        "ipv4": "65.22.30.56"
+      },
+      {
+        "hostname": "v0n3.nic.apartments",
+        "ipv6": "2a01:8840:f8:0:0:0:0:56",
+        "ipv4": "161.232.14.56"
+      },
+      {
+        "hostname": "v2n0.nic.apartments",
+        "ipv6": "2a01:8840:21:0:0:0:0:56",
+        "ipv4": "65.22.31.56"
+      },
+      {
+        "hostname": "v2n1.nic.apartments",
+        "ipv6": "2a01:8840:f9:0:0:0:0:56",
+        "ipv4": "161.232.15.56"
+      }
+    ],
+    "whois": "whois.nic.apartments",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-02-05",
+    "changed": "2023-09-12",
+    "source": "iana"
+  },
+  "app": {
+    "tld": "app",
+    "organisation": {
+      "name": "Charleston Road Registry Inc.",
+      "organisation": "Charleston Road Registry Inc.",
+      "address": {
+        "city": "1600 Amphitheatre Parkway Mountain View",
+        "state": "CA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "TLD Admin",
+      "e-mail": "iana-contact@google.com",
+      "phone": "+1 404 978 8419",
+      "fax-no": "+1 650 492 5631",
+      "organisation": "Google Inc.",
+      "address": {
+        "city": "111 8th Avenue New York",
+        "state": "NY",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "TLD Engineering",
+      "e-mail": "crr-tech@google.com",
+      "phone": "+1 404 978 8419",
+      "fax-no": "+1 650 492 5631",
+      "organisation": "Google Inc",
+      "address": {
+        "city": "76 Ninth Avenue, 4th Floor New York",
+        "state": "NY",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "ns-tld1.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4802:32:0:0:0:69",
+        "ipv4": "216.239.32.105"
+      },
+      {
+        "hostname": "ns-tld2.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4802:34:0:0:0:69",
+        "ipv4": "216.239.34.105"
+      },
+      {
+        "hostname": "ns-tld3.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4802:36:0:0:0:69",
+        "ipv4": "216.239.36.105"
+      },
+      {
+        "hostname": "ns-tld4.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4802:38:0:0:0:69",
+        "ipv4": "216.239.38.105"
+      },
+      {
+        "hostname": "ns-tld5.charlestonroadregistry.com",
+        "ipv6": "2001:4860:4805:0:0:0:0:69",
+        "ipv4": "216.239.60.105"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-06-25",
+    "changed": "2025-04-11",
+    "source": "iana"
+  },
+  "apple": {
+    "tld": "apple",
+    "organisation": {
+      "name": "Apple Inc.",
+      "organisation": "Apple Inc.",
+      "address": {
+        "city": " Cupertino",
+        "state": "CA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Counsel-Trademark, Copyright and Domains",
+      "e-mail": "ngtld-apple@cscglobal.com",
+      "phone": "+1 408 996 1010",
+      "fax-no": "+1 408 253 0186",
+      "organisation": "Apple, Inc.",
+      "address": {
+        "city": " Cupertino",
+        "state": "CA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tld-tech-poc@afilias.info",
+      "phone": "+1 215 706 5700",
+      "fax-no": "+1 215 706 5701",
+      "organisation": "Afilias",
+      "address": {
+        "city": "300 Welsh Road Horsham",
+        "state": "PA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.nic.apple",
+        "ipv6": "2a01:8840:3a:0:0:0:0:1",
+        "ipv4": "65.22.60.1"
+      },
+      {
+        "hostname": "a2.nic.apple",
+        "ipv6": "2a01:8840:3d:0:0:0:0:1",
+        "ipv4": "65.22.63.1"
+      },
+      {
+        "hostname": "b0.nic.apple",
+        "ipv6": "2a01:8840:3b:0:0:0:0:1",
+        "ipv4": "65.22.61.1"
+      },
+      {
+        "hostname": "c0.nic.apple",
+        "ipv6": "2a01:8840:3c:0:0:0:0:1",
+        "ipv4": "65.22.62.1"
+      }
+    ],
+    "whois": "whois.nic.apple",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-07-02",
+    "changed": "2025-04-10",
+    "source": "iana"
+  },
+  "aq": {
+    "tld": "aq",
+    "organisation": {},
+    "administrative": {
+      "name": "Peter Mott",
+      "e-mail": "info@icenic.aq",
+      "phone": "+64 21 279 4995",
+      "organisation": "Antarctica Network Information Centre Limited"
+    },
+    "technical": {
+      "name": "IANA Administrator",
+      "e-mail": "ianatech@internetnz.net.nz",
+      "phone": "+64 4 472 1600",
+      "organisation": "InternetNZ",
+      "address": {
+        "city": "80 Boulcott Street",
+        "state": "",
+        "country": ""
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "fork.sth.dnsnode.net",
+        "ipv6": "2a01:3f0:0:306:0:0:0:53",
+        "ipv4": "77.72.229.254"
+      },
+      {
+        "hostname": "ns1.anycast.dns.aq",
+        "ipv6": "2001:500:14:6132:ad:0:0:1",
+        "ipv4": "204.61.216.132"
+      },
+      {
+        "hostname": "ns99.dns.net.nz",
+        "ipv6": "2001:dce:2000:2:0:0:0:131",
+        "ipv4": "202.46.190.131"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "1992-02-26",
+    "changed": "2025-01-21",
+    "source": "iana"
+  },
+  "aquarelle": {
+    "tld": "aquarelle",
+    "organisation": {
+      "name": "Aquarelle.com",
+      "organisation": "Aquarelle.com",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "France"
+      }
+    },
+    "administrative": {
+      "name": "CTO",
+      "e-mail": "rvivet@universalflower.com",
+      "phone": "+33 140541010",
+      "fax-no": "+33 140541064",
+      "organisation": "Aquarelle.com",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "France"
+      }
+    },
+    "technical": {
+      "name": "Head of Registry Engineering",
+      "e-mail": "tld.ops@centralnic.com",
+      "organisation": "CentralNic",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.aquarelle",
+        "ipv6": "2001:67c:13cc:0:0:0:1:160",
+        "ipv4": "194.169.218.160"
+      },
+      {
+        "hostname": "b.nic.aquarelle",
+        "ipv6": "2a04:2b00:13cc:0:0:0:1:160",
+        "ipv4": "185.24.64.160"
+      },
+      {
+        "hostname": "c.nic.aquarelle",
+        "ipv6": "2a04:2b00:13ee:0:0:0:0:160",
+        "ipv4": "212.18.248.160"
+      },
+      {
+        "hostname": "d.nic.aquarelle",
+        "ipv6": "2a04:2b00:13ff:0:0:0:0:160",
+        "ipv4": "212.18.249.160"
+      }
+    ],
+    "whois": "whois.nic.aquarelle",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-11-06",
+    "changed": "2024-11-08",
+    "source": "iana"
+  },
+  "ar": {
+    "tld": "ar",
+    "organisation": {},
+    "administrative": {
+      "name": "Director Nacional del Registro de Dominios de Internet",
+      "e-mail": "direccion@nic.ar",
+      "phone": "+54 11 5238 1350",
+      "organisation": "Argentina"
+    },
+    "technical": {
+      "name": "Director Nacional del Registro de Dominios de Internet",
+      "e-mail": "contacto_dgsi@nic.ar",
+      "phone": "+54 11 5238 1350",
+      "organisation": "Argentina"
+    },
+    "nserver": [
+      {
+        "hostname": "a.lactld.org",
+        "ipv6": "2801:14:a000:0:0:0:0:10",
+        "ipv4": "200.0.68.10"
+      },
+      {
+        "hostname": "c.dns.ar",
+        "ipv6": "2801:140:10:0:0:0:0:10",
+        "ipv4": "200.108.148.50"
+      },
+      {
+        "hostname": "d.dns.ar",
+        "ipv6": "2801:140:dddd:0:0:0:0:50",
+        "ipv4": "192.140.126.50"
+      },
+      {
+        "hostname": "e.dns.ar",
+        "ipv6": "2801:140:eeee:0:0:0:0:50",
+        "ipv4": "170.238.66.50"
+      },
+      {
+        "hostname": "f.dns.ar",
+        "ipv6": "2001:620:0:ff:0:0:0:20",
+        "ipv4": "130.59.31.20"
+      }
+    ],
+    "whois": "whois.nic.ar",
+    "status": "active",
+    "remarks": "",
+    "created": "1987-09-23",
+    "changed": "2025-04-17",
+    "source": "iana"
+  },
+  "arab": {
+    "tld": "arab",
+    "organisation": {
+      "name": "League of Arab States",
+      "organisation": "Cairo"
+    },
+    "administrative": {
+      "name": "Khaled Fouda",
+      "e-mail": "atldsecondary@las.int",
+      "phone": "+20227738092",
+      "organisation": "League of Arab States"
+    },
+    "technical": {
+      "name": "Manager Systems, ae Domain Administration",
+      "e-mail": "gtldsupport@aeda.ae",
+      "phone": "+97147774018",
+      "organisation": "Telecommunications Regulatory Authority of UAE"
+    },
+    "nserver": [
+      {
+        "hostname": "gtld.alpha.aridns.net.au",
+        "ipv6": "2001:dcd:1:0:0:0:0:10",
+        "ipv4": "37.209.192.10"
+      },
+      {
+        "hostname": "gtld.beta.aridns.net.au",
+        "ipv6": "2001:dcd:2:0:0:0:0:10",
+        "ipv4": "37.209.194.10"
+      },
+      {
+        "hostname": "gtld.delta.aridns.net.au",
+        "ipv6": "2001:dcd:4:0:0:0:0:10",
+        "ipv4": "37.209.198.10"
+      },
+      {
+        "hostname": "gtld.gamma.aridns.net.au",
+        "ipv6": "2001:dcd:3:0:0:0:0:10",
+        "ipv4": "37.209.196.10"
+      }
+    ],
+    "whois": "whois.nic.arab",
+    "status": "active",
+    "remarks": "",
+    "created": "2017-05-11",
+    "changed": "2020-05-14",
+    "source": "iana"
+  },
+  "aramco": {
+    "tld": "aramco",
+    "organisation": {
+      "name": "Aramco Services Company",
+      "organisation": "Aramco Services Company",
+      "address": {
+        "city": " Houston",
+        "state": "TX",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Coleman Works",
+      "e-mail": "coleman.works@aramcoservices.com",
+      "phone": "+1-713-432-8532",
+      "fax-no": "+1-713-432-8309",
+      "organisation": "Aramco Services Company",
+      "address": {
+        "city": " Houston",
+        "state": "TX",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.aramco",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.aramco",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.aramco",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "ns4.dns.nic.aramco",
+        "ipv6": "2610:a1:1074:0:0:0:0:e",
+        "ipv4": "156.154.156.14"
+      },
+      {
+        "hostname": "ns5.dns.nic.aramco",
+        "ipv6": "2610:a1:1075:0:0:0:0:e",
+        "ipv4": "156.154.157.14"
+      },
+      {
+        "hostname": "ns6.dns.nic.aramco",
+        "ipv6": "2610:a1:1076:0:0:0:0:e",
+        "ipv4": "156.154.158.14"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-08-20",
+    "changed": "2024-05-11",
+    "source": "iana"
+  },
+  "archi": {
+    "tld": "archi",
+    "organisation": {
+      "name": "Identity Digital Limited",
+      "organisation": "c/o Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Vice President, Engineering",
+      "e-mail": "tldadmin@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.nic.archi",
+        "ipv6": "2a01:8840:52:0:0:0:0:1",
+        "ipv4": "65.22.84.1"
+      },
+      {
+        "hostname": "a2.nic.archi",
+        "ipv6": "2a01:8840:55:0:0:0:0:1",
+        "ipv4": "65.22.87.1"
+      },
+      {
+        "hostname": "b0.nic.archi",
+        "ipv6": "2a01:8840:53:0:0:0:0:1",
+        "ipv4": "65.22.85.1"
+      },
+      {
+        "hostname": "c0.nic.archi",
+        "ipv6": "2a01:8840:54:0:0:0:0:1",
+        "ipv4": "65.22.86.1"
+      }
+    ],
+    "whois": "whois.nic.archi",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-03-20",
+    "changed": "2023-08-31",
+    "source": "iana"
+  },
+  "army": {
+    "tld": "army",
+    "organisation": {
+      "name": "Dog Beach, LLC",
+      "organisation": "c/o Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Vice President, Engineering",
+      "e-mail": "tldadmin@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.army",
+        "ipv6": "2a01:8840:1e:0:0:0:0:59",
+        "ipv4": "65.22.28.59"
+      },
+      {
+        "hostname": "v0n1.nic.army",
+        "ipv6": "2a01:8840:1f:0:0:0:0:59",
+        "ipv4": "65.22.29.59"
+      },
+      {
+        "hostname": "v0n2.nic.army",
+        "ipv6": "2a01:8840:20:0:0:0:0:59",
+        "ipv4": "65.22.30.59"
+      },
+      {
+        "hostname": "v0n3.nic.army",
+        "ipv6": "2a01:8840:f8:0:0:0:0:59",
+        "ipv4": "161.232.14.59"
+      },
+      {
+        "hostname": "v2n0.nic.army",
+        "ipv6": "2a01:8840:21:0:0:0:0:59",
+        "ipv4": "65.22.31.59"
+      },
+      {
+        "hostname": "v2n1.nic.army",
+        "ipv6": "2a01:8840:f9:0:0:0:0:59",
+        "ipv4": "161.232.15.59"
+      }
+    ],
+    "whois": "whois.nic.army",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-05-29",
+    "changed": "2023-09-12",
+    "source": "iana"
+  },
+  "arpa": {
+    "tld": "arpa",
+    "organisation": {
+      "name": "Internet Architecture Board (IAB)",
+      "organisation": "c/o IETF Administration LLC",
+      "address": {
+        "city": " Wilmington",
+        "state": "DE",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Internet Architecture Board (IAB)",
+      "e-mail": "iab@iab.org",
+      "phone": "+1 510 492 4080",
+      "fax-no": "+1 510 492 4001",
+      "organisation": "c/o IETF Administration LLC",
+      "address": {
+        "city": " Wilmington",
+        "state": "DE",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Internet Assigned Numbers Authority (IANA)",
+      "e-mail": "tld-contact@iana.org",
+      "phone": "+1 310 301 5800",
+      "fax-no": "+1 310 823-8649",
+      "organisation": "Internet Assigned Numbers Authority (IANA)",
+      "address": {
+        "city": "12025 Waterfront Drive Los Angeles",
+        "state": "CA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.ns.arpa",
+        "ipv6": "2001:503:ba3e:0:0:0:2:30",
+        "ipv4": "198.41.0.4"
+      },
+      {
+        "hostname": "b.ns.arpa",
+        "ipv6": "2801:1b8:10:0:0:0:0:b",
+        "ipv4": "170.247.170.2"
+      },
+      {
+        "hostname": "c.ns.arpa",
+        "ipv6": "2001:500:2:0:0:0:0:c",
+        "ipv4": "192.33.4.12"
+      },
+      {
+        "hostname": "d.ns.arpa",
+        "ipv6": "2001:500:2d:0:0:0:0:d",
+        "ipv4": "199.7.91.13"
+      },
+      {
+        "hostname": "e.ns.arpa",
+        "ipv6": "2001:500:a8:0:0:0:0:e",
+        "ipv4": "192.203.230.10"
+      },
+      {
+        "hostname": "f.ns.arpa",
+        "ipv6": "2001:500:2f:0:0:0:0:f",
+        "ipv4": "192.5.5.241"
+      },
+      {
+        "hostname": "g.ns.arpa",
+        "ipv6": "2001:500:12:0:0:0:0:d0d",
+        "ipv4": "192.112.36.4"
+      },
+      {
+        "hostname": "h.ns.arpa",
+        "ipv6": "2001:500:1:0:0:0:0:53",
+        "ipv4": "198.97.190.53"
+      },
+      {
+        "hostname": "i.ns.arpa",
+        "ipv6": "2001:7fe:0:0:0:0:0:53",
+        "ipv4": "192.36.148.17"
+      },
+      {
+        "hostname": "k.ns.arpa",
+        "ipv6": "2001:7fd:0:0:0:0:0:1",
+        "ipv4": "193.0.14.129"
+      },
+      {
+        "hostname": "l.ns.arpa",
+        "ipv6": "2001:500:9f:0:0:0:0:42",
+        "ipv4": "199.7.83.42"
+      },
+      {
+        "hostname": "m.ns.arpa",
+        "ipv6": "2001:dc3:0:0:0:0:0:35",
+        "ipv4": "202.12.27.33"
+      }
+    ],
+    "whois": "whois.iana.org",
+    "status": "active",
+    "remarks": "",
+    "created": "1985-01-01",
+    "changed": "2023-11-27",
+    "source": "iana"
+  },
+  "art": {
+    "tld": "art",
+    "organisation": {
+      "name": "UK Creative Ideas Limited",
+      "organisation": "UK Creative Ideas Limited",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "administrative": {
+      "name": "Member, Strategic Planning Board",
+      "e-mail": "kp@art.art",
+      "phone": "+1-310-400-4184",
+      "organisation": "UK Creative Ideas Ltd",
+      "address": {
+        "city": "111 Buckingham Palace Road",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "technical": {
+      "name": "CTO",
+      "e-mail": "tld.ops@centralnic.com",
+      "phone": "+44 20 33 88 0600",
+      "fax-no": "+44 20 33 88 0601",
+      "organisation": "CentralNic",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.art",
+        "ipv6": "2001:67c:13cc:0:0:0:1:49",
+        "ipv4": "194.169.218.49"
+      },
+      {
+        "hostname": "b.nic.art",
+        "ipv6": "2a04:2b00:13cc:0:0:0:1:49",
+        "ipv4": "185.24.64.49"
+      },
+      {
+        "hostname": "c.nic.art",
+        "ipv6": "2a04:2b00:13ee:0:0:0:0:49",
+        "ipv4": "212.18.248.49"
+      },
+      {
+        "hostname": "d.nic.art",
+        "ipv6": "2a04:2b00:13ff:0:0:0:0:49",
+        "ipv4": "212.18.249.49"
+      }
+    ],
+    "whois": "whois.nic.art",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-06-09",
+    "changed": "2024-04-30",
+    "source": "iana"
+  },
+  "arte": {
+    "tld": "arte",
+    "organisation": {
+      "name": "Association Relative à la Télévision Européenne G.E.I.E.",
+      "organisation": "Association Relative à la Télévision Européenne G.E.I.E.",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "France"
+      }
+    },
+    "administrative": {
+      "name": "Legal Director",
+      "e-mail": "ngtld-arte@cscinfo.com",
+      "phone": "+33 3 88 14 22 22",
+      "organisation": "Legal Director",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "France"
+      }
+    },
+    "technical": {
+      "name": "Howard Eland, Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Inc.",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.arte",
+        "ipv6": "2a01:8840:6a:0:0:0:0:11",
+        "ipv4": "65.22.108.11"
+      },
+      {
+        "hostname": "v0n1.nic.arte",
+        "ipv6": "2a01:8840:6b:0:0:0:0:11",
+        "ipv4": "65.22.109.11"
+      },
+      {
+        "hostname": "v0n2.nic.arte",
+        "ipv6": "2a01:8840:6c:0:0:0:0:11",
+        "ipv4": "65.22.110.11"
+      },
+      {
+        "hostname": "v0n3.nic.arte",
+        "ipv6": "2a01:8840:108:0:0:0:0:11",
+        "ipv4": "161.232.32.11"
+      },
+      {
+        "hostname": "v2n0.nic.arte",
+        "ipv6": "2a01:8840:6d:0:0:0:0:11",
+        "ipv4": "65.22.111.11"
+      },
+      {
+        "hostname": "v2n1.nic.arte",
+        "ipv6": "2a01:8840:109:0:0:0:0:11",
+        "ipv4": "161.232.33.11"
+      }
+    ],
+    "whois": "whois.nic.arte",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-09-24",
+    "changed": "2024-03-31",
+    "source": "iana"
+  },
+  "as": {
+    "tld": "as",
+    "organisation": {},
+    "administrative": {
+      "name": "Registrar",
+      "e-mail": "domainmaster@nic.as",
+      "phone": "+684 252 9742",
+      "organisation": "AS Domain Registry",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "American Samoa"
+      }
+    },
+    "technical": {
+      "name": "GDNS Hostmaster",
+      "e-mail": "hostmaster@gdns.com",
+      "phone": "+1 212 334 3660",
+      "fax-no": "+1 212 208 2674",
+      "organisation": "GDNS, LLC",
+      "address": {
+        "city": " Frenchtown",
+        "state": "NJ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "ns1.asnic.biz",
+        "ipv6": "2a01:618:403:0:0:0:0:254",
+        "ipv4": "213.248.219.254"
+      },
+      {
+        "hostname": "ns2.asnic.info",
+        "ipv6": "2401:fd80:403:0:0:0:0:254",
+        "ipv4": "103.49.83.254"
+      },
+      {
+        "hostname": "ns3.asnic.org",
+        "ipv6": "2a01:618:407:0:0:0:0:254",
+        "ipv4": "213.248.223.254"
+      },
+      {
+        "hostname": "ns4.asnic.uk",
+        "ipv6": "2401:fd80:407:0:0:0:0:254",
+        "ipv4": "43.230.51.254"
+      },
+      {
+        "hostname": "ns5.asnic.us",
+        "ipv6": "2001:67c:1010:22:0:0:0:53",
+        "ipv4": "194.146.106.86"
+      },
+      {
+        "hostname": "pch.nic.as",
+        "ipv6": "2001:500:14:6111:ad:0:0:1",
+        "ipv4": "204.61.216.111"
+      }
+    ],
+    "whois": "whois.nic.as",
+    "status": "active",
+    "remarks": "",
+    "created": "1997-06-12",
+    "changed": "2022-05-06",
+    "source": "iana"
+  },
+  "asda": {
+    "tld": "asda",
+    "organisation": {
+      "name": "Asda Stores Limited",
+      "organisation": "Great Wilson St",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "administrative": {
+      "name": "Project and Process Manager",
+      "e-mail": "ngtld-asda@cscglobal.com",
+      "phone": "+44 20 70 15 17 17",
+      "organisation": "Asda Stores Limited",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "technical": {
+      "name": "Howard Eland, Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Inc.",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.nic.asda",
+        "ipv6": "2a01:8840:6e:0:0:0:0:43",
+        "ipv4": "65.22.112.43"
+      },
+      {
+        "hostname": "a2.nic.asda",
+        "ipv6": "2a01:8840:71:0:0:0:0:43",
+        "ipv4": "65.22.115.43"
+      },
+      {
+        "hostname": "b0.nic.asda",
+        "ipv6": "2a01:8840:6f:0:0:0:0:43",
+        "ipv4": "65.22.113.43"
+      },
+      {
+        "hostname": "c0.nic.asda",
+        "ipv6": "2a01:8840:70:0:0:0:0:43",
+        "ipv4": "65.22.114.43"
+      }
+    ],
+    "whois": "whois.nic.asda",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-07-21",
+    "changed": "2024-12-17",
+    "source": "iana"
+  },
+  "asia": {
+    "tld": "asia",
+    "organisation": {
+      "name": "DotAsia Organisation Ltd.",
+      "organisation": "Tsim Sha Tsui Kowloon",
+      "address": {
+        "city": "35-37 Haiphong Road",
+        "state": "",
+        "country": ""
+      }
+    },
+    "administrative": {
+      "name": "DotAsia Administrative Contact",
+      "e-mail": "admin@iana.whois.asia",
+      "phone": "+852 8171 1714",
+      "fax-no": "+852 2125 8484",
+      "organisation": "DotAsia Organisation Ltd.",
+      "address": {
+        "city": "35-37 Haiphong Road",
+        "state": "",
+        "country": ""
+      }
+    },
+    "technical": {
+      "name": "DotAsia Technical Contact",
+      "e-mail": "tech@iana.whois.asia",
+      "phone": "+852 8171 1714",
+      "fax-no": "+852 2125 8484",
+      "organisation": "DotAsia Organisation Ltd.",
+      "address": {
+        "city": "35-37 Haiphong Road",
+        "state": "",
+        "country": ""
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.asia.afilias-nst.info",
+        "ipv6": "2001:500:d:0:0:0:0:1",
+        "ipv4": "199.19.55.1"
+      },
+      {
+        "hostname": "a2.asia.afilias-nst.info",
+        "ipv6": "2001:500:42:0:0:0:0:1",
+        "ipv4": "199.249.114.1"
+      },
+      {
+        "hostname": "b0.asia.afilias-nst.asia",
+        "ipv6": "2001:500:16:0:0:0:0:1",
+        "ipv4": "199.254.28.1"
+      },
+      {
+        "hostname": "b2.asia.afilias-nst.org",
+        "ipv6": "2001:500:4a:0:0:0:0:1",
+        "ipv4": "199.249.122.1"
+      },
+      {
+        "hostname": "c0.asia.afilias-nst.info",
+        "ipv6": "2001:500:17:0:0:0:0:1",
+        "ipv4": "199.254.29.1"
+      },
+      {
+        "hostname": "d0.asia.afilias-nst.asia",
+        "ipv6": "2001:500:18:0:0:0:0:1",
+        "ipv4": "199.254.30.1"
+      }
+    ],
+    "whois": "whois.nic.asia",
+    "status": "active",
+    "remarks": "",
+    "created": "2007-05-02",
+    "changed": "2023-08-03",
+    "source": "iana"
+  },
+  "associates": {
+    "tld": "associates",
+    "organisation": {
+      "name": "Binky Moon, LLC",
+      "organisation": "c/o Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Vice President, Engineering",
+      "e-mail": "tldadmin@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.associates",
+        "ipv6": "2a01:8840:1e:0:0:0:0:27",
+        "ipv4": "65.22.28.27"
+      },
+      {
+        "hostname": "v0n1.nic.associates",
+        "ipv6": "2a01:8840:1f:0:0:0:0:27",
+        "ipv4": "65.22.29.27"
+      },
+      {
+        "hostname": "v0n2.nic.associates",
+        "ipv6": "2a01:8840:20:0:0:0:0:27",
+        "ipv4": "65.22.30.27"
+      },
+      {
+        "hostname": "v0n3.nic.associates",
+        "ipv6": "2a01:8840:f8:0:0:0:0:27",
+        "ipv4": "161.232.14.27"
+      },
+      {
+        "hostname": "v2n0.nic.associates",
+        "ipv6": "2a01:8840:21:0:0:0:0:27",
+        "ipv4": "65.22.31.27"
+      },
+      {
+        "hostname": "v2n1.nic.associates",
+        "ipv6": "2a01:8840:f9:0:0:0:0:27",
+        "ipv4": "161.232.15.27"
+      }
+    ],
+    "whois": "whois.nic.associates",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-04-03",
+    "changed": "2023-09-12",
+    "source": "iana"
+  },
+  "at": {
+    "tld": "at",
+    "organisation": {},
+    "administrative": {
+      "name": "Geschaeftsfuehrer NIC.AT",
+      "e-mail": "gf@nic.at",
+      "phone": "+43 662 4669-14",
+      "fax-no": "+43 662 4669-19",
+      "organisation": "nic.at GmbH"
+    },
+    "technical": {
+      "name": "Technik NIC.AT",
+      "e-mail": "tech-nic-at@nic.at",
+      "phone": "+43 1 4277 14035",
+      "fax-no": "+43 1 4277 9140",
+      "organisation": "Austria"
+    },
+    "nserver": [
+      {
+        "hostname": "d.ns.at",
+        "ipv6": "2a02:568:20:1:0:0:0:d",
+        "ipv4": "81.91.161.98"
+      },
+      {
+        "hostname": "j.ns.at",
+        "ipv6": "2001:67c:1010:12:0:0:0:53",
+        "ipv4": "194.146.106.50"
+      },
+      {
+        "hostname": "n.ns.at",
+        "ipv6": "2a02:568:281:0:0:0:0:130",
+        "ipv4": "81.91.173.130"
+      },
+      {
+        "hostname": "ns1.univie.ac.at",
+        "ipv6": "2001:628:2030:4301:0:0:0:2",
+        "ipv4": "78.104.144.2"
+      },
+      {
+        "hostname": "ns2.univie.ac.at",
+        "ipv6": "2001:678:1c:0:0:0:0:2",
+        "ipv4": "192.92.125.2"
+      },
+      {
+        "hostname": "r.ns.at",
+        "ipv6": "2001:678:20:0:0:0:0:10",
+        "ipv4": "194.0.25.10"
+      },
+      {
+        "hostname": "u.ns.at",
+        "ipv6": "2a02:850:ffff:0:0:0:0:2",
+        "ipv4": "185.102.12.2"
+      }
+    ],
+    "whois": "whois.nic.at",
+    "status": "active",
+    "remarks": "",
+    "created": "1988-01-20",
+    "changed": "2025-05-14",
+    "source": "iana"
+  },
+  "athleta": {
+    "tld": "athleta",
+    "organisation": {
+      "name": "The Gap, Inc.",
+      "organisation": "The Gap, Inc.",
+      "address": {
+        "city": "2 Folsom Street San Francisco",
+        "state": "CA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Director, Consulting &amp; Strategy",
+      "e-mail": "gapregistries@fairwindspartners.com",
+      "phone": "+1 202 223 9252",
+      "fax-no": "+1 202 223 9256",
+      "organisation": "FairWinds Partners, LLC",
+      "address": {
+        "city": "1000 Potomac Street NW #350 Washington",
+        "state": "DC",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.athleta",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.athleta",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.athleta",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "ns1.dns.nic.athleta",
+        "ipv6": "2610:a1:1071:0:0:0:0:10",
+        "ipv4": "156.154.144.16"
+      },
+      {
+        "hostname": "ns2.dns.nic.athleta",
+        "ipv6": "2610:a1:1072:0:0:0:0:10",
+        "ipv4": "156.154.145.16"
+      },
+      {
+        "hostname": "ns3.dns.nic.athleta",
+        "ipv6": "2610:a1:1073:0:0:0:0:10",
+        "ipv4": "156.154.159.16"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-07-14",
+    "changed": "2024-05-11",
+    "source": "iana"
+  },
+  "attorney": {
+    "tld": "attorney",
+    "organisation": {
+      "name": "Dog Beach, LLC",
+      "organisation": "c/o Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Vice President, Engineering",
+      "e-mail": "tldadmin@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.attorney",
+        "ipv6": "2a01:8840:16:0:0:0:0:20",
+        "ipv4": "65.22.20.20"
+      },
+      {
+        "hostname": "v0n1.nic.attorney",
+        "ipv6": "2a01:8840:17:0:0:0:0:20",
+        "ipv4": "65.22.21.20"
+      },
+      {
+        "hostname": "v0n2.nic.attorney",
+        "ipv6": "2a01:8840:18:0:0:0:0:20",
+        "ipv4": "65.22.22.20"
+      },
+      {
+        "hostname": "v0n3.nic.attorney",
+        "ipv6": "2a01:8840:f4:0:0:0:0:20",
+        "ipv4": "161.232.10.20"
+      },
+      {
+        "hostname": "v2n0.nic.attorney",
+        "ipv6": "2a01:8840:19:0:0:0:0:20",
+        "ipv4": "65.22.23.20"
+      },
+      {
+        "hostname": "v2n1.nic.attorney",
+        "ipv6": "2a01:8840:f5:0:0:0:0:20",
+        "ipv4": "161.232.11.20"
+      }
+    ],
+    "whois": "whois.nic.attorney",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-05-22",
+    "changed": "2023-09-12",
+    "source": "iana"
+  },
+  "au": {
+    "tld": "au",
+    "organisation": {},
+    "administrative": {
+      "name": "Chief Operating Officer",
+      "e-mail": "coo@auda.org.au",
+      "phone": "+ 61 03 8341 4111",
+      "fax-no": "+ 61 03 8341 4112",
+      "organisation": ".au Domain Administration (auDA)",
+      "address": {
+        "city": "8 Exhibition Street",
+        "state": "",
+        "country": ""
+      }
+    },
+    "technical": {
+      "name": "Chief Technical Officer",
+      "e-mail": "auda.iana@auda.org.au",
+      "phone": "+61 (0)3 8341 4111",
+      "fax-no": "+61 (0)3 8341 4112",
+      "organisation": ".au Domain Administration (auDA)",
+      "address": {
+        "city": "8 Exhibition Street",
+        "state": "",
+        "country": ""
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.au",
+        "ipv6": "2407:6e00:254:0:0:0:0:1",
+        "ipv4": "58.65.254.1"
+      },
+      {
+        "hostname": "q.au",
+        "ipv6": "2a01:8840:be:0:0:0:0:1",
+        "ipv4": "65.22.196.1"
+      },
+      {
+        "hostname": "r.au",
+        "ipv6": "2a01:8840:bf:0:0:0:0:1",
+        "ipv4": "65.22.197.1"
+      },
+      {
+        "hostname": "s.au",
+        "ipv6": "2a01:8840:c0:0:0:0:0:1",
+        "ipv4": "65.22.198.1"
+      },
+      {
+        "hostname": "t.au",
+        "ipv6": "2a01:8840:c1:0:0:0:0:1",
+        "ipv4": "65.22.199.1"
+      }
+    ],
+    "whois": "whois.auda.org.au",
+    "status": "active",
+    "remarks": "",
+    "created": "1986-03-05",
+    "changed": "2025-08-07",
+    "source": "iana"
+  },
+  "auction": {
+    "tld": "auction",
+    "organisation": {
+      "name": "Dog Beach, LLC",
+      "organisation": "c/o Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Vice President, Engineering",
+      "e-mail": "tldadmin@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tldtech@identity.digital",
+      "organisation": "Identity Digital Limited",
+      "address": {
+        "city": "10500 NE 8th Street, Suite 750 Bellevue",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "v0n0.nic.auction",
+        "ipv6": "2a01:8840:22:0:0:0:0:55",
+        "ipv4": "65.22.32.55"
+      },
+      {
+        "hostname": "v0n1.nic.auction",
+        "ipv6": "2a01:8840:23:0:0:0:0:55",
+        "ipv4": "65.22.33.55"
+      },
+      {
+        "hostname": "v0n2.nic.auction",
+        "ipv6": "2a01:8840:24:0:0:0:0:55",
+        "ipv4": "65.22.34.55"
+      },
+      {
+        "hostname": "v0n3.nic.auction",
+        "ipv6": "2a01:8840:fa:0:0:0:0:55",
+        "ipv4": "161.232.16.55"
+      },
+      {
+        "hostname": "v2n0.nic.auction",
+        "ipv6": "2a01:8840:25:0:0:0:0:55",
+        "ipv4": "65.22.35.55"
+      },
+      {
+        "hostname": "v2n1.nic.auction",
+        "ipv6": "2a01:8840:fb:0:0:0:0:55",
+        "ipv4": "161.232.17.55"
+      }
+    ],
+    "whois": "whois.nic.auction",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-04-24",
+    "changed": "2023-09-12",
+    "source": "iana"
+  },
+  "audi": {
+    "tld": "audi",
+    "organisation": {
+      "name": "AUDI Aktiengesellschaft",
+      "organisation": "AUDI Aktiengesellschaft",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "Germany"
+      }
+    },
+    "administrative": {
+      "name": "Domain Solutions",
+      "e-mail": "domainservices@stackit.cloud",
+      "phone": "+49 7131 7999 222",
+      "organisation": "STACKIT GmbH &amp; Co. KG",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "Germany"
+      }
+    },
+    "technical": {
+      "name": "Senior Director, DNS Infrastructure Group",
+      "e-mail": "tld-tech-poc@afilias.info",
+      "organisation": "Afilias",
+      "address": {
+        "city": "300 Welsh Road Horsham",
+        "state": "PA",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a0.nic.audi",
+        "ipv6": "2a01:8840:ca:0:0:0:0:17",
+        "ipv4": "65.22.208.17"
+      },
+      {
+        "hostname": "a2.nic.audi",
+        "ipv6": "2a01:8840:cd:0:0:0:0:17",
+        "ipv4": "65.22.211.17"
+      },
+      {
+        "hostname": "b0.nic.audi",
+        "ipv6": "2a01:8840:cb:0:0:0:0:17",
+        "ipv4": "65.22.209.17"
+      },
+      {
+        "hostname": "c0.nic.audi",
+        "ipv6": "2a01:8840:cc:0:0:0:0:17",
+        "ipv4": "65.22.210.17"
+      }
+    ],
+    "whois": "whois.nic.audi",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-11-12",
+    "changed": "2025-03-07",
+    "source": "iana"
+  },
+  "audible": {
+    "tld": "audible",
+    "organisation": {
+      "name": "Amazon Registry Services, Inc.",
+      "organisation": "Amazon Registry Services, Inc.",
+      "address": {
+        "city": "410 Terry Avenue North Seattle",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Program Manager, Registry",
+      "e-mail": "arsi-rzm@amazon.com",
+      "phone": "+1 206 646 5990",
+      "fax-no": "+12069467702",
+      "organisation": "Amazon Registry Services, Inc.",
+      "address": {
+        "city": "410 Terry Avenue North Seattle",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "TLD Registry Services Technical",
+      "e-mail": "registrytechnical@nominet.uk",
+      "organisation": "Nominet",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "dns1.nic.audible",
+        "ipv6": "2a01:618:402:0:0:0:0:56",
+        "ipv4": "213.248.218.56"
+      },
+      {
+        "hostname": "dns2.nic.audible",
+        "ipv6": "2401:fd80:402:0:0:0:0:56",
+        "ipv4": "103.49.82.56"
+      },
+      {
+        "hostname": "dns3.nic.audible",
+        "ipv6": "2a01:618:406:0:0:0:0:56",
+        "ipv4": "213.248.222.56"
+      },
+      {
+        "hostname": "dns4.nic.audible",
+        "ipv6": "2401:fd80:406:0:0:0:0:56",
+        "ipv4": "43.230.50.56"
+      },
+      {
+        "hostname": "dnsa.nic.audible",
+        "ipv6": "2001:502:ad09:0:0:0:0:3",
+        "ipv4": "156.154.100.3"
+      },
+      {
+        "hostname": "dnsb.nic.audible",
+        "ipv6": "2001:502:2eda:0:0:0:0:3",
+        "ipv4": "156.154.101.3"
+      },
+      {
+        "hostname": "dnsc.nic.audible",
+        "ipv6": "2610:a1:1009:0:0:0:0:3",
+        "ipv4": "156.154.102.3"
+      },
+      {
+        "hostname": "dnsd.nic.audible",
+        "ipv6": "2610:a1:1010:0:0:0:0:3",
+        "ipv4": "156.154.103.3"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-05-19",
+    "changed": "2025-02-14",
+    "source": "iana"
+  },
+  "audio": {
+    "tld": "audio",
+    "organisation": {
+      "name": "XYZ.COM LLC",
+      "organisation": "XYZ.COM LLC",
+      "address": {
+        "city": " Las Vegas",
+        "state": "NV",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "General Counsel",
+      "e-mail": "hello@xyz.com",
+      "phone": "+1 702 763 2191",
+      "organisation": "XYZ.COM LLC",
+      "address": {
+        "city": " Las Vegas",
+        "state": "NV",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "CTO",
+      "e-mail": "tld.ops@centralnic.com",
+      "phone": "+44 20 33 88 0600",
+      "fax-no": "+44 20 33 88 0601",
+      "organisation": "CentralNic",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.audio",
+        "ipv6": "2001:67c:13cc:0:0:0:1:150",
+        "ipv4": "194.169.218.150"
+      },
+      {
+        "hostname": "b.nic.audio",
+        "ipv6": "2a04:2b00:13cc:0:0:0:1:150",
+        "ipv4": "185.24.64.150"
+      },
+      {
+        "hostname": "c.nic.audio",
+        "ipv6": "2a04:2b00:13ee:0:0:0:0:150",
+        "ipv4": "212.18.248.150"
+      },
+      {
+        "hostname": "d.nic.audio",
+        "ipv6": "2a04:2b00:13ff:0:0:0:0:150",
+        "ipv4": "212.18.249.150"
+      }
+    ],
+    "whois": "whois.nic.audio",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-05-08",
+    "changed": "2025-08-12",
+    "source": "iana"
+  },
+  "auspost": {
+    "tld": "auspost",
+    "organisation": {
+      "name": "Australian Postal Corporation",
+      "organisation": "Australia",
+      "address": {
+        "city": "111 Bourke Street",
+        "state": "",
+        "country": ""
+      }
+    },
+    "administrative": {
+      "name": "Manager Digital Customer Experience",
+      "e-mail": "ngtld-auspost@cscinfo.com",
+      "phone": "+61 3 8847 9045",
+      "fax-no": "+61 3 9206 4153",
+      "organisation": "Australian Postal Corporation",
+      "address": {
+        "city": "111 Bourke Street",
+        "state": "",
+        "country": ""
+      }
+    },
+    "technical": {
+      "name": "Project &amp; Process Manager",
+      "e-mail": "ngtld-auspost@cscinfo.com",
+      "phone": "+442070151717",
+      "organisation": "CSC Digital Brand Services",
+      "address": {
+        "city": " Wilmington",
+        "state": "DE",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.auspost",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.auspost",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.auspost",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "x.nic.auspost",
+        "ipv6": "2610:a1:1074:0:0:0:1:82",
+        "ipv4": "156.154.172.82"
+      },
+      {
+        "hostname": "y.nic.auspost",
+        "ipv6": "2610:a1:1075:0:0:0:1:82",
+        "ipv4": "156.154.173.82"
+      },
+      {
+        "hostname": "z.nic.auspost",
+        "ipv6": "2610:a1:1076:0:0:0:1:82",
+        "ipv4": "156.154.174.82"
+      }
+    ],
+    "whois": "whois.nic.auspost",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-08-11",
+    "changed": "2023-11-30",
+    "source": "iana"
+  },
+  "author": {
+    "tld": "author",
+    "organisation": {
+      "name": "Amazon Registry Services, Inc.",
+      "organisation": "Amazon Registry Services, Inc.",
+      "address": {
+        "city": "410 Terry Avenue North Seattle",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Program Manager, Registry",
+      "e-mail": "arsi-rzm@amazon.com",
+      "phone": "+1 206 646 5990",
+      "fax-no": "+1 206 946 7702",
+      "organisation": "Amazon Registry Services, Inc.",
+      "address": {
+        "city": "410 Terry Avenue North Seattle",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "TLD Registry Services Technical",
+      "e-mail": "registrytechnical@nominet.uk",
+      "organisation": "Nominet",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "dns1.nic.author",
+        "ipv6": "2a01:618:402:0:0:0:0:60",
+        "ipv4": "213.248.218.60"
+      },
+      {
+        "hostname": "dns2.nic.author",
+        "ipv6": "2401:fd80:402:0:0:0:0:60",
+        "ipv4": "103.49.82.60"
+      },
+      {
+        "hostname": "dns3.nic.author",
+        "ipv6": "2a01:618:406:0:0:0:0:60",
+        "ipv4": "213.248.222.60"
+      },
+      {
+        "hostname": "dns4.nic.author",
+        "ipv6": "2401:fd80:406:0:0:0:0:60",
+        "ipv4": "43.230.50.60"
+      },
+      {
+        "hostname": "dnsa.nic.author",
+        "ipv6": "2001:502:ad09:0:0:0:0:3",
+        "ipv4": "156.154.100.3"
+      },
+      {
+        "hostname": "dnsb.nic.author",
+        "ipv6": "2001:502:2eda:0:0:0:0:3",
+        "ipv4": "156.154.101.3"
+      },
+      {
+        "hostname": "dnsc.nic.author",
+        "ipv6": "2610:a1:1009:0:0:0:0:3",
+        "ipv4": "156.154.102.3"
+      },
+      {
+        "hostname": "dnsd.nic.author",
+        "ipv6": "2610:a1:1010:0:0:0:0:3",
+        "ipv4": "156.154.103.3"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-11-12",
+    "changed": "2025-02-14",
+    "source": "iana"
+  },
+  "auto": {
+    "tld": "auto",
+    "organisation": {
+      "name": "XYZ.COM LLC",
+      "organisation": "XYZ.COM LLC",
+      "address": {
+        "city": " Las Vegas",
+        "state": "NV",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Grant Carpenter",
+      "e-mail": "hello@xyz.com",
+      "phone": "+1 702 757 6555",
+      "organisation": "XYZ.COM LLC",
+      "address": {
+        "city": " Las Vegas",
+        "state": "NV",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "CTO",
+      "e-mail": "tld.ops@centralnic.com",
+      "phone": "+44 20 33 88 0600",
+      "fax-no": "+44 20 33 88 0601",
+      "organisation": "CentralNic",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.auto",
+        "ipv6": "2001:67c:13cc:0:0:0:1:131",
+        "ipv4": "194.169.218.131"
+      },
+      {
+        "hostname": "b.nic.auto",
+        "ipv6": "2a04:2b00:13cc:0:0:0:1:131",
+        "ipv4": "185.24.64.131"
+      },
+      {
+        "hostname": "c.nic.auto",
+        "ipv6": "2a04:2b00:13ee:0:0:0:0:131",
+        "ipv4": "212.18.248.131"
+      },
+      {
+        "hostname": "d.nic.auto",
+        "ipv6": "2a04:2b00:13ff:0:0:0:0:131",
+        "ipv4": "212.18.249.131"
+      }
+    ],
+    "whois": "whois.nic.auto",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-03-12",
+    "changed": "2025-08-12",
+    "source": "iana"
+  },
+  "autos": {
+    "tld": "autos",
+    "organisation": {
+      "name": "XYZ.COM LLC",
+      "organisation": "XYZ.COM LLC",
+      "address": {
+        "city": " Las Vegas",
+        "state": "NV",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "General Counsel",
+      "e-mail": "hello@xyz.com",
+      "phone": "+1 702 757 6555",
+      "organisation": "XYZ.COM LLC",
+      "address": {
+        "city": " Las Vegas",
+        "state": "NV",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "CTO",
+      "e-mail": "tld.ops@centralnic.com",
+      "phone": "+44 20 33 88 0600",
+      "fax-no": "+44 20 33 88 0601",
+      "organisation": "CentralNic",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.autos",
+        "ipv6": "2001:67c:13cc:0:0:0:1:136",
+        "ipv4": "194.169.218.136"
+      },
+      {
+        "hostname": "b.nic.autos",
+        "ipv6": "2a04:2b00:13cc:0:0:0:1:136",
+        "ipv4": "185.24.64.136"
+      },
+      {
+        "hostname": "c.nic.autos",
+        "ipv6": "2a04:2b00:13ee:0:0:0:0:136",
+        "ipv4": "212.18.248.136"
+      },
+      {
+        "hostname": "d.nic.autos",
+        "ipv6": "2a04:2b00:13ff:0:0:0:0:136",
+        "ipv4": "212.18.249.136"
+      }
+    ],
+    "whois": "whois.nic.autos",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-05-01",
+    "changed": "2025-08-12",
+    "source": "iana"
+  },
+  "aw": {
+    "tld": "aw",
+    "organisation": {},
+    "administrative": {
+      "name": "Legal Advisor",
+      "e-mail": "registrar@setar.aw",
+      "phone": "+297 5251000",
+      "fax-no": "+297 5251001",
+      "organisation": "SETAR"
+    },
+    "technical": {
+      "name": "SetarNet Operations",
+      "e-mail": "hostmaster@setarnet.aw",
+      "phone": "+297 583 4000",
+      "fax-no": "+297 583 4030",
+      "organisation": "SETAR"
+    },
+    "nserver": [
+      {
+        "hostname": "aw01.setarnet.aw",
+        "ipv6": "",
+        "ipv4": "201.229.0.26"
+      },
+      {
+        "hostname": "aw02.setarnet.aw",
+        "ipv6": "",
+        "ipv4": "201.229.0.27"
+      },
+      {
+        "hostname": "ns1.dns.aw",
+        "ipv6": "2001:678:2c:0:194:0:28:2",
+        "ipv4": "194.0.28.2"
+      },
+      {
+        "hostname": "ns3.dns.aw",
+        "ipv6": "2001:678:20:0:0:0:0:25",
+        "ipv4": "194.0.25.25"
+      },
+      {
+        "hostname": "ns4.dns.aw",
+        "ipv6": "2620:10a:80ac:0:0:0:0:201",
+        "ipv4": "185.159.199.201"
+      }
+    ],
+    "whois": "whois.nic.aw",
+    "status": "active",
+    "remarks": "",
+    "created": "1996-02-20",
+    "changed": "2023-07-18",
+    "source": "iana"
+  },
+  "aws": {
+    "tld": "aws",
+    "organisation": {
+      "name": "AWS Registry LLC",
+      "organisation": "AWS Registry LLC",
+      "address": {
+        "city": "410 Terry Avenue North Seattle",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Sr. Manager",
+      "e-mail": "aws-registry@amazon.com",
+      "phone": "+1-206-765-5360",
+      "fax-no": "+1-206-946-7702",
+      "organisation": "AWS Registry LLC",
+      "address": {
+        "city": "410 Terry Avenue North Seattle",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "TLD Registry Services Technical",
+      "e-mail": "registrytechnical@nominet.uk",
+      "organisation": "Nominet",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "dns1.nic.aws",
+        "ipv6": "2a01:618:402:0:0:0:0:53",
+        "ipv4": "213.248.218.53"
+      },
+      {
+        "hostname": "dns2.nic.aws",
+        "ipv6": "2401:fd80:402:0:0:0:0:53",
+        "ipv4": "103.49.82.53"
+      },
+      {
+        "hostname": "dns3.nic.aws",
+        "ipv6": "2a01:618:406:0:0:0:0:53",
+        "ipv4": "213.248.222.53"
+      },
+      {
+        "hostname": "dns4.nic.aws",
+        "ipv6": "2401:fd80:406:0:0:0:0:53",
+        "ipv4": "43.230.50.53"
+      },
+      {
+        "hostname": "dnsa.nic.aws",
+        "ipv6": "2001:502:ad09:0:0:0:0:3",
+        "ipv4": "156.154.100.3"
+      },
+      {
+        "hostname": "dnsb.nic.aws",
+        "ipv6": "2001:502:2eda:0:0:0:0:3",
+        "ipv4": "156.154.101.3"
+      },
+      {
+        "hostname": "dnsc.nic.aws",
+        "ipv6": "2610:a1:1009:0:0:0:0:3",
+        "ipv4": "156.154.102.3"
+      },
+      {
+        "hostname": "dnsd.nic.aws",
+        "ipv6": "2610:a1:1010:0:0:0:0:3",
+        "ipv4": "156.154.103.3"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2016-03-18",
+    "changed": "2025-02-07",
+    "source": "iana"
+  },
+  "ax": {
+    "tld": "ax",
+    "organisation": {},
+    "administrative": {
+      "name": "Ronny Lundström",
+      "e-mail": "axdoman@regeringen.ax",
+      "phone": "+358 18 25000",
+      "fax-no": "+358 18 19155",
+      "organisation": "Ålands landskapsregering"
+    },
+    "technical": {
+      "name": "Valter Ulenius",
+      "e-mail": "domain@alcom.ax",
+      "phone": "+358 18 23500",
+      "organisation": "Ålands Telekommunikation Ab"
+    },
+    "nserver": [
+      {
+        "hostname": "ns1.aland.net",
+        "ipv6": "",
+        "ipv4": "194.112.0.1"
+      },
+      {
+        "hostname": "ns2.aland.net",
+        "ipv6": "",
+        "ipv4": "194.112.0.5"
+      },
+      {
+        "hostname": "ns3.alcom.fi",
+        "ipv6": "2a00:5500:1:6:0:0:0:130",
+        "ipv4": "82.199.186.130"
+      },
+      {
+        "hostname": "ns4.alcom.fi",
+        "ipv6": "2a00:5500:1:7:0:0:0:194",
+        "ipv4": "82.199.184.194"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2006-06-21",
+    "changed": "2017-08-04",
+    "source": "iana"
+  },
+  "axa": {
+    "tld": "axa",
+    "organisation": {
+      "name": "AXA Group Operations SAS",
+      "organisation": "AXA Group Operations SAS",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "France"
+      }
+    },
+    "administrative": {
+      "name": "Mark Wilson",
+      "e-mail": "mark.wilson@axa.com",
+      "phone": "+44 7977 917316",
+      "organisation": "AXA Group Operations SAS",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "France"
+      }
+    },
+    "technical": {
+      "name": "IANA Contact",
+      "e-mail": "iana@registry.godaddy",
+      "phone": "+1 480 505 8800",
+      "fax-no": "+1 480 624 2546",
+      "organisation": "GoDaddy Registry",
+      "address": {
+        "city": " Tempe",
+        "state": "AZ",
+        "country": "United States of America (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "a.nic.axa",
+        "ipv6": "2001:dcd:1:0:0:0:0:9",
+        "ipv4": "37.209.192.9"
+      },
+      {
+        "hostname": "b.nic.axa",
+        "ipv6": "2001:dcd:2:0:0:0:0:9",
+        "ipv4": "37.209.194.9"
+      },
+      {
+        "hostname": "c.nic.axa",
+        "ipv6": "2001:dcd:3:0:0:0:0:9",
+        "ipv4": "37.209.196.9"
+      },
+      {
+        "hostname": "ns1.dns.nic.axa",
+        "ipv6": "2610:a1:1071:0:0:0:0:14",
+        "ipv4": "156.154.144.20"
+      },
+      {
+        "hostname": "ns2.dns.nic.axa",
+        "ipv6": "2610:a1:1072:0:0:0:0:14",
+        "ipv4": "156.154.145.20"
+      },
+      {
+        "hostname": "ns3.dns.nic.axa",
+        "ipv6": "2610:a1:1073:0:0:0:0:14",
+        "ipv4": "156.154.159.20"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2014-03-13",
+    "changed": "2024-05-11",
+    "source": "iana"
+  },
+  "az": {
+    "tld": "az",
+    "organisation": {},
+    "administrative": {
+      "name": "Faig Farmanov",
+      "e-mail": "fa@fa.az",
+      "phone": "+994 12 4980522",
+      "fax-no": "+994 12 4980522",
+      "organisation": "IntraNS",
+      "address": {
+        "city": "35 Zarifa Aliyeva Street",
+        "state": "",
+        "country": ""
+      }
+    },
+    "technical": {
+      "name": "Timur Khanjanov",
+      "e-mail": "intel@intrans.baku.az",
+      "phone": "+994 12 4939319",
+      "organisation": "IntraNS",
+      "address": {
+        "city": "35 Zarifa Aliyeva Street",
+        "state": "",
+        "country": ""
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "az.hostmaster.ua",
+        "ipv6": "2001:67c:258:0:0:0:0:13",
+        "ipv4": "195.47.253.13"
+      },
+      {
+        "hostname": "ns3.intrans.az",
+        "ipv6": "",
+        "ipv4": "148.251.2.246"
+      },
+      {
+        "hostname": "rip.psg.com",
+        "ipv6": "2001:418:1:0:0:0:0:39",
+        "ipv4": "147.28.0.39"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "1993-08-25",
+    "changed": "2022-03-14",
+    "source": "iana"
+  },
+  "azure": {
+    "tld": "azure",
+    "organisation": {
+      "name": "Microsoft Corporation",
+      "organisation": "One Microsoft Way",
+      "address": {
+        "city": " Redmond",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "administrative": {
+      "name": "Program Manager",
+      "e-mail": "registry@microsoft.com",
+      "phone": "+1 425 706 3546",
+      "fax-no": "+1 425 457 2511",
+      "organisation": "Microsoft Corporation",
+      "address": {
+        "city": " Redmond",
+        "state": "WA",
+        "country": "United States of America (the)"
+      }
+    },
+    "technical": {
+      "name": "TLD Registry Services Technical",
+      "e-mail": "registrytechnical@nominet.uk",
+      "phone": "+44 1865 332211",
+      "organisation": "Nominet",
+      "address": {
+        "city": "",
+        "state": "",
+        "country": "United Kingdom of Great Britain and Northern Ireland (the)"
+      }
+    },
+    "nserver": [
+      {
+        "hostname": "dns1.nic.azure",
+        "ipv6": "2a01:618:403:0:0:0:0:129",
+        "ipv4": "213.248.219.129"
+      },
+      {
+        "hostname": "dns2.nic.azure",
+        "ipv6": "2401:fd80:403:0:0:0:0:129",
+        "ipv4": "103.49.83.129"
+      },
+      {
+        "hostname": "dns3.nic.azure",
+        "ipv6": "2a01:618:407:0:0:0:0:129",
+        "ipv4": "213.248.223.129"
+      },
+      {
+        "hostname": "dns4.nic.azure",
+        "ipv6": "2401:fd80:407:0:0:0:0:129",
+        "ipv4": "43.230.51.129"
+      },
+      {
+        "hostname": "dnsa.nic.azure",
+        "ipv6": "2001:502:ad09:0:0:0:0:3",
+        "ipv4": "156.154.100.3"
+      },
+      {
+        "hostname": "dnsb.nic.azure",
+        "ipv6": "2001:502:2eda:0:0:0:0:3",
+        "ipv4": "156.154.101.3"
+      },
+      {
+        "hostname": "dnsc.nic.azure",
+        "ipv6": "2610:a1:1009:0:0:0:0:3",
+        "ipv4": "156.154.102.3"
+      },
+      {
+        "hostname": "dnsd.nic.azure",
+        "ipv6": "2610:a1:1010:0:0:0:0:3",
+        "ipv4": "156.154.103.3"
+      }
+    ],
+    "whois": "",
+    "status": "active",
+    "remarks": "",
+    "created": "2015-04-30",
+    "changed": "2025-05-01",
+    "source": "iana"
+  }
+}
