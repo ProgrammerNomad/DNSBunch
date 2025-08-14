@@ -3,13 +3,13 @@ import dns.reversename
 import dns.message
 import dns.query
 import dns.rdatatype
-import dns.zone  # Add this import for AXFR check
+import dns.zone
 import asyncio
 import ipaddress
 import re
 import json
 import os
-import random  # Add this import
+import random
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 
@@ -208,7 +208,7 @@ class DNSChecker:
             }
 
     async def _get_parent_delegation(self):
-        """Get NS delegation from TLD parent servers (like intoDNS Parent section)"""
+        """Get NS delegation from TLD parent servers using your working approach"""
         try:
             # Extract TLD from domain
             tld = self.domain.split('.')[-1]
@@ -218,31 +218,43 @@ class DNSChecker:
                 self._tld_data = self._load_tld_data()
                 
             if tld not in self._tld_data:
-                return {"status": "error", "error": f"TLD {tld} not found in database"}
+                return {"status": "error", "error": f"TLD {tld} not found in database", "records": []}
                 
             tld_info = self._tld_data[tld]
             if 'nserver' not in tld_info:
-                return {"status": "error", "error": f"No nameservers found for TLD {tld}"}
+                return {"status": "error", "error": f"No nameservers found for TLD {tld}", "records": []}
                 
             # Random TLD nameserver
             tld_ns = random.choice(tld_info['nserver'])
             tld_ns_ip = tld_ns['ipv4']
             tld_ns_hostname = tld_ns['hostname']
             
-            # Query TLD server for delegation
+            # Query TLD server for delegation using your working method
             delegation = []
             query = dns.message.make_query(self.domain, dns.rdatatype.NS)
             response = dns.query.udp(query, tld_ns_ip, timeout=10)
             
-            # Extract from authority section
+            # Extract from authority section (your working approach)
             for auth in response.authority:
-                if auth.rdtype == dns.rdatatype.NS:
-                    for rr in auth:
-                        delegation.append(str(rr.target).rstrip('.'))
-                        
+                for rr in auth.items:
+                    delegation.append(str(rr.target).rstrip('.'))
+                    
+            # Get A records for each nameserver in delegation
+            nameserver_ips = {}
+            resolver = dns.resolver.Resolver(configure=False)
+            resolver.nameservers = ['8.8.8.8', '1.1.1.1']
+            
+            for ns in delegation:
+                try:
+                    a_records = resolver.resolve(ns, 'A')
+                    nameserver_ips[ns] = [str(r) for r in a_records]
+                except:
+                    nameserver_ips[ns] = []
+                    
             return {
-                "status": "pass" if delegation else "warning",
+                "status": "pass" if delegation else "error",
                 "records": delegation,
+                "nameserver_ips": nameserver_ips,
                 "tld_server_used": tld_ns_hostname,
                 "tld_server_ip": tld_ns_ip,
                 "method": "authority_section",
@@ -250,6 +262,7 @@ class DNSChecker:
             }
             
         except Exception as e:
+            print(f"[!] Error in _get_parent_delegation: {e}")
             return {
                 "status": "error", 
                 "error": str(e),
@@ -257,9 +270,9 @@ class DNSChecker:
             }
 
     async def _get_domain_nameservers(self):
-        """Get NS records from domain's own nameservers"""
+        """Get NS records from domain's own nameservers using your working approach"""
         try:
-            # Standard DNS query (like using 8.8.8.8)
+            # Standard DNS query using Google DNS (your working approach)
             resolver = dns.resolver.Resolver(configure=False)
             resolver.nameservers = ['8.8.8.8', '1.1.1.1']
             
@@ -284,100 +297,245 @@ class DNSChecker:
             }
             
         except Exception as e:
+            print(f"[!] Error in _get_domain_nameservers: {e}")
             return {
                 "status": "error",
                 "error": str(e),
                 "records": []
             }
 
-    def _compare_ns_records(self, parent_result, domain_result):
-        """Compare parent delegation vs domain nameservers"""
-        parent_records = set(parent_result.get("records", []))
-        domain_records = set(domain_result.get("records", []))
-        
-        return {
-            "parent_only": list(parent_records - domain_records),
-            "domain_only": list(domain_records - parent_records), 
-            "common": list(parent_records & domain_records),
-            "match": parent_records == domain_records
-        }
+    async def _check_ns_records(self):
+        """Enhanced NS records check with proper data structure for frontend"""
+        try:
+            # 1. Get TLD parent delegation
+            parent_result = await self._get_parent_delegation()
+            
+            # 2. Get NS records from domain's own nameservers  
+            domain_ns_result = await self._get_domain_nameservers()
+            
+            # 3. Compare and analyze
+            comparison_result = self._compare_ns_records(parent_result, domain_ns_result)
+            
+            # 4. Create records list in the format frontend expects
+            all_records = []
+            
+            # Add parent delegation records
+            if parent_result.get("records"):
+                for ns in parent_result["records"]:
+                    ips = parent_result.get("nameserver_ips", {}).get(ns, [])
+                    all_records.append({
+                        "host": ns,
+                        "ips": ips,
+                        "ttl": parent_result.get("ttl"),
+                        "source": "parent"
+                    })
+            
+            # Add domain nameserver records if different
+            if domain_ns_result.get("records"):
+                for ns in domain_ns_result["records"]:
+                    # Check if already added from parent
+                    if not any(record["host"] == ns for record in all_records):
+                        ips = domain_ns_result.get("nameserver_ips", {}).get(ns, [])
+                        all_records.append({
+                            "host": ns,
+                            "ips": ips,
+                            "ttl": domain_ns_result.get("ttl"),
+                            "source": "domain"
+                        })
+            
+            # Determine overall status
+            overall_status = "pass"
+            if parent_result.get("status") == "error" or domain_ns_result.get("status") == "error":
+                overall_status = "error"
+            elif not comparison_result.get("match"):
+                overall_status = "warning"
+                
+            return {
+                "status": overall_status,
+                "count": len(all_records),
+                "records": all_records,
+                "parent_delegation": parent_result,
+                "domain_nameservers": domain_ns_result,
+                "comparisons": comparison_result,
+                "parent_server": parent_result.get("tld_server_used"),
+                "glue_records": len([r for r in all_records if r.get("ips")]) > 0,
+                "issues": []
+            }
+            
+        except Exception as e:
+            print(f"[!] Error in _check_ns_records: {e}")
+            return {
+                "status": "error",
+                "error": str(e),
+                "count": 0,
+                "records": [],
+                "issues": [{"message": str(e), "severity": "error"}]
+            }
 
-    def _generate_ns_checks(self, parent_result, domain_result, comparison):
-        """Generate detailed checks like intoDNS table rows"""
-        checks = []
-        
-        # Parent section checks
-        checks.append({
-            "category": "Parent",
-            "status": "info",
-            "name": "Domain NS records",
-            "info": self._format_parent_ns_info(parent_result)
-        })
-        
-        checks.append({
-            "category": "Parent", 
-            "status": "pass" if parent_result.get("records") else "error",
-            "name": "TLD Parent Check",
-            "info": f"Good. {parent_result.get('tld_server_used', 'TLD server')} has information for your TLD." if parent_result.get("records") else "Error: TLD server has no information for your domain."
-        })
-        
-        checks.append({
-            "category": "Parent",
-            "status": "pass" if parent_result.get("records") else "error", 
-            "name": "Your nameservers are listed",
-            "info": f"Good. The parent server {parent_result.get('tld_server_used', 'TLD server')} has your nameservers listed." if parent_result.get("records") else "Error: Parent server does not have your nameservers listed."
-        })
-        
-        # NS section checks
-        checks.append({
-            "category": "NS",
-            "status": "info",
-            "name": "NS records from your nameservers", 
-            "info": self._format_domain_ns_info(domain_result)
-        })
-        
-        checks.append({
-            "category": "NS",
-            "status": "pass" if comparison["match"] else "warning",
-            "name": "Missing nameservers reported by parent",
-            "info": "OK. All NS records are the same at the parent and at your nameservers." if comparison["match"] else f"Warning: Discrepancies found. Parent only: {comparison['parent_only']}, Domain only: {comparison['domain_only']}"
-        })
-        
-        checks.append({
-            "category": "NS", 
-            "status": "pass" if len(domain_result.get("records", [])) >= 2 else "warning",
-            "name": "Multiple Nameservers",
-            "info": f"Good. You have {len(domain_result.get('records', []))} nameservers." if len(domain_result.get("records", [])) >= 2 else "Warning: You should have at least 2 nameservers."
-        })
-        
-        return checks
+    async def _get_parent_delegation(self):
+        """Get NS delegation from TLD parent servers using your working approach"""
+        try:
+            # Extract TLD from domain
+            tld = self.domain.split('.')[-1]
+            
+            # Load TLD data
+            if not hasattr(self, '_tld_data'):
+                self._tld_data = self._load_tld_data()
+                
+            if tld not in self._tld_data:
+                return {"status": "error", "error": f"TLD {tld} not found in database", "records": []}
+                
+            tld_info = self._tld_data[tld]
+            if 'nserver' not in tld_info:
+                return {"status": "error", "error": f"No nameservers found for TLD {tld}", "records": []}
+                
+            # Random TLD nameserver
+            tld_ns = random.choice(tld_info['nserver'])
+            tld_ns_ip = tld_ns['ipv4']
+            tld_ns_hostname = tld_ns['hostname']
+            
+            # Query TLD server for delegation using your working method
+            delegation = []
+            query = dns.message.make_query(self.domain, dns.rdatatype.NS)
+            response = dns.query.udp(query, tld_ns_ip, timeout=10)
+            
+            # Extract from authority section (your working approach)
+            for auth in response.authority:
+                for rr in auth.items:
+                    delegation.append(str(rr.target).rstrip('.'))
+                    
+            # Get A records for each nameserver in delegation
+            nameserver_ips = {}
+            resolver = dns.resolver.Resolver(configure=False)
+            resolver.nameservers = ['8.8.8.8', '1.1.1.1']
+            
+            for ns in delegation:
+                try:
+                    a_records = resolver.resolve(ns, 'A')
+                    nameserver_ips[ns] = [str(r) for r in a_records]
+                except:
+                    nameserver_ips[ns] = []
+                    
+            return {
+                "status": "pass" if delegation else "error",
+                "records": delegation,
+                "nameserver_ips": nameserver_ips,
+                "tld_server_used": tld_ns_hostname,
+                "tld_server_ip": tld_ns_ip,
+                "method": "authority_section",
+                "ttl": response.authority[0].ttl if response.authority else None
+            }
+            
+        except Exception as e:
+            print(f"[!] Error in _get_parent_delegation: {e}")
+            return {
+                "status": "error", 
+                "error": str(e),
+                "records": []
+            }
 
-    def _format_parent_ns_info(self, parent_result):
-        """Format parent NS info like intoDNS"""
-        if not parent_result.get("records"):
-            return "No nameserver records found from parent server."
+    async def _get_domain_nameservers(self):
+        """Get NS records from domain's own nameservers using your working approach"""
+        try:
+            # Standard DNS query using Google DNS (your working approach)
+            resolver = dns.resolver.Resolver(configure=False)
+            resolver.nameservers = ['8.8.8.8', '1.1.1.1']
             
-        info = "Nameserver records returned by the parent servers are:<br />"
-        for ns in parent_result["records"]:
-            info += f"<br />{ns} [TTL={parent_result.get('ttl', 'unknown')}]"
+            answer = resolver.resolve(self.domain, 'NS')
+            records = [str(r.target).rstrip('.') for r in answer]
             
-        info += f"<br /><br /><strong>{parent_result.get('tld_server_used', 'TLD server')}</strong> was kind enough to give us that information."
-        return info
+            # Get A records for each nameserver
+            nameserver_ips = {}
+            for ns in records:
+                try:
+                    a_records = resolver.resolve(ns, 'A')
+                    nameserver_ips[ns] = [str(r) for r in a_records]
+                except:
+                    nameserver_ips[ns] = []
+                    
+            return {
+                "status": "pass",
+                "records": records,
+                "nameserver_ips": nameserver_ips,
+                "ttl": answer.ttl,
+                "resolver_used": "8.8.8.8,1.1.1.1"
+            }
+            
+        except Exception as e:
+            print(f"[!] Error in _get_domain_nameservers: {e}")
+            return {
+                "status": "error",
+                "error": str(e),
+                "records": []
+            }
 
-    def _format_domain_ns_info(self, domain_result):
-        """Format domain NS info like intoDNS"""
-        if not domain_result.get("records"):
-            return "No nameserver records found from domain nameservers."
+    async def _check_ns_records(self):
+        """Enhanced NS records check with proper data structure for frontend"""
+        try:
+            # 1. Get TLD parent delegation
+            parent_result = await self._get_parent_delegation()
             
-        info = "NS records got from your nameservers are:<br />"
-        nameserver_ips = domain_result.get("nameserver_ips", {})
-        
-        for ns in domain_result["records"]:
-            ips = nameserver_ips.get(ns, [])
-            ip_str = f"[{', '.join(ips)}]" if ips else "[No A record]"
-            info += f"<br />{ns} {ip_str} [TTL={domain_result.get('ttl', 'unknown')}]"
+            # 2. Get NS records from domain's own nameservers  
+            domain_ns_result = await self._get_domain_nameservers()
             
-        return info
+            # 3. Compare and analyze
+            comparison_result = self._compare_ns_records(parent_result, domain_ns_result)
+            
+            # 4. Create records list in the format frontend expects
+            all_records = []
+            
+            # Add parent delegation records
+            if parent_result.get("records"):
+                for ns in parent_result["records"]:
+                    ips = parent_result.get("nameserver_ips", {}).get(ns, [])
+                    all_records.append({
+                        "host": ns,
+                        "ips": ips,
+                        "ttl": parent_result.get("ttl"),
+                        "source": "parent"
+                    })
+            
+            # Add domain nameserver records if different
+            if domain_ns_result.get("records"):
+                for ns in domain_ns_result["records"]:
+                    # Check if already added from parent
+                    if not any(record["host"] == ns for record in all_records):
+                        ips = domain_ns_result.get("nameserver_ips", {}).get(ns, [])
+                        all_records.append({
+                            "host": ns,
+                            "ips": ips,
+                            "ttl": domain_ns_result.get("ttl"),
+                            "source": "domain"
+                        })
+            
+            # Determine overall status
+            overall_status = "pass"
+            if parent_result.get("status") == "error" or domain_ns_result.get("status") == "error":
+                overall_status = "error"
+            elif not comparison_result.get("match"):
+                overall_status = "warning"
+                
+            return {
+                "status": overall_status,
+                "count": len(all_records),
+                "records": all_records,
+                "parent_delegation": parent_result,
+                "domain_nameservers": domain_ns_result,
+                "comparisons": comparison_result,
+                "parent_server": parent_result.get("tld_server_used"),
+                "glue_records": len([r for r in all_records if r.get("ips")]) > 0,
+                "issues": []
+            }
+            
+        except Exception as e:
+            print(f"[!] Error in _check_ns_records: {e}")
+            return {
+                "status": "error",
+                "error": str(e),
+                "count": 0,
+                "records": [],
+                "issues": [{"message": str(e), "severity": "error"}]
+            }
 
     async def _check_soa_record(self) -> Dict[str, Any]:
         """Check SOA (Start of Authority) record"""

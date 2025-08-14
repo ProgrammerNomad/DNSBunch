@@ -41,6 +41,49 @@ interface TestSection {
   tests: TestResult[];
 }
 
+interface NSRecord {
+  host: string;
+  ips?: string[];
+  ttl?: number;
+  source?: string;
+}
+
+interface MXRecord {
+  priority?: number;
+  exchange?: string;
+  host?: string;
+  ips?: string[];
+  ip?: string;
+  glue?: boolean;
+}
+
+interface ARecords {
+  root?: { records?: string[] };
+  www?: { records?: string[] };
+}
+
+interface ParentDelegation {
+  records?: string[];
+  nameserver_ips?: Record<string, string[]>;
+  ttl?: number;
+  tld_server_used?: string;
+  status?: string;
+  error?: string;
+}
+
+interface DomainNameservers {
+  records?: string[];
+  nameserver_ips?: Record<string, string[]>;
+  ttl?: number;
+}
+
+interface EnhancedCheckResult extends CheckResult {
+  parent_delegation?: ParentDelegation;
+  domain_nameservers?: DomainNameservers;
+  parent_server?: string;
+  glue_records?: boolean;
+}
+
 const StatusIcon: React.FC<StatusIconProps> = ({ status }) => {
   switch (status) {
     case 'pass':
@@ -63,13 +106,47 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
     
     switch (type) {
       case 'ns':
-        return data.records?.map((record: { host?: string; ips?: string[]; ip?: string; ttl?: number }, index: number) => (
-          <Box key={index} component="span" display="block">
-            <strong>{record.host}</strong>&nbsp;&nbsp;
-            [{record.ips?.join(', ') || record.ip}]
-            &nbsp;&nbsp;[TTL={record.ttl || 'N/A'}]
-          </Box>
-        )) || 'No nameserver records found';
+        // Handle the new NS data structure
+        if (data.records && Array.isArray(data.records)) {
+          return (data.records as NSRecord[]).map((record: NSRecord, index: number) => (
+            <Box key={index} component="span" display="block">
+              <strong>{record.host}</strong>&nbsp;&nbsp;
+              [{record.ips?.join(', ') || 'No IP'}]
+              &nbsp;&nbsp;[TTL={record.ttl || 'N/A'}]
+            </Box>
+          ));
+        } else if ((data as EnhancedCheckResult).parent_delegation?.records) {
+          // Fallback to parent delegation data
+          const enhancedData = data as EnhancedCheckResult;
+          return enhancedData.parent_delegation!.records!.map((ns: string, index: number) => {
+            const ips = enhancedData.parent_delegation!.nameserver_ips?.[ns] || [];
+            return (
+              <Box key={index} component="span" display="block">
+                <strong>{ns}</strong>&nbsp;&nbsp;
+                [{ips.join(', ') || 'No IP'}]
+                &nbsp;&nbsp;[TTL={enhancedData.parent_delegation!.ttl || 'N/A'}]
+              </Box>
+            );
+          });
+        }
+        return 'No nameserver records found';
+
+      case 'ns_domain':
+        // Format domain nameserver records
+        const enhancedData = data as EnhancedCheckResult;
+        if (enhancedData.domain_nameservers?.records) {
+          return enhancedData.domain_nameservers.records.map((ns: string, index: number) => {
+            const ips = enhancedData.domain_nameservers!.nameserver_ips?.[ns] || [];
+            return (
+              <Box key={index} component="span" display="block">
+                <strong>{ns}</strong>&nbsp;&nbsp;
+                [{ips.join(', ') || 'No IP'}]
+                &nbsp;&nbsp;[TTL={enhancedData.domain_nameservers!.ttl || 'N/A'}]
+              </Box>
+            );
+          });
+        }
+        return 'No nameserver records found from domain servers';
 
       case 'soa':
         if (!data.record) return 'No SOA record found';
@@ -92,7 +169,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
           return 'No A records found';
         }
         
-        const aRecords = data.records as unknown as { root?: { records?: string[] }, www?: { records?: string[] } };
+        const aRecords = data.records as unknown as ARecords;
         const elements: React.ReactElement[] = [];
         
         // Display root domain A records
@@ -124,7 +201,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
         return elements.length > 0 ? elements : 'No A records found';
 
       case 'mx':
-        return data.records?.map((record: { priority?: number; exchange?: string; host?: string; ips?: string[]; ip?: string; glue?: boolean }, index: number) => (
+        return (data.records as MXRecord[])?.map((record: MXRecord, index: number) => (
           <Box key={index} component="span" display="block">
             {record.priority}&nbsp;&nbsp;
             <strong>{record.exchange || record.host}</strong>&nbsp;&nbsp;
@@ -157,8 +234,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
 
     // Parent/NS Records Section
     if (results?.checks?.ns) {
-      const nsData = results.checks.ns;
-      const nsStatus = getCheckStatus(nsData);
+      const nsData = results.checks.ns as EnhancedCheckResult;
       
       tests.push({
         category: 'Parent',
@@ -172,21 +248,21 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
                 Nameserver records returned by the parent servers are:<br />
                 {formatDNSData(nsData, 'ns')}
                 <br /><br />
-                <strong>{nsData.parent_server || 'Parent server'}</strong> was kind enough to give us that information.
+                <strong>{nsData.parent_server || nsData.parent_delegation?.tld_server_used || 'Parent server'}</strong> was kind enough to give us that information.
               </Box>
             )
           },
           {
-            status: nsStatus === 'error' ? 'error' : 'pass',
+            status: nsData.parent_delegation?.status === 'error' ? 'error' : 'pass',
             name: 'TLD Parent Check',
-            info: nsStatus === 'error' 
-              ? 'Error: Could not contact parent servers for your domain.'
+            info: nsData.parent_delegation?.status === 'error' 
+              ? `Error: Could not contact parent servers for your domain. ${nsData.parent_delegation?.error || ''}`
               : 'Good. The parent server has information for your TLD. This is a good thing as there are some other domain extensions that are missing a direct check.'
           },
           {
-            status: (nsData.records && nsData.records.length > 0) ? 'pass' : 'error',
+            status: (nsData.parent_delegation?.records && nsData.parent_delegation.records.length > 0) ? 'pass' : 'error',
             name: 'Your nameservers are listed',
-            info: (nsData.records && nsData.records.length > 0)
+            info: (nsData.parent_delegation?.records && nsData.parent_delegation.records.length > 0)
               ? 'Good. The parent server has your nameservers listed. This is a must if you want to be found as anyone that does not know your DNS servers will first ask the parent nameservers.'
               : 'Error: The parent server does not have your nameservers listed.'
           },
@@ -198,16 +274,16 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
               : 'Warning: No glue records found from parent nameserver.'
           },
           {
-            status: nsData.records?.every((ns: { ips?: string[] }) => ns.ips && ns.ips.length > 0) ? 'pass' : 'error',
+            status: (nsData.records as NSRecord[])?.every((ns: NSRecord) => ns.ips && ns.ips.length > 0) ? 'pass' : 'error',
             name: 'Nameservers A records',
-            info: nsData.records?.every((ns: { ips?: string[] }) => ns.ips && ns.ips.length > 0)
+            info: (nsData.records as NSRecord[])?.every((ns: NSRecord) => ns.ips && ns.ips.length > 0)
               ? 'Good. Every nameserver listed has A records. This is a must if you want to be found.'
               : 'Error: Some nameservers do not have A records.'
           }
         ]
       });
 
-      // NS Section
+      // NS Section  
       tests.push({
         category: 'NS',
         rowSpan: 5,
@@ -218,7 +294,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
             info: (
               <Box>
                 NS records got from your nameservers:<br />
-                {formatDNSData(nsData, 'ns')}
+                {formatDNSData(nsData, 'ns_domain')}
               </Box>
             )
           },
@@ -228,9 +304,9 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
             info: 'Good. Your nameservers do not report that they allow recursive queries for anyone.'
           },
           {
-            status: 'pass',
+            status: (nsData.domain_nameservers?.records?.length || 0) >= 2 ? 'pass' : 'warning',
             name: 'Multiple Nameservers',
-            info: `Good. You have ${nsData.records?.length || 0} nameservers. According to RFC2182 section 5 you must have at least 3 nameservers, and no more than 7. Having 2 nameservers is also ok by me.`
+            info: `Good. You have ${nsData.domain_nameservers?.records?.length || 0} nameservers. According to RFC2182 section 5 you must have at least 3 nameservers, and no more than 7. Having 2 nameservers is also ok by me.`
           },
           {
             status: 'pass',
