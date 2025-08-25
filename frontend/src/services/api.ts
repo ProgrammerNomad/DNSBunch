@@ -5,8 +5,8 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 // Import types from the central types file
 import { DNSAnalysisResult } from '../types/dns';
 
-// API Configuration - Use Next.js API proxy to avoid CORS
-const API_BASE_URL = ''; // Use relative URLs for Next.js API proxy
+// API Configuration - Direct backend calls for Netlify deployment
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 const REQUEST_TIMEOUT = parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '30000');
 
 class DNSApi {
@@ -45,7 +45,15 @@ class DNSApi {
       return response.data;
     } catch (apiError) {
       if (axios.isAxiosError(apiError)) {
-        const message = apiError.response?.data?.error || apiError.message;
+        const responseData = apiError.response?.data;
+        
+        // Handle rate limiting specifically
+        if (apiError.response?.status === 429 && responseData?.code === 'RATE_LIMITED') {
+          const retryAfter = responseData.retry_after || 60;
+          throw new Error(`Rate limit exceeded. Please wait ${Math.ceil(retryAfter / 60)} minutes before trying again.`);
+        }
+        
+        const message = responseData?.error || apiError.message;
         throw new Error(`DNS analysis failed: ${message}`);
       }
       throw new Error('Unknown error occurred during DNS analysis');

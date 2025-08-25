@@ -43,8 +43,8 @@ blocked_ips = {}
 csrf_tokens = {}  # Store active CSRF tokens with metadata
 
 # Configuration
-RATE_LIMIT_REQUESTS = int(os.environ.get('RATE_LIMIT_REQUESTS', '10'))
-RATE_LIMIT_WINDOW = int(os.environ.get('RATE_LIMIT_WINDOW', '300'))
+RATE_LIMIT_REQUESTS = int(os.environ.get('RATE_LIMIT_REQUESTS', '50'))  # Increased from 10 to 50
+RATE_LIMIT_WINDOW = int(os.environ.get('RATE_LIMIT_WINDOW', '300'))     # Keep 5 minutes
 BLOCK_DURATION = int(os.environ.get('BLOCK_DURATION', '3600'))
 MAX_DOMAIN_LENGTH = 253
 ALLOWED_ORIGINS = [origin.strip() for origin in os.environ.get('CORS_ORIGINS', 'https://www.dnsbunch.com').split(',') if origin.strip()]
