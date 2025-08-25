@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Backend server configuration
+// Backend server configuration from environment variables
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
 
 export async function POST(request: NextRequest) {
@@ -13,54 +13,40 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        // Forward relevant headers
+        'User-Agent': request.headers.get('User-Agent') || 'DNSBunch-NextJS-Proxy',
+        'X-Forwarded-For': request.headers.get('X-Forwarded-For') || 'unknown',
       },
       body: JSON.stringify(body),
     });
 
-    if (!backendResponse.ok) {
-      throw new Error(`Backend responded with status: ${backendResponse.status}`);
-    }
-
+    // Get response data
     const data = await backendResponse.json();
 
-    // Return the response with proper CORS headers
+    // Return the response with the same status code from backend
     return NextResponse.json(data, {
-      status: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
+      status: backendResponse.status,
     });
 
   } catch (error) {
-    console.error('API Proxy Error:', error);
+    console.error('DNS Check API Proxy Error:', error);
     
     return NextResponse.json(
       { 
         error: 'Failed to connect to DNS analysis service',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
+        code: 'PROXY_ERROR'
       },
       { 
-        status: 500,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type',
-        },
+        status: 500
       }
     );
   }
 }
 
 // Handle preflight requests
-export async function OPTIONS(request: NextRequest) {
+export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
   });
 }

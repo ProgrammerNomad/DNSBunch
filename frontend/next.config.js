@@ -9,16 +9,17 @@ const requiredEnvVars = [
 const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
 
 if (missingEnvVars.length > 0) {
-  throw new Error(
-    `Missing required environment variables: ${missingEnvVars.join(', ')}\n` +
-    'Please check your .env.local file or environment configuration.'
+  console.warn(
+    `Warning: Missing environment variables: ${missingEnvVars.join(', ')}\n` +
+    'Using default values. Please check your .env.local file for proper configuration.'
   );
 }
 
 const nextConfig = {
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || '/api',
     NEXT_PUBLIC_API_TIMEOUT: process.env.NEXT_PUBLIC_API_TIMEOUT || '30000',
+    BACKEND_URL: process.env.BACKEND_URL || 'http://localhost:5000',
   },
   
   // Ensure proper module resolution for @/ alias

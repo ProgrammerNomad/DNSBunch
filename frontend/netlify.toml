@@ -8,17 +8,13 @@
 
 [build.environment]
   NODE_VERSION = "18"
-  NEXT_PUBLIC_API_URL = "https://api2.dnsbunch.com"
+  # Frontend uses Next.js API routes as proxy
+  NEXT_PUBLIC_API_URL = "/api"
   NEXT_PUBLIC_API_TIMEOUT = "30000"
   NEXT_PUBLIC_SITE_URL = "https://www.dnsbunch.com"
-
-# API Proxy with security headers
-[[redirects]]
-  from = "/api/*"
-  to = "https://api2.dnsbunch.com/api/:splat"
-  status = 200
-  force = true
-  headers = {X-Frame-Options = "DENY", X-Content-Type-Options = "nosniff"}
+  # Backend URL for Next.js API routes to proxy to
+  # Update this to your actual Python backend URL in production
+  BACKEND_URL = "https://api2.dnsbunch.com"
 
 # Security headers for all pages
 [[headers]]
