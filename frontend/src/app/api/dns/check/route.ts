@@ -3,19 +3,47 @@ import { NextRequest, NextResponse } from 'next/server';
 // Backend server configuration from environment variables
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
 
+// Helper function to get CSRF token from backend
+async function getCsrfToken(userAgent: string, forwardedFor: string): Promise<string> {
+  const response = await fetch(`${BACKEND_URL}/api/csrf-token`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': userAgent,
+      'X-Forwarded-For': forwardedFor,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to get CSRF token: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.csrf_token;
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Parse the incoming request
     const body = await request.json();
     
-    // Forward the request to the Python backend
+    // Extract headers for CSRF token request
+    const userAgent = request.headers.get('User-Agent') || 'DNSBunch-NextJS-Proxy';
+    const forwardedFor = request.headers.get('X-Forwarded-For') || 
+                        request.headers.get('X-Real-IP') || 
+                        'unknown';
+
+    // Get CSRF token first
+    const csrfToken = await getCsrfToken(userAgent, forwardedFor);
+    
+    // Forward the request to the Python backend with CSRF token
     const backendResponse = await fetch(`${BACKEND_URL}/api/check`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // Forward relevant headers
-        'User-Agent': request.headers.get('User-Agent') || 'DNSBunch-NextJS-Proxy',
-        'X-Forwarded-For': request.headers.get('X-Forwarded-For') || 'unknown',
+        'User-Agent': userAgent,
+        'X-Forwarded-For': forwardedFor,
+        'X-CSRF-Token': csrfToken, // Include CSRF token
       },
       body: JSON.stringify(body),
     });
