@@ -5,8 +5,8 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 // Import types from the central types file
 import { DNSAnalysisResult } from '../types/dns';
 
-// API Configuration - Use Next.js API routes instead of direct backend
-const API_BASE_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3000';
+// API Configuration - Direct backend API calls (original approach)
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 const REQUEST_TIMEOUT = parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '30000');
 
 class DNSApi {
@@ -37,7 +37,7 @@ class DNSApi {
    */
   async checkDomain(domain: string, checks: string[] = []): Promise<DNSAnalysisResult> {
     try {
-      const response: AxiosResponse<DNSAnalysisResult> = await this.client.post('/api/dns/check', {
+      const response: AxiosResponse<DNSAnalysisResult> = await this.client.post('/api/check', {
         domain,
         checks: checks.length > 0 ? checks : undefined
       });
@@ -57,7 +57,7 @@ class DNSApi {
    */
   async healthCheck(): Promise<{ status: string; timestamp: string }> {
     try {
-      const response = await this.client.get('/api/health');
+      const response = await this.client.get('/');
       return response.data;
     } catch {
       throw new Error('Health check failed');
