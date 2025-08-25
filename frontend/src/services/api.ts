@@ -1,19 +1,13 @@
 'use client';
 
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { csrfService } from './csrf';
 
 // Import types from the central types file
 import { DNSAnalysisResult } from '../types/dns';
 
-// API Configuration - NO FALLBACKS, must be set in environment
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+// API Configuration - Use Next.js API routes instead of direct backend
+const API_BASE_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3000';
 const REQUEST_TIMEOUT = parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '30000');
-
-// Validate required environment variables
-if (!API_BASE_URL) {
-  throw new Error('NEXT_PUBLIC_API_URL environment variable is required');
-}
 
 class DNSApi {
   private client: AxiosInstance;
@@ -22,38 +16,17 @@ class DNSApi {
     this.client = axios.create({
       baseURL: API_BASE_URL,
       timeout: REQUEST_TIMEOUT,
-      withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       }
     });
 
-    // Request interceptor to add CSRF token
-    this.client.interceptors.request.use(
-      async (config) => {
-        try {
-          const token = await csrfService.getToken();
-          if (token) {
-            config.headers['X-CSRF-Token'] = token;
-          }
-        } catch (csrfError) {
-          console.warn('Failed to get CSRF token:', csrfError);
-        }
-        return config;
-      },
-      (requestError) => {
-        return Promise.reject(requestError);
-      }
-    );
-
     // Response interceptor for error handling
     this.client.interceptors.response.use(
       (response) => response,
       (responseError) => {
-        if (responseError.response?.status === 403 && responseError.response?.data?.message?.includes('CSRF')) {
-          csrfService.handleRefreshRequired();
-        }
+        console.error('API Error:', responseError);
         return Promise.reject(responseError);
       }
     );
@@ -64,7 +37,7 @@ class DNSApi {
    */
   async checkDomain(domain: string, checks: string[] = []): Promise<DNSAnalysisResult> {
     try {
-      const response: AxiosResponse<DNSAnalysisResult> = await this.client.post('/api/check', {
+      const response: AxiosResponse<DNSAnalysisResult> = await this.client.post('/api/dns/check', {
         domain,
         checks: checks.length > 0 ? checks : undefined
       });
@@ -80,18 +53,11 @@ class DNSApi {
   }
 
   /**
-   * Get CSRF token
-   */
-  async getCsrfToken(): Promise<string> {
-    return await csrfService.getToken();
-  }
-
-  /**
    * Health check endpoint
    */
   async healthCheck(): Promise<{ status: string; timestamp: string }> {
     try {
-      const response = await this.client.get('/');
+      const response = await this.client.get('/api/health');
       return response.data;
     } catch {
       throw new Error('Health check failed');
