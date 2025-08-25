@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:production": "NODE_ENV=production next build",
+    "export": "next export",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [
     "dns",
