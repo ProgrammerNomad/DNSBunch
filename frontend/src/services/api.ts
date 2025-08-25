@@ -50,7 +50,8 @@ class DNSApi {
         // Handle rate limiting specifically
         if (apiError.response?.status === 429 && responseData?.code === 'RATE_LIMITED') {
           const retryAfter = responseData.retry_after || 60;
-          throw new Error(`Rate limit exceeded. Please wait ${Math.ceil(retryAfter / 60)} minutes before trying again.`);
+          const waitTime = retryAfter < 60 ? `${retryAfter} seconds` : `${Math.ceil(retryAfter / 60)} minutes`;
+          throw new Error(`Rate limit exceeded. Please wait ${waitTime} before trying again.`);
         }
         
         const message = responseData?.error || apiError.message;
