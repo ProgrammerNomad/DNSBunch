@@ -5,8 +5,8 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 // Import types from the central types file
 import { DNSAnalysisResult } from '../types/dns';
 
-// API Configuration - Direct backend API calls (original approach)
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+// API Configuration - Use Next.js API proxy to avoid CORS
+const API_BASE_URL = ''; // Use relative URLs for Next.js API proxy
 const REQUEST_TIMEOUT = parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '30000');
 
 class DNSApi {
