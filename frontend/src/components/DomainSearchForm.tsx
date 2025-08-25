@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   Button,
@@ -17,9 +17,10 @@ import {
   Collapse,
   Alert,
   CircularProgress,
-  InputAdornment
+  InputAdornment,
+  IconButton
 } from '@mui/material';
-import { Search as SearchIcon } from '@mui/icons-material';
+import { Search as SearchIcon, Clear as ClearIcon } from '@mui/icons-material';
 
 import { DomainSearchFormProps } from '../types/dns';
 
@@ -48,15 +49,18 @@ export function DomainSearchForm({ onSearch, loading = false, error = null, init
   const [selectedChecks, setSelectedChecks] = useState<string[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [domainError, setDomainError] = useState<string | null>(null);
+  const previousInitialDomainRef = useRef<string>('');
 
-  // Update domain when initialDomain prop changes
+  // Update domain when initialDomain prop changes - but only if user hasn't started editing
   useEffect(() => {
-    if (initialDomain && initialDomain !== domain) {
+    // Only update if initialDomain actually changed and is not empty
+    if (initialDomain && initialDomain !== previousInitialDomainRef.current) {
       setDomain(initialDomain);
+      previousInitialDomainRef.current = initialDomain;
       // Clear any existing error when setting initial domain
       setDomainError(null);
     }
-  }, [initialDomain, domain]);
+  }, [initialDomain]);
 
   const validateDomain = (value: string): boolean => {
     if (!value.trim()) {
@@ -91,6 +95,11 @@ export function DomainSearchForm({ onSearch, loading = false, error = null, init
     } else {
       setDomainError(null);
     }
+  };
+
+  const handleClearDomain = () => {
+    setDomain('');
+    setDomainError(null);
   };
 
   const handleResultTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -168,6 +177,23 @@ export function DomainSearchForm({ onSearch, loading = false, error = null, init
                 startAdornment: (
                   <InputAdornment position="start">
                     <SearchIcon color="action" fontSize="small" />
+                  </InputAdornment>
+                ),
+                endAdornment: domain && (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClearDomain}
+                      disabled={loading}
+                      size="small"
+                      sx={{ 
+                        visibility: domain ? 'visible' : 'hidden',
+                        '&:hover': {
+                          backgroundColor: 'action.hover',
+                        }
+                      }}
+                    >
+                      <ClearIcon fontSize="small" />
+                    </IconButton>
                   </InputAdornment>
                 ),
               }}
