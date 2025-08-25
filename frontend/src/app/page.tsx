@@ -54,7 +54,8 @@ function HomePageContent() {
         handleSearch(extractedDomain, [], 'normal');
       }
     }
-  }, [searchParams]); // Remove lastSearchDomain and handleSearch from dependencies to avoid infinite loops
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]); // Only depend on searchParams to avoid infinite loops
 
   const handleSearch = async (domain: string, checks: string[], format: 'normal' | 'advanced') => {
     setLoading(true);
@@ -63,9 +64,14 @@ function HomePageContent() {
     setLastSearchDomain(domain);
     setResultFormat(format);
 
-    // Update URL to path-based format for clean sharing URLs
-    // Use replaceState to update URL without triggering navigation
-    window.history.replaceState({}, '', `/${encodeURIComponent(domain)}`);
+    // Only update URL if the domain has actually changed to avoid unnecessary history entries
+    const currentPath = window.location.pathname;
+    const expectedPath = `/${encodeURIComponent(domain)}`;
+    
+    if (currentPath !== expectedPath) {
+      // Use replaceState to update URL without triggering navigation
+      window.history.replaceState({}, '', expectedPath);
+    }
 
     try {
       const data = await dnsApi.checkDomain(domain, checks);

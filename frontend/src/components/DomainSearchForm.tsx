@@ -51,10 +51,10 @@ export function DomainSearchForm({ onSearch, loading = false, error = null, init
   const [domainError, setDomainError] = useState<string | null>(null);
   const previousInitialDomainRef = useRef<string>('');
 
-  // Update domain when initialDomain prop changes - but only if user hasn't started editing
+  // Update domain when initialDomain prop changes - always allow updates for better UX
   useEffect(() => {
-    // Only update if initialDomain actually changed and is not empty
-    if (initialDomain && initialDomain !== previousInitialDomainRef.current) {
+    // Update domain if initialDomain changes (including from URL)
+    if (initialDomain !== previousInitialDomainRef.current) {
       setDomain(initialDomain);
       previousInitialDomainRef.current = initialDomain;
       // Clear any existing error when setting initial domain
