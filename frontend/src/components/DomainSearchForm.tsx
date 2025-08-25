@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -42,12 +42,21 @@ const DNS_RECORD_TYPES = [
   { id: 'wildcard', label: 'Wildcard', description: 'Wildcard DNS records' }
 ];
 
-export function DomainSearchForm({ onSearch, loading = false, error = null }: DomainSearchFormProps) {
-  const [domain, setDomain] = useState('');
+export function DomainSearchForm({ onSearch, loading = false, error = null, initialDomain = '' }: DomainSearchFormProps) {
+  const [domain, setDomain] = useState(initialDomain);
   const [resultType, setResultType] = useState<'normal' | 'advanced'>('normal');
   const [selectedChecks, setSelectedChecks] = useState<string[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [domainError, setDomainError] = useState<string | null>(null);
+
+  // Update domain when initialDomain prop changes
+  useEffect(() => {
+    if (initialDomain && initialDomain !== domain) {
+      setDomain(initialDomain);
+      // Clear any existing error when setting initial domain
+      setDomainError(null);
+    }
+  }, [initialDomain, domain]);
 
   const validateDomain = (value: string): boolean => {
     if (!value.trim()) {

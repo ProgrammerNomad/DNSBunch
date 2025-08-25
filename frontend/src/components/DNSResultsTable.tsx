@@ -10,13 +10,16 @@ import {
   TableRow,
   Paper,
   Typography,
-  Box
+  Box,
+  IconButton,
+  Tooltip
 } from '@mui/material';
 import {
   CheckCircle as PassIcon,
   Warning as WarnIcon,
   Error as ErrorIcon,
-  Info as InfoIcon
+  Info as InfoIcon,
+  Share as ShareIcon
 } from '@mui/icons-material';
 import { DNSAnalysisResult, CheckResult, SOARecord } from '../types/dns';
 
@@ -228,6 +231,37 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
     return 'pass';
   };
 
+  // Share functionality
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/${encodeURIComponent(domain)}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `DNS Analysis Results for ${domain}`,
+          text: `Check out the DNS analysis results for ${domain}`,
+          url: shareUrl
+        });
+      } catch (err) {
+        // Fallback to copy to clipboard
+        copyToClipboard(shareUrl);
+      }
+    } else {
+      // Fallback to copy to clipboard
+      copyToClipboard(shareUrl);
+    }
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      // You could add a toast notification here
+      console.log('Link copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy link:', err);
+    }
+  };
+
   // Generate detailed test rows for each DNS record type
   const generateTestRows = (): TestSection[] => {
     const tests: TestSection[] = [];
@@ -415,13 +449,24 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
 
   return (
     <Paper elevation={2} sx={{ mt: 3 }}>
-      <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
-        <Typography variant="h5" component="h2" gutterBottom>
-          DNS Analysis Results for {domain}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Comprehensive DNS and mail server diagnostics
-        </Typography>
+      <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box>
+          <Typography variant="h5" component="h2" gutterBottom>
+            DNS Analysis Results for {domain}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Comprehensive DNS and mail server diagnostics
+          </Typography>
+        </Box>
+        <Tooltip title="Share this DNS analysis">
+          <IconButton 
+            onClick={handleShare}
+            color="primary"
+            size="large"
+          >
+            <ShareIcon />
+          </IconButton>
+        </Tooltip>
       </Box>
 
       <TableContainer>

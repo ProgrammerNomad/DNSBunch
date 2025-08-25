@@ -20,7 +20,8 @@ import {
   Warning as WarningIcon,
   Error as ErrorIcon,
   Info as InfoIcon,
-  Clear as ClearIcon
+  Clear as ClearIcon,
+  Share as ShareIcon
 } from '@mui/icons-material';
 import { DNSAnalysisResult, CheckResult } from '../types/dns';
 
@@ -48,6 +49,36 @@ const StatusIcon: React.FC<{ status: string }> = ({ status }) => {
 
 export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvancedProps) {
   const [expandedPanels, setExpandedPanels] = useState<Set<string>>(new Set(['summary']));
+
+  // Share functionality
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/${encodeURIComponent(domain)}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Advanced DNS Analysis Results for ${domain}`,
+          text: `Check out the advanced DNS analysis results for ${domain}`,
+          url: shareUrl
+        });
+      } catch (err) {
+        // Fallback to copy to clipboard
+        copyToClipboard(shareUrl);
+      }
+    } else {
+      // Fallback to copy to clipboard
+      copyToClipboard(shareUrl);
+    }
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      console.log('Link copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy link:', err);
+    }
+  };
 
   const handlePanelChange = (panel: string) => {
     const newExpanded = new Set(expandedPanels);
@@ -111,14 +142,24 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
           <Typography variant="h5" component="h2">
             Advanced DNS Analysis for {domain}
           </Typography>
-          <Button
-            variant="outlined"
-            startIcon={<ClearIcon />}
-            onClick={onClear}
-            size="small"
-          >
-            Clear Results
-          </Button>
+          <Stack direction="row" spacing={1}>
+            <Button
+              variant="outlined"
+              startIcon={<ShareIcon />}
+              onClick={handleShare}
+              size="small"
+            >
+              Share
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<ClearIcon />}
+              onClick={onClear}
+              size="small"
+            >
+              Clear Results
+            </Button>
+          </Stack>
         </Box>
         <Typography variant="body2" color="text.secondary">
           Detailed technical analysis with raw DNS data and comprehensive validation

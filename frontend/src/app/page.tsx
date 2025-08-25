@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Container, Box, Typography, Alert } from '@mui/material';
+import React, { useState, useEffect, Suspense } from 'react';
+import { Container, Box, Typography, Alert, CircularProgress } from '@mui/material';
+import { useSearchParams } from 'next/navigation';
 
 import { DomainSearchForm } from '../components/DomainSearchForm';
 import { DNSResultsTable } from '../components/DNSResultsTable';
@@ -10,12 +11,50 @@ import { Footer } from '../components/Footer';
 import { dnsApi } from '../services/api';
 import { DNSAnalysisResult } from '../types/dns';
 
-export default function HomePage() {
+function HomePageContent() {
   const [results, setResults] = useState<DNSAnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastSearchDomain, setLastSearchDomain] = useState<string>('');
   const [resultFormat, setResultFormat] = useState<'normal' | 'advanced'>('normal');
+  
+  const searchParams = useSearchParams();
+
+  // Function to extract domain from URL or validate if it's already a domain
+  const extractDomainFromUrl = (input: string): string | null => {
+    try {
+      // Remove any leading/trailing whitespace
+      input = input.trim();
+      
+      // If it starts with http/https, extract the hostname
+      if (input.startsWith('http://') || input.startsWith('https://')) {
+        const url = new URL(input);
+        return url.hostname;
+      }
+      
+      // If it looks like a domain (contains dots and valid characters)
+      if (/^[a-zA-Z0-9][a-zA-Z0-9-_.]*[a-zA-Z0-9]$/.test(input) && input.includes('.')) {
+        return input;
+      }
+      
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  // Handle URL parameter on component mount and when search params change
+  useEffect(() => {
+    const domainParam = searchParams.get('domain');
+    
+    if (domainParam) {
+      const extractedDomain = extractDomainFromUrl(domainParam);
+      if (extractedDomain && extractedDomain !== lastSearchDomain) {
+        // Auto-trigger search for the domain from URL
+        handleSearch(extractedDomain, [], 'normal');
+      }
+    }
+  }, [searchParams]); // Remove lastSearchDomain and handleSearch from dependencies to avoid infinite loops
 
   const handleSearch = async (domain: string, checks: string[], format: 'normal' | 'advanced') => {
     setLoading(true);
@@ -23,6 +62,10 @@ export default function HomePage() {
     setResults(null);
     setLastSearchDomain(domain);
     setResultFormat(format);
+
+    // Update URL to path-based format for clean sharing URLs
+    // Use replaceState to update URL without triggering navigation
+    window.history.replaceState({}, '', `/${encodeURIComponent(domain)}`);
 
     try {
       const data = await dnsApi.checkDomain(domain, checks);
@@ -38,6 +81,9 @@ export default function HomePage() {
     setResults(null);
     setError(null);
     setLastSearchDomain('');
+    
+    // Clear the path-based URL and return to home
+    window.history.replaceState({}, '', '/');
   };
 
   return (
@@ -68,6 +114,7 @@ export default function HomePage() {
         onSearch={handleSearch} 
         loading={loading} 
         error={error}
+        initialDomain={lastSearchDomain}
       />
 
       {/* Results */}
@@ -104,5 +151,17 @@ export default function HomePage() {
       {/* Footer */}
       <Footer />
     </Container>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={
+      <Container maxWidth="xl" sx={{ py: 4, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <CircularProgress size={40} />
+      </Container>
+    }>
+      <HomePageContent />
+    </Suspense>
   );
 }

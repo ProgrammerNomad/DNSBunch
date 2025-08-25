@@ -102,6 +102,7 @@ export interface DomainSearchFormProps {
   onSearch: (domain: string, checks: string[], resultType: 'normal' | 'advanced') => void;
   loading?: boolean;
   error?: string | null;
+  initialDomain?: string;
 }
 
 // DNS Record Types
