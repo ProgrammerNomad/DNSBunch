@@ -25,6 +25,26 @@ import {
 } from '@mui/icons-material';
 import { DNSAnalysisResult, CheckResult } from '../types/dns';
 
+interface WWWCheckDetail {
+  cname_chain?: Array<{ from: string; to: string }>;
+  final_ips?: string[];
+  public_ips?: string[];
+  private_ips?: string[];
+  has_cname?: boolean;
+  cname_resolves?: boolean;
+}
+
+interface WWWCheck {
+  type: string;
+  status: string;
+  message: string;
+  details?: WWWCheckDetail;
+}
+
+interface WWWCheckResult extends CheckResult {
+  checks?: WWWCheck[];
+}
+
 interface DNSResultsAdvancedProps {
   results: DNSAnalysisResult;
   domain: string;
@@ -61,7 +81,7 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
           text: `Check out the advanced DNS analysis results for ${domain}`,
           url: shareUrl
         });
-      } catch (err) {
+      } catch {
         // Fallback to copy to clipboard
         copyToClipboard(shareUrl);
       }
@@ -75,8 +95,8 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
     try {
       await navigator.clipboard.writeText(text);
       console.log('Link copied to clipboard!');
-    } catch (err) {
-      console.error('Failed to copy link:', err);
+    } catch (error) {
+      console.error('Failed to copy link:', error);
     }
   };
 
@@ -280,7 +300,41 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
                 {checkType.toUpperCase()} Record Analysis
               </Typography>
               
-              {checkData?.records && (
+              {/* Special handling for WWW check */}
+              {checkType === 'www' && (checkData as WWWCheckResult)?.checks && (
+                <Box sx={{ mb: 2 }}>
+                  {((checkData as WWWCheckResult).checks!).map((check, index: number) => (
+                    <Box key={index} sx={{ mb: 2 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                        <StatusIcon status={check.status || 'info'} />
+                        <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                          {check.type === 'www_a_record' ? 'WWW A Record' :
+                           check.type === 'www_ip_public' ? 'IPs are public' :
+                           check.type === 'www_cname' ? 'WWW CNAME' :
+                           check.type}
+                        </Typography>
+                      </Box>
+                      <Alert 
+                        severity={
+                          check.status === 'pass' ? 'success' :
+                          check.status === 'warning' ? 'warning' :
+                          check.status === 'error' ? 'error' :
+                          'info'
+                        }
+                        sx={{ mb: 1 }}
+                      >
+                        <Typography 
+                          variant="body2" 
+                          dangerouslySetInnerHTML={{ __html: check.message || '' }}
+                        />
+                      </Alert>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+
+              {/* Regular handling for other checks */}
+              {checkType !== 'www' && checkData?.records && (
                 <Box sx={{ mb: 2 }}>
                   <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 1 }}>
                     Found {Array.isArray(checkData.records) ? checkData.records.length : 
@@ -290,7 +344,7 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
                 </Box>
               )}
 
-              {checkData?.issues && checkData.issues.length > 0 && (
+              {checkType !== 'www' && checkData?.issues && checkData.issues.length > 0 && (
                 <Box sx={{ mb: 2 }}>
                   <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 1 }}>
                     Issues Found:

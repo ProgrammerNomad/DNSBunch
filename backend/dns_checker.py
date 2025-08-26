@@ -82,7 +82,7 @@ class DNSChecker:
         # Define all available check types
         all_check_types = [
             'ns', 'soa', 'a', 'aaaa', 'mx', 'spf', 'txt', 'cname', 
-            'ptr', 'caa', 'dmarc', 'dkim', 'glue', 'dnssec', 'axfr', 'wildcard'
+            'ptr', 'caa', 'dmarc', 'dkim', 'glue', 'dnssec', 'axfr', 'wildcard', 'www'
         ]
         
         # Determine which checks to run
@@ -132,6 +132,8 @@ class DNSChecker:
                     results['checks']['axfr'] = await self._check_axfr()
                 elif check_type == 'wildcard':
                     results['checks']['wildcard'] = await self._check_wildcard_records()
+                elif check_type == 'www':
+                    results['checks']['www'] = await self._check_www_records()
                 
                 print(f"Completed {check_type} check")
                 
@@ -1492,6 +1494,262 @@ class DNSChecker:
                 'records': [],
                 'issues': [f"Wildcard check failed: {str(e)}"]
             }
+
+    async def _check_www_records(self) -> Dict[str, Any]:
+        """Check WWW subdomain with CNAME to A record chain and IP validation"""
+        www_domain = f"www.{self.domain}"
+        
+        try:
+            # Step 1: Check if www has CNAME record
+            cname_result = await self._check_www_cname(www_domain)
+            
+            # Step 2: Get final A records (either direct or through CNAME chain)
+            a_result = await self._check_www_a_records(www_domain, cname_result)
+            
+            # Step 3: Check if IPs are public
+            ip_check_result = self._check_www_ip_public(a_result)
+            
+            # Determine overall status
+            status = 'pass'
+            if cname_result['status'] == 'error' and a_result['status'] == 'error':
+                status = 'error'
+            elif ip_check_result['status'] in ['warning', 'error']:
+                status = ip_check_result['status']
+            
+            return {
+                'status': status,
+                'checks': [
+                    {
+                        'type': 'www_a_record',
+                        'status': 'info',
+                        'message': self._format_www_a_record_message(cname_result, a_result),
+                        'details': {
+                            'cname_chain': cname_result.get('cname_chain', []),
+                            'final_ips': a_result.get('ips', [])
+                        }
+                    },
+                    {
+                        'type': 'www_ip_public',
+                        'status': ip_check_result['status'],
+                        'message': ip_check_result['message'],
+                        'details': ip_check_result.get('details', {})
+                    },
+                    {
+                        'type': 'www_cname',
+                        'status': cname_result['status'],
+                        'message': cname_result['message'],
+                        'details': cname_result.get('details', {})
+                    }
+                ]
+            }
+            
+        except Exception as e:
+            return {
+                'status': 'error',
+                'checks': [{
+                    'type': 'www_check',
+                    'status': 'error',
+                    'message': f"WWW check failed: {str(e)}",
+                    'details': {}
+                }]
+            }
+
+    async def _check_www_cname(self, www_domain: str) -> Dict[str, Any]:
+        """Check CNAME record for www subdomain"""
+        try:
+            cname_answers = self.resolver.resolve(www_domain, 'CNAME')
+            cname_target = str(cname_answers[0]).rstrip('.')
+            
+            # Build CNAME chain
+            cname_chain = [{'from': www_domain, 'to': cname_target}]
+            
+            # Follow CNAME chain to final destination
+            current_target = cname_target
+            max_depth = 10  # Prevent infinite loops
+            depth = 0
+            
+            while depth < max_depth:
+                try:
+                    further_cname = self.resolver.resolve(current_target, 'CNAME')
+                    next_target = str(further_cname[0]).rstrip('.')
+                    cname_chain.append({'from': current_target, 'to': next_target})
+                    current_target = next_target
+                    depth += 1
+                except:
+                    break  # No more CNAMEs, reached final destination
+            
+            # Check if final target has A records
+            final_target = current_target
+            has_a_records = False
+            try:
+                self.resolver.resolve(final_target, 'A')
+                has_a_records = True
+            except:
+                pass
+            
+            if has_a_records:
+                return {
+                    'status': 'pass',
+                    'message': f"OK. You do have a CNAME record for {www_domain}.Your CNAME entry also returns the A record for the CNAME entry, which is good.",
+                    'cname_chain': cname_chain,
+                    'final_target': final_target,
+                    'details': {
+                        'has_cname': True,
+                        'cname_resolves': True
+                    }
+                }
+            else:
+                return {
+                    'status': 'warning',
+                    'message': f"Warning. CNAME record exists for {www_domain} but final target {final_target} doesn't have A records.",
+                    'cname_chain': cname_chain,
+                    'final_target': final_target,
+                    'details': {
+                        'has_cname': True,
+                        'cname_resolves': False
+                    }
+                }
+                
+        except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
+            # No CNAME, check if it has direct A records
+            return {
+                'status': 'info',
+                'message': f"No CNAME record found for {www_domain}",
+                'cname_chain': [],
+                'final_target': www_domain,
+                'details': {
+                    'has_cname': False,
+                    'cname_resolves': False
+                }
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': f"Failed to check CNAME for {www_domain}: {str(e)}",
+                'cname_chain': [],
+                'final_target': www_domain,
+                'details': {
+                    'has_cname': False,
+                    'cname_resolves': False
+                }
+            }
+
+    async def _check_www_a_records(self, www_domain: str, cname_result: Dict[str, Any]) -> Dict[str, Any]:
+        """Get A records for www domain (following CNAME chain if present)"""
+        try:
+            # Determine what hostname to query for A records
+            final_target = cname_result.get('final_target', www_domain)
+            
+            # Get A records
+            a_answers = self.resolver.resolve(final_target, 'A')
+            ips = [str(rdata) for rdata in a_answers]
+            
+            return {
+                'status': 'pass' if ips else 'error',
+                'ips': ips,
+                'final_target': final_target
+            }
+            
+        except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
+            return {
+                'status': 'error',
+                'ips': [],
+                'final_target': cname_result.get('final_target', www_domain)
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'ips': [],
+                'final_target': cname_result.get('final_target', www_domain),
+                'error': str(e)
+            }
+
+    def _check_www_ip_public(self, a_result: Dict[str, Any]) -> Dict[str, Any]:
+        """Check if WWW IPs are public"""
+        ips = a_result.get('ips', [])
+        
+        if not ips:
+            return {
+                'status': 'error',
+                'message': 'No IPs found for WWW subdomain',
+                'details': {}
+            }
+        
+        public_ips = []
+        private_ips = []
+        
+        for ip in ips:
+            try:
+                ip_obj = ipaddress.IPv4Address(ip)
+                if ip_obj.is_private or ip_obj.is_reserved or ip_obj.is_loopback:
+                    private_ips.append(ip)
+                else:
+                    public_ips.append(ip)
+            except:
+                private_ips.append(ip)  # Invalid IP treated as private
+        
+        if len(public_ips) == len(ips):
+            return {
+                'status': 'pass',
+                'message': 'OK. All of your WWW IPs appear to be public IPs.',
+                'details': {
+                    'public_ips': public_ips,
+                    'private_ips': private_ips
+                }
+            }
+        elif public_ips:
+            return {
+                'status': 'warning',
+                'message': f'Warning. Some WWW IPs are private/reserved: {", ".join(private_ips)}',
+                'details': {
+                    'public_ips': public_ips,
+                    'private_ips': private_ips
+                }
+            }
+        else:
+            return {
+                'status': 'error',
+                'message': f'Error. All WWW IPs are private/reserved: {", ".join(private_ips)}',
+                'details': {
+                    'public_ips': public_ips,
+                    'private_ips': private_ips
+                }
+            }
+
+    def _format_www_a_record_message(self, cname_result: Dict[str, Any], a_result: Dict[str, Any]) -> str:
+        """Format the WWW A record message to match the desired output format"""
+        www_domain = f"www.{self.domain}"
+        final_ips = a_result.get('ips', [])
+        cname_chain = cname_result.get('cname_chain', [])
+        
+        if not final_ips:
+            return f"Your {www_domain} A record is: No A records found"
+        
+        # Build the chain display
+        message = f"Your {www_domain} A record is:<br>"
+        
+        if cname_chain:
+            # Show CNAME chain
+            for i, link in enumerate(cname_chain):
+                if i == 0:
+                    message += f"{link['from']} -&gt; "
+                message += f"{link['to']}"
+                if i < len(cname_chain) - 1:
+                    message += " -&gt; "
+            
+            message += " -&gt; "
+        else:
+            message += f"{www_domain} -&gt; "
+        
+        # Add IPs
+        message += "[ "
+        message += "&nbsp;&nbsp;".join(final_ips)
+        message += " ]"
+        
+        if cname_chain:
+            message += "<br><br> [Looks like you have CNAME's]"
+        
+        return message
 
     def _compare_ns_records(self, parent_result, domain_result):
         """Compare parent delegation with domain NS records"""

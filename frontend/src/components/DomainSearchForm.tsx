@@ -40,7 +40,8 @@ const DNS_RECORD_TYPES = [
   { id: 'glue', label: 'Glue Records', description: 'Nameserver glue records' },
   { id: 'dnssec', label: 'DNSSEC', description: 'DNS Security Extensions' },
   { id: 'axfr', label: 'AXFR (Zone Transfer)', description: 'Zone transfer check' },
-  { id: 'wildcard', label: 'Wildcard', description: 'Wildcard DNS records' }
+  { id: 'wildcard', label: 'Wildcard', description: 'Wildcard DNS records' },
+  { id: 'www', label: 'WWW (CNAME/A Records)', description: 'WWW subdomain analysis' }
 ];
 
 export function DomainSearchForm({ onSearch, loading = false, error = null, initialDomain = '' }: DomainSearchFormProps) {
