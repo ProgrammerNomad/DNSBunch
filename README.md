@@ -23,15 +23,17 @@ DNSBunch is your all-in-one DNS and mail diagnostics platform with a modern, use
 
 - **Modern UI**: Built with React 18 and Material-UI v5 for a responsive, accessible experience
 - **User-Friendly Explanations**: Complex DNS concepts explained in plain language for non-technical users
-- **Comprehensive Analysis**: Checks 16+ DNS record types including DNSSEC, CAA, SPF, DMARC, and more
+- **Comprehensive Analysis**: Checks 17+ DNS record types including DNSSEC, CAA, SPF, DMARC, WWW subdomain analysis, and more
 - **Categorized Results**: Results organized into logical categories:
   - **DNS Foundation** - Core DNS settings (NS, SOA, A, AAAA)
-  - **Website & Content** - Website-related configuration (CNAME, TXT, wildcard)
+  - **Website & Content** - Website-related configuration (CNAME, TXT, wildcard, WWW subdomain)
   - **Email & Communication** - Email delivery and security (MX, SPF, DMARC, DKIM, PTR)
   - **Security & Protection** - Advanced security features (DNSSEC, CAA, AXFR)
   - **Performance & Optimization** - Speed and efficiency settings (glue records)
 - **Visual Status Indicators**: Clear pass/warning/error/info status with color coding
 - **Detailed Recommendations**: Actionable advice for fixing issues
+- **Advanced WWW Analysis**: Comprehensive WWW subdomain checking with CNAME chain resolution and IP validation
+- **Dual Display Modes**: Choose between simple table format or detailed advanced analysis
 - **No Registration Required**: Instant analysis without signup or data storage
 
 ---
@@ -54,68 +56,93 @@ DNSBunch is your all-in-one DNS and mail diagnostics platform with a modern, use
 Below is a complete list of DNS record types checked, **what information is returned for each**, and **the validations performed**:
 
 ### 1. **NS (Nameserver) Records**
-- **Information Returned:** All authoritative nameservers for the domain, IPv4/IPv6 addresses, (Optional) geolocation.
-- **Checks:** Valid IPs, reachability, duplicates, parent/child delegation, no single point of failure.
+- **Information Returned:** All authoritative nameservers for the domain, IPv4/IPv6 addresses, geolocation data, TTL values, response times.
+- **Checks:** Valid IPs, reachability test, no duplicates, parent/child delegation consistency, geographical distribution, no single point of failure, authoritative response validation, recursive query handling.
+- **Validations:** Nameserver accessibility, IP address validity, delegation consistency between parent and child zones, glue record requirements, response time analysis.
 
 ### 2. **SOA (Start of Authority) Record**
-- **Information Returned:** Primary master nameserver, responsible email, serial, refresh, retry, expire, and minimum TTL values.
-- **Checks:** Exists, serial matches across nameservers, recommended values, valid email.
+- **Information Returned:** Primary master nameserver (MNAME), responsible email address (RNAME), serial number, refresh interval, retry interval, expire time, minimum TTL values.
+- **Checks:** Record exists, serial number consistency across all nameservers, recommended timing values validation, valid email format, MNAME exists in NS records.
+- **Validations:** Serial number synchronization, refresh/retry/expire values within best practice ranges, responsible email accessibility, primary nameserver authority validation.
 
 ### 3. **A (IPv4 Address) Records**
-- **Information Returned:** All IPv4 addresses assigned to the domain (including root and www).
-- **Checks:** Records exist, no private/reserved IPs, IPs reachable (optional ping).
+- **Information Returned:** All IPv4 addresses assigned to the domain (root domain and www subdomain), TTL values, geographic location of IPs.
+- **Checks:** Records exist for both root and www, no private/reserved/loopback IPs, IP reachability tests, load balancing configuration, CDN detection.
+- **Validations:** Public IP address verification, connectivity tests, geographic distribution analysis, duplicate IP detection, hosting provider identification.
 
 ### 4. **AAAA (IPv6 Address) Records**
-- **Information Returned:** All IPv6 addresses assigned to the domain (including root and www).
-- **Checks:** Records exist, no invalid/reserved blocks, IPs reachable (optional ping).
+- **Information Returned:** All IPv6 addresses assigned to the domain (root domain and www subdomain), TTL values, IPv6 address blocks, dual-stack configuration.
+- **Checks:** Records exist, no invalid/reserved IPv6 blocks, IPv6 connectivity tests, dual-stack compatibility, proper IPv6 configuration.
+- **Validations:** Valid IPv6 address format, reserved address block detection, connectivity verification, IPv6 readiness assessment.
 
 ### 5. **MX (Mail Exchange) Records**
-- **Information Returned:** List of all MX hosts, priorities, and resolved IPs.
-- **Checks:** Records exist, no duplicate/misprioritized entries, valid A/AAAA (no CNAME for MX), reachable targets.
+- **Information Returned:** Complete list of mail servers, priority values, resolved IPv4/IPv6 addresses, mail server software detection, anti-spam configurations.
+- **Checks:** Records exist, no duplicate priorities, valid A/AAAA records (no CNAME for MX targets), mail server reachability, priority distribution, backup MX configuration.
+- **Validations:** Mail server connectivity, priority ordering validation, target hostname resolution, redundancy analysis, mail server response testing.
 
 ### 6. **SPF (Sender Policy Framework)**
-- **Information Returned:** SPF record (TXT type) value.
-- **Checks:** Exists, valid syntax, max 10 DNS lookups, no deprecated mechanisms.
+- **Information Returned:** Complete SPF record value, parsed mechanisms and modifiers, included domains, DNS lookup count, policy strictness.
+- **Checks:** Record exists, valid syntax, maximum 10 DNS lookups, no deprecated mechanisms, proper policy configuration, include chain validation.
+- **Validations:** Syntax compliance with RFC 7208, DNS lookup optimization, mechanism effectiveness, policy completeness, security strength assessment.
 
 ### 7. **TXT Records**
-- **Information Returned:** All TXT records for the root domain.
-- **Checks:** Presence of SPF, DKIM, DMARC, valid syntax.
+- **Information Returned:** All TXT records for the root domain, SPF/DKIM/DMARC identification, domain verification records, custom configurations.
+- **Checks:** Presence of security records (SPF, DKIM, DMARC), valid syntax for each type, no conflicting records, proper formatting.
+- **Validations:** Record syntax verification, security configuration completeness, conflicting record detection, best practice compliance.
 
 ### 8. **CNAME (Canonical Name) Records**
-- **Information Returned:** CNAMEs for key subdomains (e.g., www, mail).
-- **Checks:** No CNAME at apex, chain length, target exists and resolves.
+- **Information Returned:** CNAME records for key subdomains (www, mail, ftp, blog, shop), target domains, chain resolution, TTL values.
+- **Checks:** No CNAME at zone apex, chain length validation, target existence and resolution, circular reference detection, subdomain coverage.
+- **Validations:** Zone apex compliance, resolution chain integrity, target accessibility, performance impact assessment.
 
 ### 9. **PTR (Reverse DNS) Records**
-- **Information Returned:** PTR records for each mail server IP (MX targets).
-- **Checks:** PTR exists, matches hostname, not generic.
+- **Information Returned:** PTR records for each mail server IP address, reverse hostname resolution, forward-reverse consistency.
+- **Checks:** PTR record exists for all MX server IPs, hostname matches forward lookup, not generic/default hostnames, proper domain alignment.
+- **Validations:** Reverse DNS completeness, forward-reverse consistency, hostname authenticity, mail server reputation factors.
 
 ### 10. **CAA (Certification Authority Authorization) Records**
-- **Information Returned:** List of CAA records.
-- **Checks:** Valid syntax, at least one CA allowed or none, no conflicts.
+- **Information Returned:** Complete list of CAA records, authorized certificate authorities, policy tags, critical flags, wildcard permissions.
+- **Checks:** Valid syntax according to RFC 6844, at least one CA authorized or explicit denial, no conflicting policies, proper flag usage.
+- **Validations:** Syntax compliance, security policy effectiveness, CA authorization completeness, wildcard certificate controls.
 
 ### 11. **DMARC (Domain-based Message Authentication, Reporting & Conformance)**
-- **Information Returned:** DMARC TXT record value.
-- **Checks:** Record exists, syntax valid, policy set, aligns with SPF/DKIM.
+- **Information Returned:** Complete DMARC policy record, alignment settings, reporting configuration, policy strictness, aggregate/forensic report addresses.
+- **Checks:** Record exists at _dmarc subdomain, valid syntax, proper policy configuration, SPF/DKIM alignment settings, reporting setup.
+- **Validations:** Policy effectiveness, alignment configuration, reporting mechanism setup, security level assessment, gradual deployment validation.
 
 ### 12. **DKIM (DomainKeys Identified Mail)**
-- **Information Returned:** DKIM selector records (user-provided or common).
-- **Checks:** Record exists, valid syntax, key length.
+- **Information Returned:** DKIM selector records (user-provided or common selectors), public key data, key algorithms, key length, service configuration.
+- **Checks:** Records exist for provided/common selectors, valid public key format, appropriate key length (1024+ bits), proper algorithm usage.
+- **Validations:** Key strength assessment, algorithm security, selector configuration, service integration verification.
 
 ### 13. **Glue Records**
-- **Information Returned:** Presence and correctness of glue records for in-zone nameservers.
-- **Checks:** Glue present for all in-bailiwick nameservers, consistent.
+- **Information Returned:** Presence and accuracy of glue records for in-zone nameservers, IPv4/IPv6 glue data, consistency across parent servers.
+- **Checks:** Glue records present for all in-bailiwick nameservers, IP address consistency, parent-child synchronization, redundancy coverage.
+- **Validations:** Delegation integrity, glue record necessity, consistency verification, resolution path optimization.
 
 ### 14. **DNSSEC (Domain Name System Security Extensions)**
-- **Information Returned:** DS, RRSIG, and other DNSSEC records if present.
-- **Checks:** Present, valid, consistent, not expired.
+- **Information Returned:** DS records in parent zone, DNSKEY records, RRSIG signatures, NSEC/NSEC3 records, chain of trust validation.
+- **Checks:** DNSSEC signing status, valid signatures, proper key algorithms, signature expiration, chain of trust integrity.
+- **Validations:** Cryptographic signature verification, key rollover status, algorithm strength, trust chain completeness, temporal validity.
 
-### 15. **Zone Transfer (AXFR)**
-- **Information Returned:** AXFR status (open/closed).
-- **Checks:** AXFR not allowed to unauthorized hosts.
+### 15. **AXFR (Zone Transfer)**
+- **Information Returned:** Zone transfer availability status, transfer restrictions, secondary server configuration, security assessment.
+- **Checks:** AXFR requests properly restricted to authorized hosts, no open zone transfers, secondary nameserver access control.
+- **Validations:** Transfer security, access control effectiveness, information disclosure prevention, authorized server verification.
 
 ### 16. **Wildcard Records**
-- **Information Returned:** Detection of wildcard DNS entries.
-- **Checks:** Report if wildcards exist; warn if inappropriate.
+- **Information Returned:** Detection of wildcard DNS entries for various record types, wildcard coverage, subdomain behavior analysis.
+- **Checks:** Wildcard presence detection, appropriate usage assessment, security implications, subdomain resolution behavior.
+- **Validations:** Wildcard necessity, security risk assessment, resolution behavior analysis, best practice compliance.
+
+### 17. **WWW (CNAME/A Records) - NEW**
+- **Information Returned:** Complete WWW subdomain analysis including CNAME chain resolution, final A record destinations, IP addresses, public/private IP validation.
+- **Checks:** WWW subdomain existence, CNAME record presence and chain following, A record resolution through CNAME chain, IP address publicity validation, subdomain accessibility.
+- **Validations:** CNAME chain integrity, A record resolution accuracy, public IP verification, subdomain configuration completeness, web accessibility assessment.
+- **Output Format:** 
+  - **WWW A Record**: Displays complete resolution chain (e.g., `www.domain.com -> domain.com -> [ 192.0.2.1 ]` with CNAME indication)
+  - **IPs are public**: Validates all resolved IPs are public (not private/reserved/loopback)
+  - **WWW CNAME**: Confirms CNAME record existence and proper A record resolution
 
 ---
 
@@ -297,6 +324,8 @@ Returns comprehensive DNS analysis results.
 ```json
 {
   "domain": "example.com",
+  "timestamp": "2025-08-26T12:00:00.000000",
+  "status": "completed",
   "checks": {
     "ns": {
       "status": "pass",
@@ -318,9 +347,51 @@ Returns comprehensive DNS analysis results.
         "minimum": 172800
       },
       "issues": ["SOA serial mismatch between nameservers"]
+    },
+    "www": {
+      "status": "pass",
+      "checks": [
+        {
+          "type": "www_a_record",
+          "status": "info",
+          "message": "Your www.example.com A record is:<br>www.example.com -&gt; example.com -&gt; [ 192.0.2.1 ]<br><br> [Looks like you have CNAME's]",
+          "details": {
+            "cname_chain": [
+              {"from": "www.example.com", "to": "example.com"}
+            ],
+            "final_ips": ["192.0.2.1"]
+          }
+        },
+        {
+          "type": "www_ip_public",
+          "status": "pass",
+          "message": "OK. All of your WWW IPs appear to be public IPs.",
+          "details": {
+            "public_ips": ["192.0.2.1"],
+            "private_ips": []
+          }
+        },
+        {
+          "type": "www_cname",
+          "status": "pass",
+          "message": "OK. You do have a CNAME record for www.example.com.Your CNAME entry also returns the A record for the CNAME entry, which is good.",
+          "details": {
+            "has_cname": true,
+            "cname_resolves": true
+          }
+        }
+      ]
     }
     // ... Other records
+  },
+  "summary": {
+    "total": 3,
+    "passed": 2,
+    "warnings": 1,
+    "errors": 0,
+    "info": 0
   }
+}
 }
 ```
 

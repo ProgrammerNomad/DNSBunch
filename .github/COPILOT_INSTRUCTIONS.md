@@ -1,5 +1,70 @@
 # Copilot Instructions for DNSBunch
 
+## IMPORTANT: Development Environment Guidelines
+
+### Windows/PowerShell Environment
+⚠️ **CRITICAL DEVELOPMENT ENVIRONMENT NOTES:**
+
+- **OS Environment**: This project is developed on **Windows 11** using **VS Code**
+- **Shell**: Always use **PowerShell** commands, NOT Linux/bash commands
+- **Path Format**: Use Windows paths with backslashes `C:\xampp\htdocs\DNSBunch\` or forward slashes for cross-platform compatibility
+- **Python Path**: Use the full Python path: `C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe`
+
+### PowerShell Command Guidelines
+```powershell
+# ✅ CORRECT - Use PowerShell syntax
+cd C:\xampp\htdocs\DNSBunch\backend; C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe app.py
+
+# ✅ CORRECT - Multiple commands with semicolon
+npm install; npm run build
+
+# ❌ WRONG - Don't use Linux commands
+./app.py
+python3 app.py
+bash commands
+```
+
+### Terminal Management - CRITICAL WARNINGS
+
+⚠️ **TERMINAL SESSION MANAGEMENT:**
+
+1. **Background Process Issue**: When running the Flask app with `isBackground=true`, running curl or other commands in the same terminal can STOP the Flask app
+2. **Solution**: Always use separate terminals for:
+   - Backend server (keep running in background)
+   - Testing commands (curl, npm, etc.)
+   - General development commands
+
+3. **Best Practice**: Check if background processes are still running before making requests:
+   ```powershell
+   # Check if Flask app is still running
+   Get-Process -Name python -ErrorAction SilentlyContinue
+   ```
+
+4. **Terminal Recovery**: If Flask app stops working:
+   ```powershell
+   # Kill existing Python processes if needed
+   Stop-Process -Name python -Force -ErrorAction SilentlyContinue
+   
+   # Restart the backend server
+   cd C:\xampp\htdocs\DNSBunch\backend
+   C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe app.py
+   ```
+
+### Testing Protocol
+```powershell
+# 1. Start backend in background terminal
+cd C:\xampp\htdocs\DNSBunch\backend
+C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe app.py
+
+# 2. Use SEPARATE terminal for testing
+curl -X POST http://127.0.0.1:5000/api/check -H "Content-Type: application/json" -d "{\"domain\": \"google.com\"}"
+
+# 3. Check backend is still running after tests
+# If not, restart it before continuing development
+```
+
+---
+
 ## Project Overview
 
 DNSBunch is a comprehensive DNS analysis and mail server diagnostics tool built with React TypeScript frontend and Python Flask backend. The application provides detailed DNS record analysis, email security validation, and advanced security features including CSRF protection and rate limiting.
@@ -13,10 +78,12 @@ DNSBunch is your all-in-one DNS and mail diagnostics platform with a modern, use
 ### Key Features
 - **Modern UI**: Built with React 18 and Material-UI v5 for responsive, accessible experience
 - **User-Friendly Explanations**: Complex DNS concepts explained in plain language for non-technical users
-- **Comprehensive Analysis**: Checks 16+ DNS record types including DNSSEC, CAA, SPF, DMARC, and more
+- **Comprehensive Analysis**: Checks 17+ DNS record types including DNSSEC, CAA, SPF, DMARC, WWW subdomain analysis, and more
 - **Categorized Results**: Results organized into logical categories (DNS Foundation, Website & Content, Email & Communication, Security & Protection, Performance & Optimization)
 - **Visual Status Indicators**: Clear pass/warning/error/info status with color coding
 - **Detailed Recommendations**: Actionable advice for fixing issues
+- **Advanced WWW Analysis**: Complete WWW subdomain checking with CNAME chain resolution and IP validation (NEWLY IMPLEMENTED)
+- **Dual Display Modes**: Choose between simple table format or detailed advanced analysis
 - **No Registration Required**: Instant analysis without signup or data storage
 
 ---
@@ -132,6 +199,17 @@ Below is a complete list of DNS record types checked, **what information is retu
 - **Checks:** Report if wildcards exist; warn if inappropriate
 - **Implementation:** `_check_wildcard_records()` in `dns_checker.py`
 - **Validation:** Wildcard detection, security implications
+
+### 17. **WWW (CNAME/A Records) - NEWLY IMPLEMENTED**
+- **Information Returned:** Complete WWW subdomain analysis including CNAME chain resolution, final A record destinations, IP addresses, public/private IP validation
+- **Checks:** WWW subdomain existence, CNAME record presence and chain following, A record resolution through CNAME chain, IP address publicity validation, subdomain accessibility
+- **Implementation:** `_check_www_records()`, `_check_www_cname()`, `_check_www_a_records()`, `_check_www_ip_public()`, `_format_www_a_record_message()` in `dns_checker.py`
+- **Validation:** CNAME chain integrity, A record resolution accuracy, public IP verification, subdomain configuration completeness
+- **Output Format:**
+  - **WWW A Record**: Displays complete resolution chain (e.g., `www.domain.com -> domain.com -> [ 192.0.2.1 ]` with CNAME indication)
+  - **IPs are public**: Validates all resolved IPs are public (not private/reserved/loopback)
+  - **WWW CNAME**: Confirms CNAME record existence and proper A record resolution
+- **Frontend Integration:** Available in both normal table format (`DNSResultsTable.tsx`) and advanced format (`DNSResultsAdvanced.tsx`)
 
 ---
 
@@ -716,7 +794,220 @@ test: add comprehensive component testing
 
 ---
 
+## Development Environment Guidelines
+
+### Platform-Specific Instructions
+**IMPORTANT**: This project is developed on Windows using VS Code. Always use Windows/PowerShell commands, NOT Linux/Unix commands.
+
+### Windows PowerShell Commands
+```powershell
+# Correct: Use PowerShell syntax
+cd c:\xampp\htdocs\DNSBunch\backend
+C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe app.py
+
+# Correct: Use Windows paths
+cd c:\xampp\htdocs\DNSBunch\frontend
+npm run build
+
+# Correct: PowerShell command chaining
+cd c:\xampp\htdocs\DNSBunch\backend; C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe test_www_check.py
+
+# WRONG: Do not use Linux commands
+# cd /home/user/project && python3 app.py  # ❌ This will fail on Windows
+# ./run.sh  # ❌ No shell scripts
+# python3 -m venv env  # ❌ Use Windows Python path
+```
+
+### Terminal Management Best Practices
+**CRITICAL**: Be very careful with terminal management to avoid breaking running applications.
+
+#### Common Issues and Solutions
+1. **Running curl/test commands in same terminal as app**: 
+   - ❌ NEVER run curl tests in the same terminal where the backend server is running
+   - ❌ This will often cause the server to stop working
+   - ✅ ALWAYS use separate terminals for server and testing
+
+2. **Proper terminal workflow**:
+   ```powershell
+   # Terminal 1: Start backend server (keep this running)
+   cd c:\xampp\htdocs\DNSBunch\backend
+   C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe app.py
+   
+   # Terminal 2: Run tests (separate terminal)
+   cd c:\xampp\htdocs\DNSBunch\backend
+   C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe test_www_check.py
+   
+   # Terminal 3: Frontend development (if needed)
+   cd c:\xampp\htdocs\DNSBunch\frontend
+   npm run dev
+   ```
+
+3. **Testing workflow**:
+   ```powershell
+   # Check if server is running first
+   Get-Process | Where-Object {$_.ProcessName -eq "python"}
+   
+   # Test with curl in separate terminal
+   curl -X POST http://127.0.0.1:5000/api/check -H "Content-Type: application/json" -d '{"domain": "google.com", "checks": ["www"]}'
+   ```
+
+### Environment Setup Guidelines
+```powershell
+# Python environment configuration
+# Always use the full Python path
+C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe --version
+
+# Install packages with full path
+C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe -m pip install -r requirements.txt
+
+# Run Python scripts with full path
+C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe dns_checker.py
+
+# Check which terminals are running
+# Use terminal IDs to manage multiple terminals properly
+```
+
+### File Path Conventions
+```powershell
+# Use Windows-style paths
+c:\xampp\htdocs\DNSBunch\backend\dns_checker.py
+c:\xampp\htdocs\DNSBunch\frontend\src\components\
+
+# In code, use forward slashes or raw strings
+backend_path = "c:/xampp/htdocs/DNSBunch/backend"
+# or
+backend_path = r"c:\xampp\htdocs\DNSBunch\backend"
+```
+
+### VS Code Integration
+- Always use VS Code's integrated PowerShell terminal
+- Use VS Code's Python extension for debugging
+- Configure VS Code Python interpreter to use: `C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe`
+- Use VS Code's task runner for build processes
+
+### Testing and Debugging
+```powershell
+# Always test functionality after making changes
+# 1. Start backend server in Terminal 1
+# 2. Create test script in separate file
+# 3. Run test script in Terminal 2
+# 4. Verify frontend builds successfully
+npm run build
+
+# Check for TypeScript errors
+npm run type-check
+
+# Test DNS functionality
+C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe test_dns_functionality.py
+```
+
+### Common Mistakes to Avoid
+❌ **DON'T DO THIS**:
+- Run tests in same terminal as server
+- Use Linux commands (cd /, python3, etc.)
+- Use relative Python paths
+- Mix forward/backward slashes inconsistently
+- Interrupt running servers with Ctrl+C in same terminal
+
+✅ **DO THIS**:
+- Use separate terminals for server and testing
+- Use Windows PowerShell commands
+- Use full Python executable paths
+- Keep terminals organized and labeled
+- Check if processes are running before starting new ones
+
+---
+
 ## Troubleshooting Common Issues
+
+### Windows/PowerShell Specific Issues
+
+#### Terminal Management Problems
+```powershell
+# Problem: Flask app stops working after running curl in same terminal
+# Solution: Always use separate terminals for server and testing
+
+# Check if Python/Flask process is still running
+Get-Process -Name python -ErrorAction SilentlyContinue
+
+# If not found, restart the backend server
+cd C:\xampp\htdocs\DNSBunch\backend
+C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe app.py
+```
+
+#### Python Environment Issues
+```powershell
+# Problem: "python" command not found or wrong version
+# Solution: Always use full Python path
+C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe --version
+
+# Problem: Virtual environment not found
+# Solution: Configure Python environment first in VS Code
+# Use: configure_python_environment tool
+
+# Problem: Package installation fails
+# Solution: Use pip with full Python path
+C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe -m pip install -r requirements.txt
+```
+
+#### Path and Directory Issues
+```powershell
+# Problem: Path not found errors
+# Use Windows paths with proper format
+cd C:\xampp\htdocs\DNSBunch\backend
+# OR use forward slashes for cross-platform compatibility
+cd C:/xampp/htdocs/DNSBunch/backend
+
+# Problem: Permission denied on Windows
+# Run VS Code as administrator if needed
+# Or check file permissions
+```
+
+#### PowerShell vs CMD Differences
+```powershell
+# ✅ CORRECT PowerShell syntax
+cd C:\path\to\directory; npm install; npm run build
+
+# ❌ WRONG - Don't use bash/Linux syntax
+cd /path/to/directory && npm install && npm run build
+./script.sh
+export VAR=value
+```
+
+### Development Workflow Issues
+
+#### Flask Server Management
+```powershell
+# Always check server status before testing
+$process = Get-Process -Name python -ErrorAction SilentlyContinue
+if ($process) {
+    Write-Host "Flask server is running (PID: $($process.Id))"
+} else {
+    Write-Host "Flask server is not running - restart required"
+}
+
+# Graceful server restart
+Stop-Process -Name python -Force -ErrorAction SilentlyContinue
+Start-Sleep -Seconds 2
+cd C:\xampp\htdocs\DNSBunch\backend
+C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe app.py
+```
+
+#### Testing Best Practices
+```powershell
+# 1. Start backend server in dedicated terminal
+# Terminal 1: Backend Server
+cd C:\xampp\htdocs\DNSBunch\backend
+C:/Users/shivs/AppData/Local/Programs/Python/Python313/python.exe app.py
+
+# 2. Use separate terminal for testing commands  
+# Terminal 2: Testing
+curl -X POST http://127.0.0.1:5000/api/check -H "Content-Type: application/json" -d "{\"domain\": \"google.com\", \"checks\": [\"www\"]}"
+
+# 3. Verify server is still running after tests
+# Terminal 3: Monitoring
+Get-Process -Name python
+```
 
 ### CSRF Token Issues
 ```javascript
