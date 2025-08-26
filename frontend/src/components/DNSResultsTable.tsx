@@ -23,6 +23,26 @@ import {
 } from '@mui/icons-material';
 import { DNSAnalysisResult, CheckResult, SOARecord } from '../types/dns';
 
+interface WWWCheckDetail {
+  cname_chain?: Array<{ from: string; to: string }>;
+  final_ips?: string[];
+  public_ips?: string[];
+  private_ips?: string[];
+  has_cname?: boolean;
+  cname_resolves?: boolean;
+}
+
+interface WWWCheck {
+  type: string;
+  status: string;
+  message: string;
+  details?: WWWCheckDetail;
+}
+
+interface WWWCheckResult extends CheckResult {
+  checks?: WWWCheck[];
+}
+
 interface DNSResultsTableProps {
   results: DNSAnalysisResult;
   domain: string;
@@ -218,19 +238,6 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
     }
   };
 
-  // Generate status for each check based on issues
-  const getCheckStatus = (data: CheckResult): 'pass' | 'warning' | 'error' | 'info' => {
-    if (!data) return 'error';
-    if (data.status === 'error' || (data.issues && data.issues.some((issue: { severity?: string }) => issue.severity === 'error'))) {
-      return 'error';
-    }
-    if (data.status === 'warning' || (data.issues && data.issues.some((issue: { severity?: string }) => issue.severity === 'warning'))) {
-      return 'warning';
-    }
-    if (data.status === 'info') return 'info';
-    return 'pass';
-  };
-
   // Share functionality
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}/${encodeURIComponent(domain)}`;
@@ -242,7 +249,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
           text: `Check out the DNS analysis results for ${domain}`,
           url: shareUrl
         });
-      } catch (err) {
+      } catch {
         // Fallback to copy to clipboard
         copyToClipboard(shareUrl);
       }
@@ -257,8 +264,8 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
       await navigator.clipboard.writeText(text);
       // You could add a toast notification here
       console.log('Link copied to clipboard!');
-    } catch (err) {
-      console.error('Failed to copy link:', err);
+    } catch (error) {
+      console.error('Failed to copy link:', error);
     }
   };
 
@@ -415,8 +422,42 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
       });
     }
 
-    // WWW Section
-    if (results?.checks?.a) {
+    // WWW Section - Handle new dedicated WWW check
+    if (results?.checks?.www) {
+      const wwwData = results.checks.www as WWWCheckResult;
+      const wwwChecks = wwwData.checks || [];
+      
+      const wwwTests: TestResult[] = [];
+      
+      wwwChecks.forEach((check) => {
+        let status: 'pass' | 'warning' | 'error' | 'info' = 'info';
+        if (check.status === 'pass') status = 'pass';
+        else if (check.status === 'warning') status = 'warning';
+        else if (check.status === 'error') status = 'error';
+        else status = 'info';
+        
+        let testName = check.type;
+        if (check.type === 'www_a_record') testName = 'WWW A Record';
+        else if (check.type === 'www_ip_public') testName = 'IPs are public';
+        else if (check.type === 'www_cname') testName = 'WWW CNAME';
+        
+        wwwTests.push({
+          status,
+          name: testName,
+          info: <Box dangerouslySetInnerHTML={{ __html: check.message || '' }} />
+        });
+      });
+      
+      if (wwwTests.length > 0) {
+        tests.push({
+          category: 'WWW',
+          rowSpan: wwwTests.length,
+          tests: wwwTests
+        });
+      }
+    }
+    // Fallback to old WWW display if new www check is not available
+    else if (results?.checks?.a) {
       const aData = results.checks.a;
       
       tests.push({
