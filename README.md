@@ -55,14 +55,14 @@ DNSBunch is your all-in-one DNS and mail diagnostics platform with a modern, use
 
 Below is a complete list of DNS record types checked, **what information is returned for each**, and **the validations performed**:
 
-### 1. **🔍 Domain Status Check (NEW!)**
+### 1. **Domain Status Check (NEW!)**
 - **Information Returned:** Overall domain health assessment, DNS resolution status, authoritative response validation, suspicious pattern detection, parking/suspension indicators, detailed technical diagnostics.
 - **Checks:** Nameserver resolution capability, authoritative DNS responses, domain suspension/expiration detection, parking service identification, DNS error pattern analysis, critical infrastructure validation.
 - **Validations:** Domain accessibility verification, DNS configuration integrity, suspension/hold status detection, expired domain identification, parking service recognition, DNS server responsiveness.
 - **Critical Issues Detected:** 
-  - ❌ **Domain Suspended/Expired:** Identifies domains with clientHold status, expired registrations, or suspended services
-  - ❌ **DNS Resolution Failure:** Detects NXDOMAIN responses, failed nameserver queries, and configuration issues  
-  - ❌ **Authoritative Response Problems:** Identifies non-responsive or misconfigured authoritative servers
+  - **Domain Suspended/Expired:** Identifies domains with clientHold status, expired registrations, or suspended services
+  - **DNS Resolution Failure:** Detects NXDOMAIN responses, failed nameserver queries, and configuration issues  
+  - **Authoritative Response Problems:** Identifies non-responsive or misconfigured authoritative servers
 - **Recommendations Provided:** Domain registrar contact guidance, DNS provider troubleshooting steps, configuration fix suggestions, renewal payment verification steps.
 
 ### 2. **NS (Nameserver) Records**
