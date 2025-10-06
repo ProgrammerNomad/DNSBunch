@@ -25,7 +25,7 @@ import { Search as SearchIcon, Clear as ClearIcon } from '@mui/icons-material';
 import { DomainSearchFormProps } from '../types/dns';
 
 const DNS_RECORD_TYPES = [
-  { id: 'domain_status', label: '🔍 Domain Status', description: 'Check if domain is active, suspended, expired, or parked' },
+  { id: 'domain_status', label: 'Domain Status', description: 'Check if domain is active, suspended, expired, or parked' },
   { id: 'ns', label: 'NS (Nameservers)', description: 'Nameserver records' },
   { id: 'soa', label: 'SOA (Start of Authority)', description: 'Domain authority information' },
   { id: 'a', label: 'A (IPv4)', description: 'IPv4 address records' },

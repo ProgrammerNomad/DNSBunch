@@ -286,13 +286,15 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
   const generateTestRows = (): TestSection[] => {
     const tests: TestSection[] = [];
 
-    // Domain Status Section - CRITICAL CHECK
+    // Domain Status Section - Only show if there are issues (warning or error)
     if (results?.checks?.domain_status) {
       const statusData = results.checks.domain_status as DomainStatusResult;
       const status = statusData.status as 'pass' | 'warning' | 'error';
       
-      tests.push({
-        category: '🔍 Domain Status',
+      // Only show Domain Status section if there are actual issues
+      if (status === 'warning' || status === 'error') {
+        tests.push({
+          category: 'Domain Status',
         rowSpan: 1,
         tests: [
           {
@@ -308,7 +310,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
                 {statusData.critical_issues && Array.isArray(statusData.critical_issues) && statusData.critical_issues.length > 0 && (
                   <Box sx={{ mt: 1, p: 1, backgroundColor: '#ffebee', borderRadius: 1 }}>
                     <Typography variant="subtitle2" color="error" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-                      🚨 Critical Issues:
+                      Critical Issues:
                     </Typography>
                     {statusData.critical_issues.map((issue: string, index: number) => (
                       <Typography key={index} variant="body2" color="error" sx={{ ml: 1 }}>
@@ -322,7 +324,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
                 {statusData.warnings && Array.isArray(statusData.warnings) && statusData.warnings.length > 0 && (
                   <Box sx={{ mt: 1, p: 1, backgroundColor: '#fff3e0', borderRadius: 1 }}>
                     <Typography variant="subtitle2" color="warning.main" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-                      ⚠️ Warnings:
+                      Warnings:
                     </Typography>
                     {statusData.warnings.map((warning: string, index: number) => (
                       <Typography key={index} variant="body2" color="warning.main" sx={{ ml: 1 }}>
@@ -336,7 +338,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
                 {statusData.recommendations && Array.isArray(statusData.recommendations) && statusData.recommendations.length > 0 && (
                   <Box sx={{ mt: 1, p: 1, backgroundColor: '#f3e5f5', borderRadius: 1 }}>
                     <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-                      💡 Recommendations:
+                      Recommendations:
                     </Typography>
                     {statusData.recommendations.map((rec: string, index: number) => (
                       <Typography key={index} variant="body2" color="text.secondary" sx={{ ml: 1 }}>
@@ -350,7 +352,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
                 {statusData.detailed_checks && typeof statusData.detailed_checks === 'object' && (
                   <Box sx={{ mt: 1, p: 1, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
                     <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-                      📋 Technical Details:
+                      Technical Details:
                     </Typography>
                     {Object.entries(statusData.detailed_checks).map(([checkName, checkResult]: [string, DomainStatusDetailCheck]) => (
                       <Typography key={checkName} variant="body2" color="text.secondary" sx={{ ml: 1, fontSize: '0.85rem' }}>
@@ -364,6 +366,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
           }
         ]
       });
+      }
     }
 
     // Parent/NS Records Section
