@@ -1869,10 +1869,10 @@ class DNSChecker:
         # Determine overall status
         if critical_issues:
             overall_status = 'error'
-            main_message = f"⚠️ DOMAIN ISSUE DETECTED: {critical_issues[0]}"
+            main_message = f"DOMAIN ISSUE DETECTED: {critical_issues[0]}"
         elif warnings:
             overall_status = 'warning'  
-            main_message = f"⚠️ POTENTIAL ISSUES: {', '.join(warnings[:2])}"
+            main_message = f"POTENTIAL ISSUES: {', '.join(warnings[:2])}"
         else:
             overall_status = 'pass'
             main_message = "✅ Domain appears to be properly configured and active"
@@ -2161,37 +2161,37 @@ class DNSChecker:
         
         if any('expired' in issue.lower() or 'suspended' in issue.lower() for issue in critical_issues + warnings):
             recommendations.extend([
-                "🔍 Check domain registration status with your registrar",
-                "💰 Verify domain renewal payments are up to date",
-                "📞 Contact your domain registrar if domain appears suspended"
+                "Check domain registration status with your registrar",
+                "Verify domain renewal payments are up to date",
+                "Contact your domain registrar if domain appears suspended"
             ])
             
         if any('ns' in issue.lower() for issue in critical_issues + warnings):
             recommendations.extend([
-                "🔧 Verify nameserver configuration with your DNS provider",
-                "⚡ Check if DNS hosting service is active and paid",
-                "🌐 Test DNS propagation across different locations"
+                "Verify nameserver configuration with your DNS provider",
+                "Check if DNS hosting service is active and paid",
+                "Test DNS propagation across different locations"
             ])
             
         if any('parking' in issue.lower() for issue in warnings):
             recommendations.extend([
-                "🏠 Configure proper web hosting if domain should be active",
-                "📝 Remove parking service if no longer needed",
-                "🎯 Set up proper A records pointing to your hosting"
+                "Configure proper web hosting if domain should be active",
+                "Remove parking service if no longer needed",
+                "Set up proper A records pointing to your hosting"
             ])
             
         if any('timeout' in issue.lower() or 'servfail' in issue.lower() for issue in warnings):
             recommendations.extend([
-                "⏱️ DNS server performance issues detected",
-                "🔄 Try switching to different DNS provider",
-                "🛠️ Contact DNS hosting provider about server issues"
+                "DNS server performance issues detected",
+                "Try switching to different DNS provider",
+                "Contact DNS hosting provider about server issues"
             ])
             
         if not recommendations:
             recommendations = [
-                "✅ Domain appears healthy - no immediate action needed",
-                "📊 Monitor DNS performance regularly",
-                "🔒 Consider implementing DNSSEC for security"
+                "Domain appears healthy - no immediate action needed",
+                "Monitor DNS performance regularly",
+                "Consider implementing DNSSEC for security"
             ]
             
         return recommendations
