@@ -45,6 +45,19 @@ interface WWWCheckResult extends CheckResult {
   checks?: WWWCheck[];
 }
 
+interface DomainStatusDetailCheck {
+  status: string;
+  message: string;
+  details?: Record<string, unknown>;
+}
+
+interface DomainStatusResult extends CheckResult {
+  critical_issues?: string[];
+  warnings?: string[];
+  recommendations?: string[];
+  detailed_checks?: Record<string, DomainStatusDetailCheck>;
+}
+
 interface DNSResultsAdvancedProps {
   results: DNSAnalysisResult;
   domain: string;
@@ -300,6 +313,63 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
                 {checkType.toUpperCase()} Record Analysis
               </Typography>
               
+              {/* Special handling for Domain Status check */}
+              {checkType === 'domain_status' && (
+                <Box sx={{ mb: 2 }}>
+                  <Alert 
+                    severity={
+                      checkData.status === 'pass' ? 'success' :
+                      checkData.status === 'warning' ? 'warning' :
+                      checkData.status === 'error' ? 'error' :
+                      'info'
+                    }
+                    sx={{ mb: 2 }}
+                  >
+                    <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>
+                      {String(checkData.message || 'Domain status check completed')}
+                    </Typography>
+                  </Alert>
+                  
+                  {/* Detailed Status Information */}
+                  {(checkData as DomainStatusResult).detailed_checks && (
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>
+                        📋 Detailed Status Checks:
+                      </Typography>
+                      {Object.entries((checkData as DomainStatusResult).detailed_checks!).map(([checkName, result]: [string, DomainStatusDetailCheck]) => (
+                        <Box key={checkName} sx={{ mb: 1, p: 1, border: '1px solid #e0e0e0', borderRadius: 1 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                            <StatusIcon status={result?.status || 'info'} />
+                            <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                              {checkName.replace('_', ' ').toUpperCase()}
+                            </Typography>
+                          </Box>
+                          <Typography variant="body2" color="text.secondary">
+                            {result?.message || 'No details available'}
+                          </Typography>
+                        </Box>
+                      ))}
+                    </Box>
+                  )}
+                  
+                  {/* Recommendations */}
+                  {(checkData as DomainStatusResult).recommendations && Array.isArray((checkData as DomainStatusResult).recommendations) && (checkData as DomainStatusResult).recommendations!.length > 0 && (
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>
+                        💡 Recommendations:
+                      </Typography>
+                      <Box sx={{ pl: 2 }}>
+                        {(checkData as DomainStatusResult).recommendations!.map((rec: string, index: number) => (
+                          <Typography key={index} variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                            {rec}
+                          </Typography>
+                        ))}
+                      </Box>
+                    </Box>
+                  )}
+                </Box>
+              )}
+
               {/* Special handling for WWW check */}
               {checkType === 'www' && (checkData as WWWCheckResult)?.checks && (
                 <Box sx={{ mb: 2 }}>
@@ -334,7 +404,7 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
               )}
 
               {/* Regular handling for other checks */}
-              {checkType !== 'www' && checkData?.records && (
+              {checkType !== 'www' && checkType !== 'domain_status' && checkData?.records && (
                 <Box sx={{ mb: 2 }}>
                   <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 1 }}>
                     Found {Array.isArray(checkData.records) ? checkData.records.length : 

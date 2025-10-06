@@ -43,6 +43,19 @@ interface WWWCheckResult extends CheckResult {
   checks?: WWWCheck[];
 }
 
+interface DomainStatusDetailCheck {
+  status: string;
+  message: string;
+  details?: Record<string, unknown>;
+}
+
+interface DomainStatusResult extends CheckResult {
+  critical_issues?: string[];
+  warnings?: string[];
+  recommendations?: string[];
+  detailed_checks?: Record<string, DomainStatusDetailCheck>;
+}
+
 interface DNSResultsTableProps {
   results: DNSAnalysisResult;
   domain: string;
@@ -272,6 +285,86 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
   // Generate detailed test rows for each DNS record type
   const generateTestRows = (): TestSection[] => {
     const tests: TestSection[] = [];
+
+    // Domain Status Section - CRITICAL CHECK
+    if (results?.checks?.domain_status) {
+      const statusData = results.checks.domain_status as DomainStatusResult;
+      const status = statusData.status as 'pass' | 'warning' | 'error';
+      
+      tests.push({
+        category: '🔍 Domain Status',
+        rowSpan: 1,
+        tests: [
+          {
+            status,
+            name: 'Domain Health Check',
+            info: (
+              <Box>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  {String(statusData.message || 'Domain status check completed')}
+                </Typography>
+                
+                {/* Critical Issues */}
+                {statusData.critical_issues && Array.isArray(statusData.critical_issues) && statusData.critical_issues.length > 0 && (
+                  <Box sx={{ mt: 1, p: 1, backgroundColor: '#ffebee', borderRadius: 1 }}>
+                    <Typography variant="subtitle2" color="error" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                      🚨 Critical Issues:
+                    </Typography>
+                    {statusData.critical_issues.map((issue: string, index: number) => (
+                      <Typography key={index} variant="body2" color="error" sx={{ ml: 1 }}>
+                        • {issue}
+                      </Typography>
+                    ))}
+                  </Box>
+                )}
+                
+                {/* Warnings */}
+                {statusData.warnings && Array.isArray(statusData.warnings) && statusData.warnings.length > 0 && (
+                  <Box sx={{ mt: 1, p: 1, backgroundColor: '#fff3e0', borderRadius: 1 }}>
+                    <Typography variant="subtitle2" color="warning.main" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                      ⚠️ Warnings:
+                    </Typography>
+                    {statusData.warnings.map((warning: string, index: number) => (
+                      <Typography key={index} variant="body2" color="warning.main" sx={{ ml: 1 }}>
+                        • {warning}
+                      </Typography>
+                    ))}
+                  </Box>
+                )}
+                
+                {/* Recommendations */}
+                {statusData.recommendations && Array.isArray(statusData.recommendations) && statusData.recommendations.length > 0 && (
+                  <Box sx={{ mt: 1, p: 1, backgroundColor: '#f3e5f5', borderRadius: 1 }}>
+                    <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                      💡 Recommendations:
+                    </Typography>
+                    {statusData.recommendations.map((rec: string, index: number) => (
+                      <Typography key={index} variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                        {rec}
+                      </Typography>
+                    ))}
+                  </Box>
+                )}
+                
+                {/* Technical Details */}
+                {statusData.detailed_checks && typeof statusData.detailed_checks === 'object' && (
+                  <Box sx={{ mt: 1, p: 1, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                      📋 Technical Details:
+                    </Typography>
+                    {Object.entries(statusData.detailed_checks).map(([checkName, checkResult]: [string, DomainStatusDetailCheck]) => (
+                      <Typography key={checkName} variant="body2" color="text.secondary" sx={{ ml: 1, fontSize: '0.85rem' }}>
+                        • {checkName}: {checkResult?.status || 'unknown'} - {checkResult?.message || 'No details'}
+                      </Typography>
+                    ))}
+                  </Box>
+                )}
+              </Box>
+            )
+          }
+        ]
+      });
+    }
 
     // Parent/NS Records Section
     if (results?.checks?.ns) {

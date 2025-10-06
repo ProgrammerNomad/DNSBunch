@@ -10,7 +10,7 @@ import re
 import json
 import os
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
 
 class DNSChecker:
@@ -81,7 +81,7 @@ class DNSChecker:
         
         # Define all available check types
         all_check_types = [
-            'ns', 'soa', 'a', 'aaaa', 'mx', 'spf', 'txt', 'cname', 
+            'domain_status', 'ns', 'soa', 'a', 'aaaa', 'mx', 'spf', 'txt', 'cname', 
             'ptr', 'caa', 'dmarc', 'dkim', 'glue', 'dnssec', 'axfr', 'wildcard', 'www'
         ]
         
@@ -100,7 +100,9 @@ class DNSChecker:
             try:
                 print(f"Running {check_type} check for {self.domain}")
                 
-                if check_type == 'ns':
+                if check_type == 'domain_status':
+                    results['checks']['domain_status'] = await self._check_domain_status()
+                elif check_type == 'ns':
                     results['checks']['ns'] = await self._check_ns_records()
                 elif check_type == 'soa':
                     results['checks']['soa'] = await self._check_soa_record()
@@ -1827,3 +1829,369 @@ class DNSChecker:
             })
         
         return checks
+
+    async def _check_domain_status(self) -> Dict[str, Any]:
+        """
+        Comprehensive domain status checker using DNS-based techniques
+        Detects suspended, expired, parked, or problematic domains without WHOIS
+        """
+        print(f"Checking domain status for {self.domain}")
+        
+        status_checks = {
+            'ns_resolution': await self._check_ns_resolution_status(),
+            'authoritative_response': await self._check_authoritative_response(),
+            'suspicious_patterns': await self._check_suspicious_dns_patterns(),
+            'parking_detection': await self._check_domain_parking(),
+            'error_responses': await self._check_dns_error_patterns(),
+        }
+        
+        # Determine overall domain status
+        critical_issues = []
+        warnings = []
+        info_items = []
+        
+        # Analyze results
+        if status_checks['ns_resolution']['status'] == 'error':
+            critical_issues.append("Domain NS records not resolving - domain may be suspended/expired")
+            
+        if status_checks['authoritative_response']['status'] == 'error':
+            critical_issues.append("No authoritative DNS response - domain configuration issue")
+            
+        if status_checks['suspicious_patterns']['status'] == 'warning':
+            warnings.extend(status_checks['suspicious_patterns']['issues'])
+            
+        if status_checks['parking_detection']['status'] == 'warning':
+            warnings.append("Domain appears to be parked or suspended")
+            
+        if status_checks['error_responses']['status'] == 'warning':
+            warnings.extend(status_checks['error_responses']['issues'])
+            
+        # Determine overall status
+        if critical_issues:
+            overall_status = 'error'
+            main_message = f"⚠️ DOMAIN ISSUE DETECTED: {critical_issues[0]}"
+        elif warnings:
+            overall_status = 'warning'  
+            main_message = f"⚠️ POTENTIAL ISSUES: {', '.join(warnings[:2])}"
+        else:
+            overall_status = 'pass'
+            main_message = "✅ Domain appears to be properly configured and active"
+            
+        return {
+            'status': overall_status,
+            'message': main_message,
+            'detailed_checks': status_checks,
+            'critical_issues': critical_issues,
+            'warnings': warnings,
+            'recommendations': self._get_domain_status_recommendations(critical_issues, warnings)
+        }
+
+    async def _check_ns_resolution_status(self) -> Dict[str, Any]:
+        """Check if NS records resolve and respond"""
+        try:
+            # Try to get NS records
+            ns_response = self.resolver.resolve(self.domain, 'NS')
+            ns_servers = [str(ns) for ns in ns_response]
+            
+            if not ns_servers:
+                return {
+                    'status': 'error',
+                    'message': 'No NS records found - domain may be expired/suspended',
+                    'details': []
+                }
+                
+            # Test each nameserver
+            working_ns = []
+            failed_ns = []
+            
+            for ns_server in ns_servers:
+                try:
+                    # Create resolver for this specific nameserver
+                    test_resolver = dns.resolver.Resolver()
+                    test_resolver.nameservers = [str(dns.resolver.resolve(ns_server, 'A')[0])]
+                    test_resolver.timeout = 5
+                    
+                    # Try to query SOA from this nameserver
+                    test_resolver.resolve(self.domain, 'SOA')
+                    working_ns.append(ns_server)
+                    
+                except Exception as e:
+                    failed_ns.append({'ns': ns_server, 'error': str(e)})
+            
+            if not working_ns:
+                return {
+                    'status': 'error',
+                    'message': 'No nameservers responding - domain likely suspended/expired',
+                    'details': {'failed_ns': failed_ns}
+                }
+            elif failed_ns:
+                return {
+                    'status': 'warning',
+                    'message': f'{len(failed_ns)} nameservers not responding',
+                    'details': {'working_ns': working_ns, 'failed_ns': failed_ns}
+                }
+            else:
+                return {
+                    'status': 'pass',
+                    'message': f'All {len(working_ns)} nameservers responding',
+                    'details': {'working_ns': working_ns}
+                }
+                
+        except dns.resolver.NXDOMAIN:
+            return {
+                'status': 'error',
+                'message': 'Domain does not exist (NXDOMAIN) - may be expired or invalid',
+                'details': {'error_type': 'NXDOMAIN'}
+            }
+        except dns.resolver.NoAnswer:
+            return {
+                'status': 'error',
+                'message': 'No NS records found - domain configuration issue',
+                'details': {'error_type': 'NoAnswer'}
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': f'NS resolution failed: {str(e)}',
+                'details': {'error': str(e)}
+            }
+
+    async def _check_authoritative_response(self) -> Dict[str, Any]:
+        """Check if domain gives authoritative responses"""
+        try:
+            # Query SOA record which should always exist for valid domains
+            soa_response = self.resolver.resolve(self.domain, 'SOA')
+            soa_record = soa_response[0]
+            
+            # Check if response is authoritative
+            is_authoritative = soa_response.response.flags & dns.flags.AA
+            
+            if not is_authoritative:
+                return {
+                    'status': 'warning',
+                    'message': 'DNS responses not authoritative - possible configuration issue',
+                    'details': {'soa': str(soa_record), 'authoritative': False}
+                }
+            else:
+                return {
+                    'status': 'pass',
+                    'message': 'Authoritative DNS responses working',
+                    'details': {'soa': str(soa_record), 'authoritative': True}
+                }
+                
+        except dns.resolver.NXDOMAIN:
+            return {
+                'status': 'error',
+                'message': 'Domain does not exist - likely expired or suspended',
+                'details': {'error_type': 'NXDOMAIN'}
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': f'Authoritative query failed: {str(e)}',
+                'details': {'error': str(e)}
+            }
+
+    async def _check_suspicious_dns_patterns(self) -> Dict[str, Any]:
+        """Detect suspicious DNS patterns that indicate problems"""
+        issues = []
+        details = {}
+        
+        try:
+            # Check for single A record pointing to common parking/suspension IPs
+            a_records = self.resolver.resolve(self.domain, 'A')
+            a_ips = [str(record) for record in a_records]
+            
+            # Common parking/suspension IP ranges and specific IPs
+            suspicious_ips = [
+                '127.0.0.1',  # Localhost (suspicious for domains)
+                '0.0.0.0',    # Null route
+                '192.0.2.',   # Documentation range
+                '198.51.100.',# Documentation range  
+                '203.0.113.', # Documentation range
+                '10.',        # Private range (suspicious for public domains)
+                '172.16.',    # Private range
+                '192.168.',   # Private range
+                '69.46.86.',  # Known parking service
+                '69.46.84.',  # Known parking service
+                '98.124.',    # Common suspension page
+            ]
+            
+            for ip in a_ips:
+                for suspicious in suspicious_ips:
+                    if ip.startswith(suspicious):
+                        issues.append(f"A record points to suspicious IP: {ip}")
+                        
+            details['a_records'] = a_ips
+            
+            # Check for suspicious MX patterns
+            try:
+                mx_records = self.resolver.resolve(self.domain, 'MX')
+                mx_hosts = [str(record.exchange) for record in mx_records]
+                
+                # Suspicious MX patterns
+                for mx in mx_hosts:
+                    if 'parking' in mx.lower() or 'suspended' in mx.lower():
+                        issues.append(f"Suspicious MX record: {mx}")
+                        
+                details['mx_records'] = mx_hosts
+            except:
+                pass
+                
+            # Check for wildcard A records (often used by parking services)
+            try:
+                test_subdomain = f"nonexistent-{random.randint(1000,9999)}.{self.domain}"
+                wildcard_response = self.resolver.resolve(test_subdomain, 'A')
+                if wildcard_response:
+                    issues.append("Wildcard A record detected - often indicates parking/suspension")
+                    details['wildcard_detected'] = True
+            except:
+                details['wildcard_detected'] = False
+                
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': f'Pattern analysis failed: {str(e)}',
+                'details': {'error': str(e)}
+            }
+        
+        if issues:
+            return {
+                'status': 'warning',
+                'message': f'Suspicious DNS patterns detected: {len(issues)} issues',
+                'issues': issues,
+                'details': details
+            }
+        else:
+            return {
+                'status': 'pass',
+                'message': 'No suspicious DNS patterns detected',
+                'details': details
+            }
+
+    async def _check_domain_parking(self) -> Dict[str, Any]:
+        """Check for domain parking indicators"""
+        parking_indicators = []
+        
+        try:
+            # Check TXT records for parking service indicators
+            txt_records = self.resolver.resolve(self.domain, 'TXT')
+            for txt in txt_records:
+                txt_content = str(txt).lower()
+                if any(keyword in txt_content for keyword in ['parked', 'suspended', 'expired', 'parking']):
+                    parking_indicators.append(f"Parking indicator in TXT: {str(txt)}")
+                    
+        except:
+            pass
+        
+        try:
+            # Check for NS records pointing to known parking services
+            ns_records = self.resolver.resolve(self.domain, 'NS')
+            parking_ns_patterns = [
+                'parkingcrew',
+                'sedoparking', 
+                'domainparking',
+                'parking.com',
+                'suspended',
+                'expired'
+            ]
+            
+            for ns in ns_records:
+                ns_str = str(ns).lower()
+                for pattern in parking_ns_patterns:
+                    if pattern in ns_str:
+                        parking_indicators.append(f"Parking NS detected: {str(ns)}")
+                        
+        except:
+            pass
+            
+        if parking_indicators:
+            return {
+                'status': 'warning',
+                'message': 'Domain parking detected',
+                'indicators': parking_indicators
+            }
+        else:
+            return {
+                'status': 'pass', 
+                'message': 'No parking indicators detected',
+                'indicators': []
+            }
+
+    async def _check_dns_error_patterns(self) -> Dict[str, Any]:
+        """Check for DNS error patterns that indicate domain issues"""
+        error_patterns = []
+        
+        # Test basic record types that should exist for active domains
+        record_tests = {
+            'A': 'No A records - domain may not be configured',
+            'NS': 'No NS records - critical domain configuration issue', 
+            'SOA': 'No SOA record - domain authority issue'
+        }
+        
+        for record_type, error_msg in record_tests.items():
+            try:
+                self.resolver.resolve(self.domain, record_type)
+            except dns.resolver.NXDOMAIN:
+                error_patterns.append(f"NXDOMAIN for {record_type} - domain may be expired")
+            except dns.resolver.NoAnswer:
+                error_patterns.append(f"No {record_type} records - {error_msg}")
+            except dns.resolver.Timeout:
+                error_patterns.append(f"Timeout on {record_type} query - DNS server issues")
+            except Exception as e:
+                if 'SERVFAIL' in str(e):
+                    error_patterns.append(f"SERVFAIL for {record_type} - authoritative server error")
+                    
+        if error_patterns:
+            return {
+                'status': 'warning',
+                'message': f'DNS errors detected: {len(error_patterns)} issues',
+                'issues': error_patterns
+            }
+        else:
+            return {
+                'status': 'pass',
+                'message': 'No DNS error patterns detected',
+                'issues': []
+            }
+
+    def _get_domain_status_recommendations(self, critical_issues: List[str], warnings: List[str]) -> List[str]:
+        """Get recommendations based on domain status issues"""
+        recommendations = []
+        
+        if any('expired' in issue.lower() or 'suspended' in issue.lower() for issue in critical_issues + warnings):
+            recommendations.extend([
+                "🔍 Check domain registration status with your registrar",
+                "💰 Verify domain renewal payments are up to date",
+                "📞 Contact your domain registrar if domain appears suspended"
+            ])
+            
+        if any('ns' in issue.lower() for issue in critical_issues + warnings):
+            recommendations.extend([
+                "🔧 Verify nameserver configuration with your DNS provider",
+                "⚡ Check if DNS hosting service is active and paid",
+                "🌐 Test DNS propagation across different locations"
+            ])
+            
+        if any('parking' in issue.lower() for issue in warnings):
+            recommendations.extend([
+                "🏠 Configure proper web hosting if domain should be active",
+                "📝 Remove parking service if no longer needed",
+                "🎯 Set up proper A records pointing to your hosting"
+            ])
+            
+        if any('timeout' in issue.lower() or 'servfail' in issue.lower() for issue in warnings):
+            recommendations.extend([
+                "⏱️ DNS server performance issues detected",
+                "🔄 Try switching to different DNS provider",
+                "🛠️ Contact DNS hosting provider about server issues"
+            ])
+            
+        if not recommendations:
+            recommendations = [
+                "✅ Domain appears healthy - no immediate action needed",
+                "📊 Monitor DNS performance regularly",
+                "🔒 Consider implementing DNSSEC for security"
+            ]
+            
+        return recommendations

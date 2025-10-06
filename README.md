@@ -23,7 +23,7 @@ DNSBunch is your all-in-one DNS and mail diagnostics platform with a modern, use
 
 - **Modern UI**: Built with React 18 and Material-UI v5 for a responsive, accessible experience
 - **User-Friendly Explanations**: Complex DNS concepts explained in plain language for non-technical users
-- **Comprehensive Analysis**: Checks 17+ DNS record types including DNSSEC, CAA, SPF, DMARC, WWW subdomain analysis, and more
+- **Comprehensive Analysis**: Checks 18+ DNS record types including Domain Status, DNSSEC, CAA, SPF, DMARC, WWW subdomain analysis, and more
 - **Categorized Results**: Results organized into logical categories:
   - **DNS Foundation** - Core DNS settings (NS, SOA, A, AAAA)
   - **Website & Content** - Website-related configuration (CNAME, TXT, wildcard, WWW subdomain)
@@ -55,47 +55,57 @@ DNSBunch is your all-in-one DNS and mail diagnostics platform with a modern, use
 
 Below is a complete list of DNS record types checked, **what information is returned for each**, and **the validations performed**:
 
-### 1. **NS (Nameserver) Records**
+### 1. **🔍 Domain Status Check (NEW!)**
+- **Information Returned:** Overall domain health assessment, DNS resolution status, authoritative response validation, suspicious pattern detection, parking/suspension indicators, detailed technical diagnostics.
+- **Checks:** Nameserver resolution capability, authoritative DNS responses, domain suspension/expiration detection, parking service identification, DNS error pattern analysis, critical infrastructure validation.
+- **Validations:** Domain accessibility verification, DNS configuration integrity, suspension/hold status detection, expired domain identification, parking service recognition, DNS server responsiveness.
+- **Critical Issues Detected:** 
+  - ❌ **Domain Suspended/Expired:** Identifies domains with clientHold status, expired registrations, or suspended services
+  - ❌ **DNS Resolution Failure:** Detects NXDOMAIN responses, failed nameserver queries, and configuration issues  
+  - ❌ **Authoritative Response Problems:** Identifies non-responsive or misconfigured authoritative servers
+- **Recommendations Provided:** Domain registrar contact guidance, DNS provider troubleshooting steps, configuration fix suggestions, renewal payment verification steps.
+
+### 2. **NS (Nameserver) Records**
 - **Information Returned:** All authoritative nameservers for the domain, IPv4/IPv6 addresses, geolocation data, TTL values, response times.
 - **Checks:** Valid IPs, reachability test, no duplicates, parent/child delegation consistency, geographical distribution, no single point of failure, authoritative response validation, recursive query handling.
 - **Validations:** Nameserver accessibility, IP address validity, delegation consistency between parent and child zones, glue record requirements, response time analysis.
 
-### 2. **SOA (Start of Authority) Record**
+### 3. **SOA (Start of Authority) Record**
 - **Information Returned:** Primary master nameserver (MNAME), responsible email address (RNAME), serial number, refresh interval, retry interval, expire time, minimum TTL values.
 - **Checks:** Record exists, serial number consistency across all nameservers, recommended timing values validation, valid email format, MNAME exists in NS records.
 - **Validations:** Serial number synchronization, refresh/retry/expire values within best practice ranges, responsible email accessibility, primary nameserver authority validation.
 
-### 3. **A (IPv4 Address) Records**
+### 4. **A (IPv4 Address) Records**
 - **Information Returned:** All IPv4 addresses assigned to the domain (root domain and www subdomain), TTL values, geographic location of IPs.
 - **Checks:** Records exist for both root and www, no private/reserved/loopback IPs, IP reachability tests, load balancing configuration, CDN detection.
 - **Validations:** Public IP address verification, connectivity tests, geographic distribution analysis, duplicate IP detection, hosting provider identification.
 
-### 4. **AAAA (IPv6 Address) Records**
+### 5. **AAAA (IPv6 Address) Records**
 - **Information Returned:** All IPv6 addresses assigned to the domain (root domain and www subdomain), TTL values, IPv6 address blocks, dual-stack configuration.
 - **Checks:** Records exist, no invalid/reserved IPv6 blocks, IPv6 connectivity tests, dual-stack compatibility, proper IPv6 configuration.
 - **Validations:** Valid IPv6 address format, reserved address block detection, connectivity verification, IPv6 readiness assessment.
 
-### 5. **MX (Mail Exchange) Records**
+### 6. **MX (Mail Exchange) Records**
 - **Information Returned:** Complete list of mail servers, priority values, resolved IPv4/IPv6 addresses, mail server software detection, anti-spam configurations.
 - **Checks:** Records exist, no duplicate priorities, valid A/AAAA records (no CNAME for MX targets), mail server reachability, priority distribution, backup MX configuration.
 - **Validations:** Mail server connectivity, priority ordering validation, target hostname resolution, redundancy analysis, mail server response testing.
 
-### 6. **SPF (Sender Policy Framework)**
+### 7. **SPF (Sender Policy Framework)**
 - **Information Returned:** Complete SPF record value, parsed mechanisms and modifiers, included domains, DNS lookup count, policy strictness.
 - **Checks:** Record exists, valid syntax, maximum 10 DNS lookups, no deprecated mechanisms, proper policy configuration, include chain validation.
 - **Validations:** Syntax compliance with RFC 7208, DNS lookup optimization, mechanism effectiveness, policy completeness, security strength assessment.
 
-### 7. **TXT Records**
+### 8. **TXT Records**
 - **Information Returned:** All TXT records for the root domain, SPF/DKIM/DMARC identification, domain verification records, custom configurations.
 - **Checks:** Presence of security records (SPF, DKIM, DMARC), valid syntax for each type, no conflicting records, proper formatting.
 - **Validations:** Record syntax verification, security configuration completeness, conflicting record detection, best practice compliance.
 
-### 8. **CNAME (Canonical Name) Records**
+### 9. **CNAME (Canonical Name) Records**
 - **Information Returned:** CNAME records for key subdomains (www, mail, ftp, blog, shop), target domains, chain resolution, TTL values.
 - **Checks:** No CNAME at zone apex, chain length validation, target existence and resolution, circular reference detection, subdomain coverage.
 - **Validations:** Zone apex compliance, resolution chain integrity, target accessibility, performance impact assessment.
 
-### 9. **PTR (Reverse DNS) Records**
+### 10. **PTR (Reverse DNS) Records**
 - **Information Returned:** PTR records for each mail server IP address, reverse hostname resolution, forward-reverse consistency.
 - **Checks:** PTR record exists for all MX server IPs, hostname matches forward lookup, not generic/default hostnames, proper domain alignment.
 - **Validations:** Reverse DNS completeness, forward-reverse consistency, hostname authenticity, mail server reputation factors.
