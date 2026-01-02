@@ -155,7 +155,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
                 // Ping result format
                 return (
                   <Box key={idx} component="span" display="block" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
-                    {obj.ns}: {obj.ip} {obj.ping === false ? '(no ping response)' : obj.ping === true ? '(ping successful)' : ''}
+                    {String(obj.ns)}: {String(obj.ip)} {obj.ping === false ? '(no ping response)' : obj.ping === true ? '(ping successful)' : ''}
                   </Box>
                 );
               }
@@ -184,25 +184,28 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
       
       // Special handling for comparison checks (domain_count, match, only_in_domain, only_in_parent)
       if ('match' in obj && typeof obj.match === 'boolean') {
+        const onlyInDomain = obj.only_in_domain as string[] | undefined;
+        const onlyInParent = obj.only_in_parent as string[] | undefined;
+        
         return (
           <Box sx={{ mt: 1 }}>
-            {obj.only_in_domain && Array.isArray(obj.only_in_domain) && obj.only_in_domain.length > 0 && (
+            {onlyInDomain && Array.isArray(onlyInDomain) && onlyInDomain.length > 0 && (
               <Box sx={{ mb: 1 }}>
                 <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
                   Only in domain: 
                 </Typography>
                 <Box component="span" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
-                  {obj.only_in_domain.join(', ')}
+                  {onlyInDomain.join(', ')}
                 </Box>
               </Box>
             )}
-            {obj.only_in_parent && Array.isArray(obj.only_in_parent) && obj.only_in_parent.length > 0 && (
+            {onlyInParent && Array.isArray(onlyInParent) && onlyInParent.length > 0 && (
               <Box>
                 <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
                   Only in parent: 
                 </Typography>
                 <Box component="span" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
-                  {obj.only_in_parent.join(', ')}
+                  {onlyInParent.join(', ')}
                 </Box>
               </Box>
             )}
@@ -216,21 +219,25 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
         if (entries.length > 0 && entries.every(([_, value]) => Array.isArray(value))) {
           return (
             <Box sx={{ mt: 1 }}>
-              {entries.map(([ns, ips]) => (
-                <Box key={ns} component="span" display="block" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
-                  <strong>{ns}</strong>: {Array.isArray(ips) ? ips.join(', ') : String(ips)}
-                </Box>
-              ))}
+              {entries.map(([ns, ips]) => {
+                const ipArray = ips as string[];
+                return (
+                  <Box key={ns} component="span" display="block" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                    <strong>{ns}</strong>: {Array.isArray(ipArray) ? ipArray.join(', ') : String(ips)}
+                  </Box>
+                );
+              })}
             </Box>
           );
         }
       }
       
       // Special handling for hostname validation
-      if ('invalid_hostnames' in obj && Array.isArray(obj.invalid_hostnames)) {
-        return obj.invalid_hostnames.length > 0 ? (
+      if ('invalid_hostnames' in obj) {
+        const invalidHostnames = obj.invalid_hostnames as string[] | undefined;
+        return invalidHostnames && Array.isArray(invalidHostnames) && invalidHostnames.length > 0 ? (
           <Box sx={{ mt: 1, fontFamily: 'monospace', fontSize: '0.85rem' }}>
-            Invalid: {obj.invalid_hostnames.join(', ')}
+            Invalid: {invalidHostnames.join(', ')}
           </Box>
         ) : null;
       }
@@ -240,7 +247,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
         <Box sx={{ mt: 1 }}>
           {Object.entries(obj).map(([key, value]) => (
             <Box key={key} component="span" display="block" sx={{ fontSize: '0.85rem' }}>
-              <strong>{key}:</strong> {Array.isArray(value) ? value.join(', ') : String(value)}
+              <strong>{key}:</strong> {Array.isArray(value) ? (value as string[]).join(', ') : String(value)}
             </Box>
           ))}
         </Box>
