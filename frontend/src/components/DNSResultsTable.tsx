@@ -137,6 +137,119 @@ const StatusIcon: React.FC<StatusIconProps> = ({ status }) => {
 
 export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
 
+  // Helper function to format check details in a human-readable way
+  const formatCheckDetails = (details: Record<string, unknown> | string[] | string | undefined, checkType: string): React.ReactNode => {
+    if (!details) return null;
+
+    // Handle string arrays (like nameserver lists)
+    if (Array.isArray(details)) {
+      if (details.length === 0) return null;
+      
+      // Check if it's an array of objects (like ping results)
+      if (typeof details[0] === 'object' && details[0] !== null) {
+        return (
+          <Box sx={{ mt: 1 }}>
+            {details.map((item: unknown, idx: number) => {
+              const obj = item as Record<string, unknown>;
+              if (obj.ns && obj.ip) {
+                // Ping result format
+                return (
+                  <Box key={idx} component="span" display="block" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                    {obj.ns}: {obj.ip} {obj.ping === false ? '(no ping response)' : obj.ping === true ? '(ping successful)' : ''}
+                  </Box>
+                );
+              }
+              return <Box key={idx}>{JSON.stringify(obj)}</Box>;
+            })}
+          </Box>
+        );
+      }
+      
+      // Simple string array - show as comma-separated list
+      return (
+        <Box sx={{ mt: 0.5, fontFamily: 'monospace', fontSize: '0.85rem' }}>
+          {details.join(', ')}
+        </Box>
+      );
+    }
+
+    // Handle string details
+    if (typeof details === 'string') {
+      return <Box sx={{ mt: 0.5, fontSize: '0.85rem' }}>{details}</Box>;
+    }
+
+    // Handle object details
+    if (typeof details === 'object') {
+      const obj = details as Record<string, unknown>;
+      
+      // Special handling for comparison checks (domain_count, match, only_in_domain, only_in_parent)
+      if ('match' in obj && typeof obj.match === 'boolean') {
+        return (
+          <Box sx={{ mt: 1 }}>
+            {obj.only_in_domain && Array.isArray(obj.only_in_domain) && obj.only_in_domain.length > 0 && (
+              <Box sx={{ mb: 1 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
+                  Only in domain: 
+                </Typography>
+                <Box component="span" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                  {obj.only_in_domain.join(', ')}
+                </Box>
+              </Box>
+            )}
+            {obj.only_in_parent && Array.isArray(obj.only_in_parent) && obj.only_in_parent.length > 0 && (
+              <Box>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
+                  Only in parent: 
+                </Typography>
+                <Box component="span" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                  {obj.only_in_parent.join(', ')}
+                </Box>
+              </Box>
+            )}
+          </Box>
+        );
+      }
+      
+      // Special handling for glue records (nameserver IPs)
+      if (checkType.includes('glue') || checkType.includes('Glue')) {
+        const entries = Object.entries(obj);
+        if (entries.length > 0 && entries.every(([_, value]) => Array.isArray(value))) {
+          return (
+            <Box sx={{ mt: 1 }}>
+              {entries.map(([ns, ips]) => (
+                <Box key={ns} component="span" display="block" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                  <strong>{ns}</strong>: {Array.isArray(ips) ? ips.join(', ') : String(ips)}
+                </Box>
+              ))}
+            </Box>
+          );
+        }
+      }
+      
+      // Special handling for hostname validation
+      if ('invalid_hostnames' in obj && Array.isArray(obj.invalid_hostnames)) {
+        return obj.invalid_hostnames.length > 0 ? (
+          <Box sx={{ mt: 1, fontFamily: 'monospace', fontSize: '0.85rem' }}>
+            Invalid: {obj.invalid_hostnames.join(', ')}
+          </Box>
+        ) : null;
+      }
+      
+      // Generic object display - show as key: value pairs
+      return (
+        <Box sx={{ mt: 1 }}>
+          {Object.entries(obj).map(([key, value]) => (
+            <Box key={key} component="span" display="block" sx={{ fontSize: '0.85rem' }}>
+              <strong>{key}:</strong> {Array.isArray(value) ? value.join(', ') : String(value)}
+            </Box>
+          ))}
+        </Box>
+      );
+    }
+
+    return null;
+  };
+
   // Helper function to format DNS data
   const formatDNSData = (data: CheckResult, type: string) => {
     if (!data) return 'No data available';
@@ -431,11 +544,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
           info: (
             <Box>
               <Typography variant="body2">{check.message}</Typography>
-              {check.details && typeof check.details === 'object' && Object.keys(check.details).length > 0 && (
-                <Box sx={{ mt: 1, fontSize: '0.85rem', color: 'text.secondary' }}>
-                  {typeof check.details === 'string' ? check.details : JSON.stringify(check.details, null, 2).substring(0, 200)}
-                </Box>
-              )}
+              {check.details && formatCheckDetails(check.details, check.type)}
             </Box>
           )
         }))
@@ -483,13 +592,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
           info: (
             <Box>
               <Typography variant="body2">{check.message}</Typography>
-              {check.details && Array.isArray(check.details) && check.details.length > 0 && (
-                <Box sx={{ mt: 1, p: 1, backgroundColor: '#f5f5f5', borderRadius: 1, fontSize: '0.85rem' }}>
-                  {check.details.map((detail: unknown, idx: number) => (
-                    <Box key={idx}>{typeof detail === 'string' ? detail : JSON.stringify(detail)}</Box>
-                  ))}
-                </Box>
-              )}
+              {check.details && formatCheckDetails(check.details, check.type)}
             </Box>
           )
         }))
