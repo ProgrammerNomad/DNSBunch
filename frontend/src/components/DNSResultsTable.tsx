@@ -145,24 +145,65 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
     if (Array.isArray(details)) {
       if (details.length === 0) return null;
       
-      // Check if it's an array of objects (like ping results)
+      // Check if it's an array of objects
       if (typeof details[0] === 'object' && details[0] !== null) {
-        return (
-          <Box sx={{ mt: 1 }}>
-            {details.map((item: unknown, idx: number) => {
-              const obj = item as Record<string, unknown>;
-              if (obj.ns && obj.ip) {
-                // Ping result format
+        const obj = details[0] as Record<string, unknown>;
+        
+        // Glue records format
+        if ('nameserver' in obj && 'ips' in obj && 'has_glue' in obj) {
+          return (
+            <Box sx={{ mt: 1 }}>
+              {details.map((item: unknown, idx: number) => {
+                const glueObj = item as Record<string, unknown>;
+                const ips = glueObj.ips as string[];
                 return (
                   <Box key={idx} component="span" display="block" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
-                    {String(obj.ns)}: {String(obj.ip)} {obj.ping === false ? '(no ping response)' : obj.ping === true ? '(ping successful)' : ''}
+                    <strong>{String(glueObj.nameserver)}</strong>: {Array.isArray(ips) ? ips.join(', ') : String(ips)}
                   </Box>
                 );
-              }
-              return <Box key={idx}>{JSON.stringify(obj)}</Box>;
-            })}
-          </Box>
-        );
+              })}
+            </Box>
+          );
+        }
+        
+        // Ping result format
+        if ('ns' in obj && 'ip' in obj) {
+          return (
+            <Box sx={{ mt: 1 }}>
+              {details.map((item: unknown, idx: number) => {
+                const pingObj = item as Record<string, unknown>;
+                return (
+                  <Box key={idx} component="span" display="block" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                    {String(pingObj.ns)}: {String(pingObj.ip)} {pingObj.ping === false ? '(no ping response)' : pingObj.ping === true ? '(ping successful)' : ''}
+                  </Box>
+                );
+              })}
+            </Box>
+          );
+        }
+        
+        // MX records format
+        if ('host' in obj && 'priority' in obj) {
+          return (
+            <Box sx={{ mt: 1 }}>
+              {details.map((item: unknown, idx: number) => {
+                const mxObj = item as Record<string, unknown>;
+                const ips = mxObj.ips as Array<{ ip: string; type: string }>;
+                const ipStr = Array.isArray(ips) ? ips.map(i => i.ip).join(', ') : '';
+                const priority = String(mxObj.priority);
+                const host = String(mxObj.host);
+                return (
+                  <Box key={idx} component="span" display="block" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                    {priority} <strong>{host}</strong> [{ipStr}]
+                  </Box>
+                );
+              })}
+            </Box>
+          );
+        }
+        
+        // Fallback for unknown object arrays
+        return null;
       }
       
       // Simple string array - show as comma-separated list
@@ -181,6 +222,64 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
     // Handle object details
     if (typeof details === 'object') {
       const obj = details as Record<string, unknown>;
+      
+      // DNS servers responded format (non_responsive, responsive arrays)
+      if ('responsive' in obj || 'non_responsive' in obj) {
+        const responsive = obj.responsive as string[] | undefined;
+        const nonResponsive = obj.non_responsive as string[] | undefined;
+        
+        return (
+          <Box sx={{ mt: 1 }}>
+            {nonResponsive && Array.isArray(nonResponsive) && (
+              <Box sx={{ mb: 0.5 }}>
+                <Typography component="span" sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
+                  non_responsive:
+                </Typography>{' '}
+                <Typography component="span" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                  {nonResponsive.length > 0 ? nonResponsive.join(', ') : '(none)'}
+                </Typography>
+              </Box>
+            )}
+            {responsive && Array.isArray(responsive) && (
+              <Box>
+                <Typography component="span" sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
+                  responsive:
+                </Typography>{' '}
+                <Typography component="span" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                  {responsive.join(', ')}
+                </Typography>
+              </Box>
+            )}
+          </Box>
+        );
+      }
+      
+      // Different subnets format (subnet_count, subnets array)
+      if ('subnets' in obj && 'subnet_count' in obj) {
+        const subnets = obj.subnets as string[] | undefined;
+        const subnetCount = obj.subnet_count as number;
+        
+        return (
+          <Box sx={{ mt: 1 }}>
+            <Box sx={{ mb: 0.5 }}>
+              <Typography component="span" sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
+                subnet_count:
+              </Typography>{' '}
+              <Typography component="span" sx={{ fontSize: '0.85rem' }}>
+                {subnetCount}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography component="span" sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
+                subnets:
+              </Typography>{' '}
+              <Typography component="span" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                {subnets && Array.isArray(subnets) ? subnets.join(', ') : ''}
+              </Typography>
+            </Box>
+          </Box>
+        );
+      }
       
       // Special handling for comparison checks (domain_count, match, only_in_domain, only_in_parent)
       if ('match' in obj && typeof obj.match === 'boolean') {
