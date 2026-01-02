@@ -259,6 +259,33 @@ class DNSChecker:
                         "details": f"FAIL: The following nameservers are listed at your nameservers as nameservers for your domain, but are not listed at the parent nameservers. You need to make sure that these nameservers are working: {', '.join(domain_records - parent_records)}"
                     })
             
+            # Build all_records FIRST before new checks that need it
+            all_records = []
+            
+            # Add parent delegation records with IPs and TTLs
+            if parent_result.get("records"):
+                for ns in parent_result["records"]:
+                    ips = parent_result.get("nameserver_ips", {}).get(ns, [])
+                    all_records.append({
+                        "host": ns,
+                        "ips": ips,
+                        "ttl": parent_result.get("ttl"),
+                        "source": "parent"
+                    })
+            
+            # Add domain nameserver records if different
+            if domain_ns_result.get("records"):
+                for ns in domain_ns_result["records"]:
+                    # Check if already added from parent
+                    if not any(record["host"] == ns for record in all_records):
+                        ips = domain_ns_result.get("nameserver_ips", {}).get(ns, [])
+                        all_records.append({
+                            "host": ns,
+                            "ips": ips,
+                            "ttl": domain_ns_result.get("ttl"),
+                            "source": "domain"
+                        })
+            
             # NEW: Add Recursive Queries check
             recursive_check = await self._check_recursive_queries(list(domain_records))
             checks.append(recursive_check)
@@ -295,33 +322,6 @@ class DNSChecker:
                     "status": "error",
                     "message": "ERROR. No nameservers found."
                 })
-            
-            # Build final result with frontend-compatible record structure
-            all_records = []
-            
-            # Add parent delegation records with IPs and TTLs
-            if parent_result.get("records"):
-                for ns in parent_result["records"]:
-                    ips = parent_result.get("nameserver_ips", {}).get(ns, [])
-                    all_records.append({
-                        "host": ns,
-                        "ips": ips,
-                        "ttl": parent_result.get("ttl"),
-                        "source": "parent"
-                    })
-            
-            # Add domain nameserver records if different
-            if domain_ns_result.get("records"):
-                for ns in domain_ns_result["records"]:
-                    # Check if already added from parent
-                    if not any(record["host"] == ns for record in all_records):
-                        ips = domain_ns_result.get("nameserver_ips", {}).get(ns, [])
-                        all_records.append({
-                            "host": ns,
-                            "ips": ips,
-                            "ttl": domain_ns_result.get("ttl"),
-                            "source": "domain"
-                        })
             
             # Overall status should be error if NS records don't match
             overall_status = "pass"
