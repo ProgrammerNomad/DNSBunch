@@ -32,11 +32,12 @@ interface WWWCheckDetail {
   private_ips?: string[];
   has_cname?: boolean;
   cname_resolves?: boolean;
+  [key: string]: unknown;
 }
 
 interface WWWCheck {
   type: string;
-  status: string;
+  status: 'pass' | 'warning' | 'error' | 'info';
   message: string;
   details?: WWWCheckDetail;
 }
@@ -46,7 +47,7 @@ interface WWWCheckResult extends CheckResult {
 }
 
 interface DomainStatusDetailCheck {
-  status: string;
+  status: 'pass' | 'warning' | 'error' | 'info';
   message: string;
   details?: Record<string, unknown>;
 }
