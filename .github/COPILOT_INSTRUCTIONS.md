@@ -67,18 +67,23 @@ curl -X POST http://127.0.0.1:5000/api/check -H "Content-Type: application/json"
 
 ## Project Overview
 
-DNSBunch is a comprehensive DNS analysis and mail server diagnostics tool built with React TypeScript frontend and Python Flask backend. The application provides detailed DNS record analysis, email security validation, and advanced security features including CSRF protection and rate limiting.
+DNSBunch is a comprehensive DNS analysis and mail server diagnostics tool built with Next.js 15, React 19, TypeScript, and Python Flask backend. Currently in **active development with live staging testing** at [dnsbunch.com](https://www.dnsbunch.com/). The application provides detailed DNS record analysis with **95% IntoDNS parity**, featuring 30+ individual checks, email security validation, and enterprise-grade security.
+
+**Current Status**: Active development with continuous staging deployment and real-world testing by users.
 
 ---
 
 ## What is DNSBunch?
 
-DNSBunch is your all-in-one DNS and mail diagnostics platform with a modern, user-friendly interface. It performs deep DNS record lookups, evaluates records for standards and best practices, and returns a categorized report with plain-language explanations.
+DNSBunch is a **free and open-source alternative to IntoDNS** with a modern, user-friendly interface. It performs deep DNS record lookups, evaluates records for standards and best practices, and returns a categorized report with plain-language explanations.
 
 ### Key Features
-- **Modern UI**: Built with React 18 and Material-UI v5 for responsive, accessible experience
+- **Modern UI**: Built with React 19 and Material-UI v7 for responsive, accessible experience
+- **95% IntoDNS Parity**: Professional-grade DNS checking matching industry standards
+- **30+ Individual Checks**: 15+ NS checks, 6 SOA checks, 10 MX checks with granular validation
+- **Clean Output**: Human-readable text formatting (no JSON/arrays in results)
 - **User-Friendly Explanations**: Complex DNS concepts explained in plain language for non-technical users
-- **Comprehensive Analysis**: Checks 17+ DNS record types including DNSSEC, CAA, SPF, DMARC, WWW subdomain analysis, and more
+- **Comprehensive Analysis**: Checks NS, SOA, MX, SPF, DMARC, DNSSEC, CAA, WWW subdomain, and more
 - **Categorized Results**: Results organized into logical categories (DNS Foundation, Website & Content, Email & Communication, Security & Protection, Performance & Optimization)
 - **Visual Status Indicators**: Clear pass/warning/error/info status with color coding
 - **Detailed Recommendations**: Actionable advice for fixing issues
@@ -104,17 +109,38 @@ DNSBunch is your all-in-one DNS and mail diagnostics platform with a modern, use
 
 Below is a complete list of DNS record types checked, **what information is returned for each**, and **the validations performed**:
 
-### 1. **NS (Nameserver) Records**
-- **Information Returned:** All authoritative nameservers for the domain, IPv4/IPv6 addresses, (Optional) geolocation
-- **Checks:** Valid IPs, reachability, duplicates, parent/child delegation, no single point of failure
-- **Implementation:** `_check_ns_records()` in `dns_checker.py`
-- **Validation:** Minimum 2 nameservers, IP resolution, no duplicates
+### 1. **NS (Nameserver) Records** - 15+ Individual Checks
+- **Information Returned:** All authoritative nameservers for the domain, IPv4/IPv6 addresses, parent delegation, domain nameservers, comparison results
+- **Checks:** 
+  - Parent delegation from TLD servers
+  - Domain nameservers from domain servers
+  - **Comparison check** - Parent vs Domain NS mismatch detection
+  - **Missing At Domain** - NSes at parent but not at domain (NEW!)
+  - **Missing At Parent** - NSes at domain but not at parent (NEW!)
+  - Recursive query testing
+  - Same class validation (all IN)
+  - DNS server response testing
+  - Different subnets for geographic distribution
+  - Glue record details with IP addresses
+  - Hostname validation (RFC-compliant)
+  - Ping test for nameserver reachability
+  - Multiple nameserver redundancy check
+- **Implementation:** `_check_ns_records()`, `_generate_ns_checks()` in `dns_checker.py`
+- **Validation:** Minimum 2 nameservers, IP resolution, no duplicates, parent-child consistency
+- **Output Format:** Clean text display, no JSON arrays, separate checks for missing nameservers
 
-### 2. **SOA (Start of Authority) Record**
+### 2. **SOA (Start of Authority) Record** - 6 Individual Checks
 - **Information Returned:** Primary master nameserver, responsible email, serial, refresh, retry, expire, and minimum TTL values
-- **Checks:** Exists, serial matches across nameservers, recommended values, valid email
+- **Checks:**
+  - SOA Record display with all fields
+  - SOA Serial Consistency across all nameservers
+  - SOA Refresh validation (recommended: 86400)
+  - SOA Retry validation (recommended: 7200)
+  - SOA Expire validation (recommended: 3600000)
+  - SOA Minimum TTL validation
 - **Implementation:** `_check_soa_record()` in `dns_checker.py`
-- **Validation:** Serial number consistency, reasonable TTL values, valid email format
+- **Validation:** Serial number consistency, reasonable TTL values (within best practice ranges), valid email format
+- **Output Format:** Individual check for each SOA parameter with pass/warning/error status
 
 ### 3. **A (IPv4 Address) Records**
 - **Information Returned:** All IPv4 addresses assigned to the domain (including root and www)
@@ -128,11 +154,22 @@ Below is a complete list of DNS record types checked, **what information is retu
 - **Implementation:** `_check_aaaa_records()` in `dns_checker.py`
 - **Validation:** Valid IPv6 format, no reserved ranges, reachability testing
 
-### 5. **MX (Mail Exchange) Records**
-- **Information Returned:** List of all MX hosts, priorities, and resolved IPs
-- **Checks:** Records exist, no duplicate/misprioritized entries, valid A/AAAA (no CNAME for MX), reachable targets
+### 5. **MX (Mail Exchange) Records** - 10 Individual Checks
+- **Information Returned:** List of all MX hosts, priorities, resolved IPs, PTR records
+- **Checks:**
+  - MX Records display with priority, hostname, IP, glue status
+  - MX Name Validity - All MX resolve to IP addresses
+  - MX Count - Multiple MX for redundancy
+  - MX CNAME Check - No CNAME pointing (RFC 2181)
+  - MX IPs are Public - No private IP addresses
+  - MX is not IP - All are hostnames, not IPs
+  - Different MX Records - Consistency across nameservers
+  - Mismatched MX A - No differing IPs for same hostname
+  - Duplicate MX A - No duplicate IPs across MX
+  - Reverse MX A (PTR) - PTR records for all MX IPs
 - **Implementation:** `_check_mx_records()` in `dns_checker.py`
-- **Validation:** Priority ordering, A/AAAA resolution, no CNAME targets
+- **Validation:** Priority ordering, A/AAAA resolution, no CNAME targets, public IPs, PTR records
+- **Output Format:** Line-by-line display like IntoDNS (e.g., "100 mx1.example.com 192.0.2.1 (no glue)")
 
 ### 6. **SPF (Sender Policy Framework)**
 - **Information Returned:** SPF record (TXT type) value
@@ -213,12 +250,36 @@ Below is a complete list of DNS record types checked, **what information is retu
 
 ---
 
+## Output Formatting Standards
+
+### Clean Text Display (No JSON/Arrays)
+All DNS check results are formatted as human-readable text, matching IntoDNS style:
+
+- **Nameserver Lists**: Displayed as comma-separated text, not JSON arrays
+- **MX Records**: Line-by-line format: "100 mx1.example.com 192.0.2.1 (no glue)"
+- **PTR Records**: Line-by-line format: "192.0.2.1 -> mx1.example.com"
+- **DNS Servers Responded**: Formatted with labels ("non_responsive:", "responsive:")
+- **Different Subnets**: Labeled display ("subnet_count: 8", "subnets: 192.0.2.0, ...")
+- **Glue Records**: Per-nameserver format: "ns1.example.com: 192.0.2.1"
+
+### Frontend Implementation (`DNSResultsTable.tsx`)
+```typescript
+const formatCheckDetails = (details, checkType) => {
+  // Handles arrays, objects, and strings
+  // Returns clean React components with proper formatting
+  // Special handling for MX, PTR, glue records, etc.
+}
+```
+
+---
+
 ## Architecture Details
 
 ### Frontend Architecture (React + TypeScript + Next.js)
-- **Framework**: Next.js 14 with App Router for modern routing and SSR capabilities
-- **Language**: TypeScript with strict type checking and comprehensive interfaces
-- **UI Library**: Material-UI (MUI) v5 for consistent, accessible design system
+- **Framework**: Next.js 15.5.9 with App Router for modern routing and SSR capabilities
+- **Language**: TypeScript 5.9.2 with strict type checking and comprehensive interfaces
+- **UI Library**: Material-UI (MUI) v7.3.1 for consistent, accessible design system
+- **React Version**: React 19.1.1 with latest features and performance improvements
 - **State Management**: React hooks with custom `useDNSAnalysis` hook for DNS operations
 - **API Client**: Axios with CSRF token integration and comprehensive error handling
 - **Form Management**: React Hook Form with Yup validation schemas
