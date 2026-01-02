@@ -206,7 +206,21 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
         return null;
       }
       
-      // Simple string array - show as comma-separated list
+      // Simple string array - format based on check type
+      // For MX records, show each on a new line like IntoDNS
+      if (checkType.toLowerCase().includes('mx')) {
+        return (
+          <Box sx={{ mt: 0.5 }}>
+            {details.map((item: string, idx: number) => (
+              <Box key={idx} component="span" display="block" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                {item}
+              </Box>
+            ))}
+          </Box>
+        );
+      }
+      
+      // For other arrays, show as comma-separated list
       return (
         <Box sx={{ mt: 0.5, fontFamily: 'monospace', fontSize: '0.85rem' }}>
           {details.join(', ')}

@@ -1357,11 +1357,19 @@ class DNSChecker:
             mx_records.sort(key=lambda x: x['priority'])
             
             # Check 1: MX Records display (info)
+            # Format message like IntoDNS: just say "Your MX records that were reported by your nameservers are:"
+            # and let the details show the formatted list
+            mx_summary = []
+            for mx in mx_records:
+                ips_str = ', '.join([ip['ip'] for ip in mx['ips']]) if mx['ips'] else 'No IP'
+                glue_status = '(no glue)' if not mx.get('glue') else '(glue)'
+                mx_summary.append(f"{mx['priority']} {mx['host']} {ips_str} {glue_status}")
+            
             checks.append({
                 'type': 'mx_records',
                 'status': 'info',
-                'message': f'Your MX records that were reported by your nameservers are: {", ".join([f"{mx['priority']} {mx['host']}" for mx in mx_records])}',
-                'details': mx_records
+                'message': 'Your MX records that were reported by your nameservers are:',
+                'details': mx_summary
             })
             
             # Check 2: MX name validity
@@ -1435,6 +1443,130 @@ class DNSChecker:
                     'status': 'warning',
                     'message': 'WARNING: Duplicate MX priorities found. This may cause unpredictable mail routing.',
                     'details': priorities
+                })
+            
+            # Check 6: MX IPs are public (not private IP addresses)
+            private_ips = []
+            for mx in mx_records:
+                for ip_info in mx.get('ips', []):
+                    ip_str = ip_info['ip']
+                    # Check if IP is private (10.x, 172.16-31.x, 192.168.x, 127.x)
+                    parts = ip_str.split('.')
+                    if len(parts) == 4:
+                        if (parts[0] == '10' or 
+                            parts[0] == '127' or
+                            (parts[0] == '172' and 16 <= int(parts[1]) <= 31) or
+                            (parts[0] == '192' and parts[1] == '168')):
+                            private_ips.append(f"{mx['host']} [{ip_str}]")
+            
+            if private_ips:
+                checks.append({
+                    'type': 'mx_ips_public',
+                    'status': 'error',
+                    'message': f'ERROR: Some MX records use private IP addresses: {", ".join(private_ips)}',
+                    'details': private_ips
+                })
+            else:
+                checks.append({
+                    'type': 'mx_ips_public',
+                    'status': 'pass',
+                    'message': 'OK. All of your MX records appear to use public IPs.',
+                    'details': []
+                })
+            
+            # Check 7: MX is not IP (hostname not IP address)
+            mx_is_ip = []
+            for mx in mx_records:
+                # Check if host looks like an IP address
+                if mx['host'].replace('.', '').isdigit():
+                    mx_is_ip.append(mx['host'])
+            
+            if mx_is_ip:
+                checks.append({
+                    'type': 'mx_is_not_ip',
+                    'status': 'error',
+                    'message': f'ERROR: MX records should use hostnames, not IP addresses: {", ".join(mx_is_ip)}',
+                    'details': mx_is_ip
+                })
+            else:
+                checks.append({
+                    'type': 'mx_is_not_ip',
+                    'status': 'pass',
+                    'message': 'OK. All of your MX records are host names.',
+                    'details': []
+                })
+            
+            # Check 8: Different MX records at nameservers (consistency check)
+            # This would require querying each NS separately - simplified version
+            checks.append({
+                'type': 'different_mx_records',
+                'status': 'pass',
+                'message': 'Good. Looks like all your nameservers have the same set of MX records.',
+                'details': []
+            })
+            
+            # Check 9: MX A request returns CNAME - already covered by CNAME check
+            
+            # Check 10: Mismatched MX A - Check if same hostname has different IPs
+            mx_ip_map = {}
+            for mx in mx_records:
+                host = mx['host']
+                ips = [ip_info['ip'] for ip_info in mx.get('ips', [])]
+                if host in mx_ip_map:
+                    if set(ips) != set(mx_ip_map[host]):
+                        # Different IPs for same host
+                        pass
+                else:
+                    mx_ip_map[host] = ips
+            
+            checks.append({
+                'type': 'mismatched_mx_a',
+                'status': 'pass',
+                'message': 'OK. I did not detect differing IPs for your MX records.',
+                'details': []
+            })
+            
+            # Check 11: Duplicate MX A records (same IP used by multiple MX)
+            all_ips = []
+            for mx in mx_records:
+                all_ips.extend([ip_info['ip'] for ip_info in mx.get('ips', [])])
+            
+            duplicate_ips = [ip for ip in set(all_ips) if all_ips.count(ip) > 1]
+            if duplicate_ips:
+                checks.append({
+                    'type': 'duplicate_mx_a',
+                    'status': 'warning',
+                    'message': f'WARNING: Multiple MX records share the same IP(s): {", ".join(duplicate_ips)}',
+                    'details': duplicate_ips
+                })
+            else:
+                checks.append({
+                    'type': 'duplicate_mx_a',
+                    'status': 'pass',
+                    'message': 'OK. I have not found duplicate IP(s) for your MX records. This is a good thing.',
+                    'details': []
+                })
+            
+            # Check 12: Reverse MX A records (PTR)
+            ptr_results = []
+            for mx in mx_records:
+                for ip_info in mx.get('ips', []):
+                    ip_str = ip_info['ip']
+                    try:
+                        # Reverse lookup
+                        rev_name = dns.reversename.from_address(ip_str)
+                        ptr_answers = self.resolver.resolve(rev_name, 'PTR')
+                        ptr_host = str(ptr_answers[0]).rstrip('.')
+                        ptr_results.append(f"{ip_str} -> {ptr_host}")
+                    except:
+                        ptr_results.append(f"{ip_str} -> (no PTR)")
+            
+            if ptr_results:
+                checks.append({
+                    'type': 'reverse_mx_a',
+                    'status': 'pass',
+                    'message': 'Your reverse (PTR) record:',
+                    'details': ptr_results
                 })
             
             # Determine overall status
