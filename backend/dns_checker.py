@@ -259,6 +259,43 @@ class DNSChecker:
                         "details": f"FAIL: The following nameservers are listed at your nameservers as nameservers for your domain, but are not listed at the parent nameservers. You need to make sure that these nameservers are working: {', '.join(domain_records - parent_records)}"
                     })
             
+            # NEW: Add Recursive Queries check
+            recursive_check = await self._check_recursive_queries(list(domain_records))
+            checks.append(recursive_check)
+            
+            # NEW: Add Same Class check
+            same_class_check = self._check_same_class()
+            checks.append(same_class_check)
+            
+            # NEW: Add DNS servers responded check
+            ns_response_check = await self._check_ns_responses(all_records if all_records else list(domain_records))
+            checks.append(ns_response_check)
+            
+            # NEW: Add Different subnets check
+            subnet_check = self._check_different_subnets(parent_result.get("nameserver_ips", {}), domain_ns_result.get("nameserver_ips", {}))
+            checks.append(subnet_check)
+            
+            # NEW: Add NS count validation
+            ns_count = len(domain_records)
+            if ns_count >= 2:
+                checks.append({
+                    "type": "multiple_nameservers",
+                    "status": "pass",
+                    "message": f"Good. You have {ns_count} nameservers. According to RFC2182 section 5 you must have at least 3 nameservers, and no more than 7. Having 2 is not advised."
+                })
+            elif ns_count == 1:
+                checks.append({
+                    "type": "multiple_nameservers",
+                    "status": "error",
+                    "message": "ERROR. You have only 1 nameserver. You need at least 2, and preferably more than that."
+                })
+            else:
+                checks.append({
+                    "type": "multiple_nameservers",
+                    "status": "error",
+                    "message": "ERROR. No nameservers found."
+                })
+            
             # Build final result with frontend-compatible record structure
             all_records = []
             
@@ -515,14 +552,242 @@ class DNSChecker:
                 "records": []
             }
 
+    async def _check_recursive_queries(self, nameservers: List[str]) -> Dict[str, Any]:
+        """Check if nameservers allow recursive queries (security issue)"""
+        try:
+            issues = []
+            recursive_enabled = []
+            
+            for ns_hostname in nameservers[:3]:  # Test up to 3 nameservers
+                try:
+                    # Get IP for this nameserver
+                    resolver = dns.resolver.Resolver(configure=False)
+                    resolver.nameservers = ['8.8.8.8']
+                    ns_ips = resolver.resolve(ns_hostname, 'A')
+                    ns_ip = str(ns_ips[0])
+                    
+                    # Try to query a non-authoritative domain (google.com) through this NS
+                    query = dns.message.make_query('google.com', dns.rdatatype.A)
+                    query.flags &= ~dns.flags.RD  # Disable recursion desired flag
+                    
+                    response = dns.query.udp(query, ns_ip, timeout=3)
+                    
+                    # If we get an answer for non-authoritative domain, recursion is enabled
+                    if response.answer:
+                        recursive_enabled.append(ns_hostname)
+                        issues.append(f"{ns_hostname} allows recursive queries")
+                        
+                except Exception:
+                    # Timeout or refused is good - means recursion is disabled
+                    pass
+            
+            if recursive_enabled:
+                return {
+                    "type": "recursive_queries",
+                    "status": "warning",
+                    "message": f"WARNING: Some nameservers allow recursive queries: {', '.join(recursive_enabled)}. This is a security risk.",
+                    "details": recursive_enabled
+                }
+            else:
+                return {
+                    "type": "recursive_queries",
+                    "status": "pass",
+                    "message": "Good. Your nameservers do not allow recursive queries from external sources.",
+                    "details": []
+                }
+                
+        except Exception as e:
+            return {
+                "type": "recursive_queries",
+                "status": "info",
+                "message": "Could not test recursive queries",
+                "details": str(e)
+            }
+
+    def _check_same_class(self) -> Dict[str, Any]:
+        """Verify all NS records are class IN (Internet)"""
+        try:
+            # Query NS records and check their class
+            answers = self.resolver.resolve(self.domain, 'NS')
+            
+            # All DNS records from public resolvers should be class IN
+            all_class_in = all(rr.rdclass == dns.rdataclass.IN for rr in answers)
+            
+            if all_class_in:
+                return {
+                    "type": "same_class",
+                    "status": "pass",
+                    "message": "OK. All of your NS records are class IN (Internet).",
+                    "details": "All NS records are class IN"
+                }
+            else:
+                return {
+                    "type": "same_class",
+                    "status": "error",
+                    "message": "ERROR: Not all NS records are class IN",
+                    "details": "Some NS records have incorrect class"
+                }
+                
+        except Exception as e:
+            return {
+                "type": "same_class",
+                "status": "info",
+                "message": "Could not verify NS record class",
+                "details": str(e)
+            }
+
+    async def _check_ns_responses(self, nameservers: List) -> Dict[str, Any]:
+        """Test if each nameserver responds to queries"""
+        try:
+            responsive = []
+            non_responsive = []
+            
+            for ns_record in nameservers[:10]:  # Test up to 10 nameservers
+                ns_hostname = ns_record.get('host') if isinstance(ns_record, dict) else str(ns_record)
+                
+                try:
+                    # Try to query SOA record from this specific nameserver
+                    resolver = dns.resolver.Resolver(configure=False)
+                    resolver.nameservers = ['8.8.8.8']
+                    
+                    # Get IP for this NS
+                    ns_ips = resolver.resolve(ns_hostname, 'A')
+                    ns_ip = str(ns_ips[0])
+                    
+                    # Query this specific nameserver
+                    resolver.nameservers = [ns_ip]
+                    resolver.timeout = 5
+                    resolver.lifetime = 5
+                    
+                    answer = resolver.resolve(self.domain, 'SOA')
+                    if answer:
+                        responsive.append(ns_hostname)
+                        
+                except Exception:
+                    non_responsive.append(ns_hostname)
+            
+            if non_responsive:
+                return {
+                    "type": "dns_servers_responded",
+                    "status": "error",
+                    "message": f"ERROR: Some nameservers did not respond: {', '.join(non_responsive)}",
+                    "details": {
+                        "responsive": responsive,
+                        "non_responsive": non_responsive
+                    }
+                }
+            elif responsive:
+                return {
+                    "type": "dns_servers_responded",
+                    "status": "pass",
+                    "message": "Good. All nameservers responded successfully.",
+                    "details": {
+                        "responsive": responsive,
+                        "non_responsive": []
+                    }
+                }
+            else:
+                return {
+                    "type": "dns_servers_responded",
+                    "status": "warning",
+                    "message": "Could not test nameserver responses",
+                    "details": {}
+                }
+                
+        except Exception as e:
+            return {
+                "type": "dns_servers_responded",
+                "status": "info",
+                "message": "Could not test nameserver responses",
+                "details": str(e)
+            }
+
+    def _check_different_subnets(self, parent_ips: Dict[str, List[str]], domain_ips: Dict[str, List[str]]) -> Dict[str, Any]:
+        """Check if nameservers are on different subnets"""
+        try:
+            all_ips = []
+            
+            # Collect all IPs
+            for ips in parent_ips.values():
+                all_ips.extend(ips)
+            for ips in domain_ips.values():
+                all_ips.extend(ips)
+            
+            # Remove duplicates
+            all_ips = list(set(all_ips))
+            
+            if len(all_ips) < 2:
+                return {
+                    "type": "different_subnets",
+                    "status": "info",
+                    "message": "Not enough IPs to check subnet diversity",
+                    "details": all_ips
+                }
+            
+            # Check /24 subnets for IPv4
+            subnets = set()
+            for ip in all_ips:
+                try:
+                    ip_obj = ipaddress.IPv4Address(ip)
+                    # Get /24 subnet
+                    subnet = '.'.join(ip.split('.')[:3])
+                    subnets.add(subnet)
+                except:
+                    pass
+            
+            if len(subnets) >= 2:
+                return {
+                    "type": "different_subnets",
+                    "status": "pass",
+                    "message": f"Good. Your nameservers are on {len(subnets)} different subnets. This is good for redundancy.",
+                    "details": {
+                        "subnet_count": len(subnets),
+                        "subnets": list(subnets)
+                    }
+                }
+            elif len(subnets) == 1:
+                return {
+                    "type": "different_subnets",
+                    "status": "warning",
+                    "message": "WARNING: All nameservers are on the same subnet. Consider using nameservers on different networks for better redundancy.",
+                    "details": {
+                        "subnet_count": 1,
+                        "subnets": list(subnets)
+                    }
+                }
+            else:
+                return {
+                    "type": "different_subnets",
+                    "status": "info",
+                    "message": "Could not determine subnet diversity",
+                    "details": {}
+                }
+                
+        except Exception as e:
+            return {
+                "type": "different_subnets",
+                "status": "info",
+                "message": "Could not check subnet diversity",
+                "details": str(e)
+            }
+
     async def _check_soa_record(self) -> Dict[str, Any]:
-        """Check SOA (Start of Authority) record"""
+        """Check SOA (Start of Authority) record with individual validation checks"""
         try:
             answers = self.resolver.resolve(self.domain, 'SOA')
-            issues = []
+            checks = []
             
             if len(answers) != 1:
-                issues.append(f"Expected 1 SOA record, found {len(answers)}")
+                return {
+                    'status': 'error',
+                    'record': {},
+                    'checks': [{
+                        'type': 'soa_record',
+                        'status': 'error',
+                        'message': f"ERROR: Expected 1 SOA record, found {len(answers)}",
+                        'details': {}
+                    }]
+                }
             
             soa = answers[0]
             soa_data = {
@@ -535,22 +800,119 @@ class DNSChecker:
                 'minimum': soa.minimum
             }
             
-            # Validate SOA timings
-            if soa.refresh < 3600:
-                issues.append("Refresh interval too low (< 1 hour)")
-            if soa.retry < 1800:
-                issues.append("Retry interval too low (< 30 minutes)")
-            if soa.expire < 604800:
-                issues.append("Expire time too low (< 1 week)")
-            if soa.minimum < 300:
-                issues.append("Minimum TTL too low (< 5 minutes)")
+            # Check 1: SOA record display (info)
+            checks.append({
+                'type': 'soa_record',
+                'status': 'info',
+                'message': 'SOA record found',
+                'details': soa_data
+            })
             
-            status = 'pass' if not issues else 'warning'
+            # Check 2: SOA serial consistency across nameservers
+            serial_check = await self._check_soa_serial_consistency(soa.serial)
+            checks.append(serial_check)
+            
+            # Check 3: SOA REFRESH validation
+            if soa.refresh >= 3600 and soa.refresh <= 86400:
+                checks.append({
+                    'type': 'soa_refresh',
+                    'status': 'pass',
+                    'message': f'Your SOA REFRESH interval is: {soa.refresh}. That is OK.',
+                    'details': {'refresh': soa.refresh, 'recommended_min': 3600, 'recommended_max': 86400}
+                })
+            elif soa.refresh < 3600:
+                checks.append({
+                    'type': 'soa_refresh',
+                    'status': 'warning',
+                    'message': f'Your SOA REFRESH interval is: {soa.refresh}. This is too low (recommended: 3600-86400).',
+                    'details': {'refresh': soa.refresh, 'issue': 'too_low'}
+                })
+            else:
+                checks.append({
+                    'type': 'soa_refresh',
+                    'status': 'warning',
+                    'message': f'Your SOA REFRESH interval is: {soa.refresh}. This is higher than recommended.',
+                    'details': {'refresh': soa.refresh, 'issue': 'too_high'}
+                })
+            
+            # Check 4: SOA RETRY validation
+            if soa.retry >= 1800 and soa.retry <= 7200:
+                checks.append({
+                    'type': 'soa_retry',
+                    'status': 'pass',
+                    'message': f'Your SOA RETRY interval is: {soa.retry}. That is OK.',
+                    'details': {'retry': soa.retry, 'recommended_min': 1800, 'recommended_max': 7200}
+                })
+            elif soa.retry < 1800:
+                checks.append({
+                    'type': 'soa_retry',
+                    'status': 'warning',
+                    'message': f'Your SOA RETRY interval is: {soa.retry}. This is too low (recommended: 1800-7200).',
+                    'details': {'retry': soa.retry, 'issue': 'too_low'}
+                })
+            else:
+                checks.append({
+                    'type': 'soa_retry',
+                    'status': 'warning',
+                    'message': f'Your SOA RETRY interval is: {soa.retry}. This is higher than recommended.',
+                    'details': {'retry': soa.retry, 'issue': 'too_high'}
+                })
+            
+            # Check 5: SOA EXPIRE validation
+            if soa.expire >= 604800 and soa.expire <= 2419200:
+                checks.append({
+                    'type': 'soa_expire',
+                    'status': 'pass',
+                    'message': f'Your SOA EXPIRE time is: {soa.expire}. That is OK.',
+                    'details': {'expire': soa.expire, 'recommended_min': 604800, 'recommended_max': 2419200}
+                })
+            elif soa.expire < 604800:
+                checks.append({
+                    'type': 'soa_expire',
+                    'status': 'warning',
+                    'message': f'Your SOA EXPIRE time is: {soa.expire}. This is too low (recommended: at least 604800 - 1 week).',
+                    'details': {'expire': soa.expire, 'issue': 'too_low'}
+                })
+            else:
+                checks.append({
+                    'type': 'soa_expire',
+                    'status': 'pass',
+                    'message': f'Your SOA EXPIRE time is: {soa.expire}. That is OK.',
+                    'details': {'expire': soa.expire}
+                })
+            
+            # Check 6: SOA MINIMUM (negative cache TTL) validation
+            if soa.minimum >= 300 and soa.minimum <= 86400:
+                checks.append({
+                    'type': 'soa_minimum',
+                    'status': 'pass',
+                    'message': f'Your SOA MINIMUM (default TTL) is: {soa.minimum}. That is OK.',
+                    'details': {'minimum': soa.minimum, 'recommended_min': 300, 'recommended_max': 86400}
+                })
+            elif soa.minimum < 300:
+                checks.append({
+                    'type': 'soa_minimum',
+                    'status': 'warning',
+                    'message': f'Your SOA MINIMUM is: {soa.minimum}. This is too low (recommended: 300-86400).',
+                    'details': {'minimum': soa.minimum, 'issue': 'too_low'}
+                })
+            else:
+                checks.append({
+                    'type': 'soa_minimum',
+                    'status': 'warning',
+                    'message': f'Your SOA MINIMUM is: {soa.minimum}. This is higher than recommended.',
+                    'details': {'minimum': soa.minimum, 'issue': 'too_high'}
+                })
+            
+            # Determine overall status
+            has_errors = any(c['status'] == 'error' for c in checks)
+            has_warnings = any(c['status'] == 'warning' for c in checks)
+            overall_status = 'error' if has_errors else ('warning' if has_warnings else 'pass')
             
             return {
-                'status': status,
+                'status': overall_status,
                 'record': soa_data,
-                'issues': issues
+                'checks': checks
             }
             
         except Exception as e:
@@ -558,7 +920,69 @@ class DNSChecker:
                 'status': 'error',
                 'error': str(e),
                 'record': {},
-                'issues': [f"Failed to query SOA record: {str(e)}"]
+                'checks': [{
+                    'type': 'soa_record',
+                    'status': 'error',
+                    'message': f"Failed to query SOA record: {str(e)}",
+                    'details': {}
+                }]
+            }
+
+    async def _check_soa_serial_consistency(self, expected_serial: int) -> Dict[str, Any]:
+        """Check if all nameservers have the same SOA serial"""
+        try:
+            # Get nameservers
+            ns_answers = self.resolver.resolve(self.domain, 'NS')
+            nameservers = [str(ns.target).rstrip('.') for ns in ns_answers]
+            
+            serials = {}
+            for ns_hostname in nameservers[:5]:  # Check up to 5 nameservers
+                try:
+                    # Get IP for this nameserver
+                    resolver = dns.resolver.Resolver(configure=False)
+                    resolver.nameservers = ['8.8.8.8']
+                    ns_ips = resolver.resolve(ns_hostname, 'A')
+                    ns_ip = str(ns_ips[0])
+                    
+                    # Query SOA from this specific nameserver
+                    resolver.nameservers = [ns_ip]
+                    resolver.timeout = 5
+                    soa_answer = resolver.resolve(self.domain, 'SOA')
+                    serials[ns_hostname] = soa_answer[0].serial
+                except Exception:
+                    serials[ns_hostname] = None
+            
+            # Check if all serials match
+            unique_serials = set(s for s in serials.values() if s is not None)
+            
+            if len(unique_serials) == 1:
+                return {
+                    'type': 'soa_serial_consistency',
+                    'status': 'pass',
+                    'message': f'OK. All of your nameservers agree that your SOA serial number is {expected_serial}',
+                    'details': serials
+                }
+            elif len(unique_serials) > 1:
+                return {
+                    'type': 'soa_serial_consistency',
+                    'status': 'error',
+                    'message': f'ERROR: SOA serial number mismatch across nameservers. Found serials: {unique_serials}',
+                    'details': serials
+                }
+            else:
+                return {
+                    'type': 'soa_serial_consistency',
+                    'status': 'warning',
+                    'message': 'Could not verify SOA serial consistency across all nameservers',
+                    'details': serials
+                }
+                
+        except Exception as e:
+            return {
+                'type': 'soa_serial_consistency',
+                'status': 'info',
+                'message': 'Could not check SOA serial consistency',
+                'details': str(e)
             }
     
     async def _check_a_records(self) -> Dict[str, Any]:
@@ -693,11 +1117,11 @@ class DNSChecker:
             }
     
     async def _check_mx_records(self) -> Dict[str, Any]:
-        """Check MX (Mail Exchange) records"""
+        """Check MX (Mail Exchange) records with individual validation checks"""
         try:
             answers = self.resolver.resolve(self.domain, 'MX')
             mx_records = []
-            issues = []
+            checks = []
             
             for rdata in answers:
                 mx_host = str(rdata.exchange).rstrip('.')
@@ -725,36 +1149,107 @@ class DNSChecker:
                     except:
                         pass
                     
-                    # Check if MX points to CNAME (should not)
-                    try:
-                        cname_answers = self.resolver.resolve(mx_host, 'CNAME')
-                        if cname_answers:
-                            issues.append(f"MX {mx_host} points to CNAME (RFC violation)")
-                    except:
-                        pass  # No CNAME is good
-                        
                     if not mx_info['ips']:
-                        issues.append(f"MX {mx_host} does not resolve to any IP")
+                        mx_info['error'] = "Does not resolve to any IP"
                         
                 except Exception as e:
-                    issues.append(f"Failed to resolve MX {mx_host}: {str(e)}")
+                    mx_info['error'] = f"Failed to resolve: {str(e)}"
                 
                 mx_records.append(mx_info)
             
             # Sort by priority
             mx_records.sort(key=lambda x: x['priority'])
             
-            # Check for duplicate priorities
+            # Check 1: MX Records display (info)
+            checks.append({
+                'type': 'mx_records',
+                'status': 'info',
+                'message': f'Your MX records that were reported by your nameservers are: {", ".join([f"{mx['priority']} {mx['host']}" for mx in mx_records])}',
+                'details': mx_records
+            })
+            
+            # Check 2: MX name validity
+            invalid_mx = []
+            for mx in mx_records:
+                if mx.get('error'):
+                    invalid_mx.append(f"{mx['host']} ({mx['error']})")
+            
+            if invalid_mx:
+                checks.append({
+                    'type': 'mx_name_validity',
+                    'status': 'error',
+                    'message': f'ERROR: Some MX records have issues: {", ".join(invalid_mx)}',
+                    'details': invalid_mx
+                })
+            else:
+                checks.append({
+                    'type': 'mx_name_validity',
+                    'status': 'pass',
+                    'message': 'Good. All MX records resolve to IP addresses.',
+                    'details': []
+                })
+            
+            # Check 3: Number of MX records
+            mx_count = len(mx_records)
+            if mx_count >= 2:
+                checks.append({
+                    'type': 'mx_count',
+                    'status': 'pass',
+                    'message': f'Good. You have {mx_count} MX records. This is good for redundancy.',
+                    'details': {'count': mx_count}
+                })
+            elif mx_count == 1:
+                checks.append({
+                    'type': 'mx_count',
+                    'status': 'warning',
+                    'message': 'You have only 1 MX record. Consider adding a backup MX for redundancy.',
+                    'details': {'count': 1}
+                })
+            
+            # Check 4: MX CNAME check (MX should not point to CNAME)
+            mx_cname_issues = []
+            for mx in mx_records:
+                try:
+                    cname_answers = self.resolver.resolve(mx['host'], 'CNAME')
+                    if cname_answers:
+                        mx_cname_issues.append(mx['host'])
+                except:
+                    pass  # No CNAME is good
+            
+            if mx_cname_issues:
+                checks.append({
+                    'type': 'mx_cname_check',
+                    'status': 'error',
+                    'message': f'ERROR: MX records should not point to CNAME (RFC 2181). Violating MX: {", ".join(mx_cname_issues)}',
+                    'details': mx_cname_issues
+                })
+            else:
+                checks.append({
+                    'type': 'mx_cname_check',
+                    'status': 'pass',
+                    'message': 'Good. None of your MX records point to CNAME records.',
+                    'details': []
+                })
+            
+            # Check 5: Duplicate priorities
             priorities = [mx['priority'] for mx in mx_records]
             if len(priorities) != len(set(priorities)):
-                issues.append("Duplicate MX priorities found")
+                checks.append({
+                    'type': 'mx_duplicate_priorities',
+                    'status': 'warning',
+                    'message': 'WARNING: Duplicate MX priorities found. This may cause unpredictable mail routing.',
+                    'details': priorities
+                })
             
-            status = 'pass' if mx_records and not issues else 'warning' if mx_records else 'info'
+            # Determine overall status
+            has_errors = any(c['status'] == 'error' for c in checks)
+            has_warnings = any(c['status'] == 'warning' for c in checks)
+            overall_status = 'error' if has_errors else ('warning' if has_warnings else 'pass')
             
             return {
-                'status': status,
+                'status': overall_status,
                 'records': mx_records,
-                'issues': issues,
+                'checks': checks,
                 'count': len(mx_records)
             }
             
@@ -762,7 +1257,12 @@ class DNSChecker:
             return {
                 'status': 'info',
                 'records': [],
-                'issues': ["No MX records found - email not configured"],
+                'checks': [{
+                    'type': 'mx_records',
+                    'status': 'info',
+                    'message': 'No MX records found - email not configured for this domain.',
+                    'details': []
+                }],
                 'count': 0
             }
         except Exception as e:
@@ -770,7 +1270,12 @@ class DNSChecker:
                 'status': 'error',
                 'error': str(e),
                 'records': [],
-                'issues': [f"Failed to query MX records: {str(e)}"]
+                'checks': [{
+                    'type': 'mx_records',
+                    'status': 'error',
+                    'message': f'Failed to query MX records: {str(e)}',
+                    'details': []
+                }]
             }
     
     async def _check_spf_record(self) -> Dict[str, Any]:

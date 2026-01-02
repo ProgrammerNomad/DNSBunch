@@ -423,39 +423,21 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
       // NS Section  
       tests.push({
         category: 'NS',
-        rowSpan: 5,
-        tests: [
-          {
-            status: 'info',
-            name: 'NS records from your nameservers',
-            info: (
-              <Box>
-                NS records got from your nameservers:<br />
-                {formatDNSData(nsData, 'ns_domain')}
-              </Box>
-            )
-          },
-          {
-            status: 'pass',
-            name: 'Recursive Queries',
-            info: 'Good. Your nameservers do not report that they allow recursive queries for anyone.'
-          },
-          {
-            status: (nsData.domain_nameservers?.records?.length || 0) >= 2 ? 'pass' : 'warning',
-            name: 'Multiple Nameservers',
-            info: `Good. You have ${nsData.domain_nameservers?.records?.length || 0} nameservers. According to RFC2182 section 5 you must have at least 3 nameservers, and no more than 7. Having 2 nameservers is also ok by me.`
-          },
-          {
-            status: 'pass',
-            name: 'DNS servers responded',
-            info: 'Good. All nameservers listed at the parent server responded.'
-          },
-          {
-            status: 'pass',
-            name: 'Different subnets',
-            info: 'OK. Looks like you have nameservers on different subnets!'
-          }
-        ]
+        rowSpan: (nsData.checks || []).length || 5,
+        tests: (nsData.checks || []).map((check: any) => ({
+          status: check.status as 'pass' | 'warning' | 'error' | 'info',
+          name: check.type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+          info: (
+            <Box>
+              <Typography variant="body2">{check.message}</Typography>
+              {check.details && typeof check.details === 'object' && Object.keys(check.details).length > 0 && (
+                <Box sx={{ mt: 1, fontSize: '0.85rem', color: 'text.secondary' }}>
+                  {typeof check.details === 'string' ? check.details : JSON.stringify(check.details, null, 2).substring(0, 200)}
+                </Box>
+              )}
+            </Box>
+          )
+        }))
       });
     }
 
@@ -465,24 +447,25 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
       
       tests.push({
         category: 'SOA',
-        rowSpan: 3,
-        tests: [
-          {
-            status: 'info',
-            name: 'SOA record',
-            info: formatDNSData(soaData, 'soa')
-          },
-          {
-            status: 'pass',
-            name: 'NSs have same SOA serial',
-            info: `OK. All your nameservers agree that your SOA serial number is ${(soaData.record as SOARecord)?.serial || 'N/A'}.`
-          },
-          {
-            status: 'pass',
-            name: 'SOA REFRESH',
-            info: `Your SOA REFRESH interval is: ${(soaData.record as SOARecord)?.refresh || 'N/A'}. That is OK`
-          }
-        ]
+        rowSpan: (soaData.checks || []).length || 3,
+        tests: (soaData.checks || []).map((check: any) => ({
+          status: check.status as 'pass' | 'warning' | 'error' | 'info',
+          name: check.type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+          info: (
+            <Box>
+              <Typography variant="body2">{check.message}</Typography>
+              {check.details && typeof check.details === 'object' && Object.keys(check.details).length > 0 && check.type === 'soa_record' && (
+                <Box sx={{ mt: 1, p: 1, backgroundColor: '#f5f5f5', borderRadius: 1, fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                  {Object.entries(check.details).map(([key, value]) => (
+                    <Box key={key}>
+                      <strong>{key}:</strong> {String(value)}
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Box>
+          )
+        }))
       });
     }
 
@@ -492,29 +475,23 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
       
       tests.push({
         category: 'MX',
-        rowSpan: 3,
-        tests: [
-          {
-            status: 'info',
-            name: 'MX Records',
-            info: (
-              <Box>
-                Your MX records that were reported by your nameservers are:<br />
-                {formatDNSData(mxData, 'mx')}
-              </Box>
-            )
-          },
-          {
-            status: 'pass',
-            name: 'MX name validity',
-            info: 'Good. I did not detect any invalid hostnames for your MX records.'
-          },
-          {
-            status: 'pass',
-            name: 'Number of MX records',
-            info: 'Good. Looks like you have multiple MX records at all your nameservers. This is a good thing and will help in preventing loss of mail.'
-          }
-        ]
+        rowSpan: (mxData.checks || []).length || 3,
+        tests: (mxData.checks || []).map((check: any) => ({
+          status: check.status as 'pass' | 'warning' | 'error' | 'info',
+          name: check.type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+          info: (
+            <Box>
+              <Typography variant="body2">{check.message}</Typography>
+              {check.details && Array.isArray(check.details) && check.details.length > 0 && (
+                <Box sx={{ mt: 1, p: 1, backgroundColor: '#f5f5f5', borderRadius: 1, fontSize: '0.85rem' }}>
+                  {check.details.map((detail: any, idx: number) => (
+                    <Box key={idx}>{typeof detail === 'string' ? detail : JSON.stringify(detail)}</Box>
+                  ))}
+                </Box>
+              )}
+            </Box>
+          )
+        }))
       });
     }
 

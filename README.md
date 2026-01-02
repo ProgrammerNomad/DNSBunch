@@ -8,8 +8,9 @@ A comprehensive DNS analysis and mail server diagnostics tool built with React, 
 
 - **GitHub Repository:** [ProgrammerNomad/DNSBunch](https://github.com/ProgrammerNomad/DNSBunch)
 - **Primary Developer:** Nomad Programmer ([ProgrammerNomad](https://github.com/ProgrammerNomad))
+- **Version:** 0.0.2 (Early Development Phase)
 - **Status:** Active development with modern UI enhancements
-- **Last Updated:** 2025-08-13
+- **Last Updated:** 2026-01-02
 - **Frontend:** React 18 with Material-UI v5 and modern components
 - **Backend:** Python Flask with comprehensive DNS checking capabilities
 
