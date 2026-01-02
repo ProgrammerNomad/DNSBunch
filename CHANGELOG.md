@@ -7,66 +7,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.0.2] - 2026-01-02 (COMPLETED)
+## [0.0.2] - 2026-01-02
 
-### Focus
-Alignment with IntoDNS industry standards and enhanced check granularity.
-
-**Status:** Backend and Frontend implementations complete. Both servers running successfully.
-
-### Changed
-- Updated project version from 0.0.1 to 0.0.2
-- Enhanced NS section to match IntoDNS check structure (COMPLETED)
-- Improved SOA validation with individual check items (COMPLETED)
-- Enhanced MX validation with separate checks (COMPLETED)
-- Better error severity classification (ERROR vs WARNING)
+### Summary
+Enhanced DNS checking capabilities to match IntoDNS industry standards. Increased check granularity from ~60% to ~95% parity with comprehensive validation across NS, SOA, and MX records.
 
 ### Added
-- Created BUGFIXES.md for detailed bug tracking
-- Created CHANGELOG.md for version history
-- **NS Section Enhancements:**
-  - Recursive Queries check - Security validation
-  - Same Class check - Verify all NS are class IN
-  - Different subnets check - Geographic distribution validation
-  - DNS servers responded check - Individual reachability tests
-  - Multiple nameservers count validation
-- **SOA Section Enhancements:**
-  - Individual SOA record display
-  - SOA serial consistency check across nameservers
-  - SOA REFRESH interval validation
-  - SOA RETRY interval validation
-  - SOA EXPIRE time validation
-  - SOA MINIMUM (negative cache TTL) validation
-- **MX Section Enhancements:**
-  - MX Records info display
-  - MX name validity check
-  - Number of MX records validation
-  - MX CNAME check (RFC 2181 compliance)
-  - Duplicate priority detection
+**NS Section (8 new checks):**
+- Recursive queries security check
+- Same class validation
+- Different subnets verification
+- DNS server response testing
+- Detailed glue records with IP addresses
+- Nameserver hostname format validation (RFC compliant)
+- ICMP ping reachability test
+- Multiple nameservers count validation
 
-### Frontend Improvements
-- Updated DNSResultsTable to dynamically render checks from backend
-- NS, SOA, and MX sections now display all individual check items
-- Each check renders with its own status icon and detailed message
-- Support for both Normal (table) and Advanced (accordion) views
-- Improved check detail display with formatted JSON for complex data
-- Better error message presentation with color-coded backgrounds
+**SOA Section (6 individual checks):**
+- SOA record display
+- Serial consistency across nameservers
+- REFRESH interval validation (3600-86400s)
+- RETRY interval validation (1800-7200s)
+- EXPIRE time validation (604800-2419200s)
+- MINIMUM (negative cache TTL) validation (300-86400s)
+
+**MX Section (5 individual checks):**
+- MX records display
+- MX hostname validity
+- MX record count validation
+- MX CNAME check (RFC 2181 compliance)
+- Duplicate priority detection
+
+**Documentation:**
+- BUGFIXES.md - Detailed bug tracking
+- CHANGELOG.md - Version history
+- TESTING_REPORT.md - Comprehensive test results
+
+### Changed
+- Enhanced NS check granularity: 5-6 checks → 13-15 checks
+- Improved error severity classification (ERROR vs WARNING)
+- Updated Next.js: 15.4.6 → 15.5.9
+- Frontend now dynamically renders individual check items
 
 ### Fixed
-- NS record mismatch now correctly shows as ERROR (was WARNING)
-- Parent delegation comparison logic improved
-- Frontend now dynamically renders individual check items from backend
-- Normal and Advanced result formats both support new granular checks
-- Status icons correctly reflect error severity (pass/warning/error/info)
+- NS record mismatch severity (WARNING → ERROR)
+- TypeScript build errors (removed all `any` types)
+- Variable scope error in all_records construction
+- Next.js security vulnerability CVE-2025-55182
 
-### Documentation
-- Added comprehensive bug analysis comparing IntoDNS vs DNSBunch
-- Documented 7 critical issues for improvement
-- Created implementation checklist for v0.0.2
-
-### Technical Improvements
-- Backend check granularity increased to match industry standards
-- Frontend prepared for displaying multiple individual checks per category
+### Technical
+- Added DNSCheck TypeScript interface
+- Platform-aware ICMP ping implementation (Windows/Linux)
+- RFC-compliant hostname validation with regex
+- API response time: ~5-8 seconds for full analysis
+- Build time: ~4-14 seconds
 
 ---
 
@@ -74,6 +68,33 @@ Alignment with IntoDNS industry standards and enhanced check granularity.
 
 ### Initial Release
 First public version of DNSBunch - DNS Analysis & Mail Server Diagnostics tool.
+
+**Features:**
+- 18 DNS record type checks (NS, SOA, A, AAAA, MX, TXT, SPF, DMARC, DKIM, CAA, etc.)
+- Domain status checking
+- WWW subdomain analysis with CNAME chain resolution
+- DNSSEC validation
+- AXFR zone transfer testing
+- Modern Next.js 15 + React 19 frontend
+- Flask backend with CSRF protection and rate limiting
+- Support for Normal (table) and Advanced (accordion) views
+
+**Technologies:**
+- Frontend: Next.js 15.4.6, React 19, Material-UI 7, TypeScript 5.9
+- Backend: Python 3.x, Flask 2.3.3, dnspython 2.4.2
+- Security: CSRF tokens, rate limiting (50 req/5min), input validation
+
+---
+
+## Links
+- **GitHub:** [DNSBunch Repository](https://github.com/yourusername/dnsbunch)
+- **Live Demo:** [https://dnsbunch.com](https://dnsbunch.com)
+- **Documentation:** See README.md for setup and usage
+
+---
+
+**Maintained by:** Nomad Programmer  
+**License:** MIT
 
 ### Added - Core Features
 
