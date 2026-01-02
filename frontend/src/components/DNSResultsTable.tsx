@@ -21,7 +21,7 @@ import {
   Info as InfoIcon,
   Share as ShareIcon
 } from '@mui/icons-material';
-import { DNSAnalysisResult, CheckResult, SOARecord } from '../types/dns';
+import { DNSAnalysisResult, CheckResult, SOARecord, DNSCheck } from '../types/dns';
 
 interface WWWCheckDetail {
   cname_chain?: Array<{ from: string; to: string }>;
@@ -424,7 +424,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
       tests.push({
         category: 'NS',
         rowSpan: (nsData.checks || []).length || 5,
-        tests: (nsData.checks || []).map((check: any) => ({
+        tests: (nsData.checks || []).map((check: DNSCheck) => ({
           status: check.status as 'pass' | 'warning' | 'error' | 'info',
           name: check.type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
           info: (
@@ -448,7 +448,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
       tests.push({
         category: 'SOA',
         rowSpan: (soaData.checks || []).length || 3,
-        tests: (soaData.checks || []).map((check: any) => ({
+        tests: (soaData.checks || []).map((check: DNSCheck) => ({
           status: check.status as 'pass' | 'warning' | 'error' | 'info',
           name: check.type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
           info: (
@@ -476,7 +476,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
       tests.push({
         category: 'MX',
         rowSpan: (mxData.checks || []).length || 3,
-        tests: (mxData.checks || []).map((check: any) => ({
+        tests: (mxData.checks || []).map((check: DNSCheck) => ({
           status: check.status as 'pass' | 'warning' | 'error' | 'info',
           name: check.type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
           info: (
@@ -484,7 +484,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
               <Typography variant="body2">{check.message}</Typography>
               {check.details && Array.isArray(check.details) && check.details.length > 0 && (
                 <Box sx={{ mt: 1, p: 1, backgroundColor: '#f5f5f5', borderRadius: 1, fontSize: '0.85rem' }}>
-                  {check.details.map((detail: any, idx: number) => (
+                  {check.details.map((detail: unknown, idx: number) => (
                     <Box key={idx}>{typeof detail === 'string' ? detail : JSON.stringify(detail)}</Box>
                   ))}
                 </Box>

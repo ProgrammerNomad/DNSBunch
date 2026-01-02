@@ -44,11 +44,19 @@ export interface Issue {
   code?: string;
 }
 
+export interface DNSCheck {
+  type: string;
+  status: 'pass' | 'warning' | 'error' | 'info';
+  message: string;
+  details?: Record<string, unknown> | string[] | string;
+}
+
 export interface CheckResult {
   status: 'pass' | 'warning' | 'error' | 'info' | 'success' | 'fail';
   records?: DNSRecord[];
   record?: SOARecord | DNSRecord | string;
   issues?: Issue[];
+  checks?: DNSCheck[];
   parent_server?: string;
   glue_records?: boolean;
   recursive_queries_disabled?: boolean;
