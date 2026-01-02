@@ -879,7 +879,7 @@ class DNSChecker:
                 return {
                     'type': 'name_of_nameservers_valid',
                     'status': 'error',
-                    'message': f'ERROR: Some nameserver names are invalid: {', '.join(invalid_hostnames)}',
+                    'message': f'ERROR: Some nameserver names are invalid: {", ".join(invalid_hostnames)}',
                     'details': invalid_hostnames
                 }
             else:
