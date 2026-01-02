@@ -12,6 +12,8 @@ import os
 import random
 from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
+import ipaddress
+import re
 
 class DNSChecker:
     """
@@ -301,6 +303,18 @@ class DNSChecker:
             # NEW: Add Different subnets check
             subnet_check = self._check_different_subnets(parent_result.get("nameserver_ips", {}), domain_ns_result.get("nameserver_ips", {}))
             checks.append(subnet_check)
+            
+            # NEW: Add Glue records detailed check
+            glue_check = self._check_glue_records_detail(parent_result, all_records)
+            checks.append(glue_check)
+            
+            # NEW: Add hostname validation check
+            hostname_check = self._check_nameserver_hostnames(list(domain_records))
+            checks.append(hostname_check)
+            
+            # NEW: Add ping test check
+            ping_check = await self._check_nameserver_ping(all_records)
+            checks.append(ping_check)
             
             # NEW: Add NS count validation
             ns_count = len(domain_records)
@@ -702,6 +716,66 @@ class DNSChecker:
                 "details": str(e)
             }
 
+    def _check_glue_records_detail(self, parent_result: Dict[str, Any], all_records: List[Dict]) -> Dict[str, Any]:
+        """Check detailed glue record information for each nameserver"""
+        try:
+            glue_details = []
+            has_glue = False
+            
+            for record in all_records:
+                ns_hostname = record.get('host', '')
+                ips = record.get('ips', [])
+                
+                # Check if this NS needs glue (is within the domain)
+                needs_glue = ns_hostname.endswith(self.domain) or ns_hostname == self.domain
+                
+                if ips:
+                    has_glue = True
+                    glue_details.append({
+                        'nameserver': ns_hostname,
+                        'has_glue': True,
+                        'needs_glue': needs_glue,
+                        'ips': ips
+                    })
+                elif needs_glue:
+                    glue_details.append({
+                        'nameserver': ns_hostname,
+                        'has_glue': False,
+                        'needs_glue': True,
+                        'ips': []
+                    })
+            
+            # Format message like IntoDNS
+            if has_glue:
+                ip_list = []
+                for detail in glue_details:
+                    if detail['has_glue']:
+                        ip_list.extend(detail['ips'])
+                
+                message = f"INFO: If you will have to ask what IP address for each name server. The folks who provide \"Hostscapping\" information for the nameservers need to provide glue (A records in the parent zone) if the nameserver's names are at your zone. Glue IPs found: {', '.join(ip_list)}"
+                
+                return {
+                    'type': 'glue_for_ns_records',
+                    'status': 'info',
+                    'message': message,
+                    'details': glue_details
+                }
+            else:
+                return {
+                    'type': 'glue_for_ns_records',
+                    'status': 'warning',
+                    'message': 'WARNING: No glue records found. Nameservers may need glue records if they are within your domain.',
+                    'details': glue_details
+                }
+                
+        except Exception as e:
+            return {
+                'type': 'glue_for_ns_records',
+                'status': 'info',
+                'message': 'Could not check glue records detail',
+                'details': str(e)
+            }
+
     def _check_different_subnets(self, parent_ips: Dict[str, List[str]], domain_ips: Dict[str, List[str]]) -> Dict[str, Any]:
         """Check if nameservers are on different subnets"""
         try:
@@ -769,6 +843,128 @@ class DNSChecker:
                 "status": "info",
                 "message": "Could not check subnet diversity",
                 "details": str(e)
+            }
+
+    def _check_nameserver_hostnames(self, nameservers: List[str]) -> Dict[str, Any]:
+        """Validate nameserver hostname format according to RFC standards"""
+        try:
+            import re
+            
+            invalid_hostnames = []
+            
+            # RFC-compliant hostname pattern
+            # - Labels separated by dots
+            # - Each label: 1-63 chars, alphanumeric + hyphens
+            # - Cannot start/end with hyphen
+            # - Total length max 253 chars
+            hostname_pattern = r'^(?=.{1,253}$)(?:(?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,}$'
+            
+            for ns in nameservers:
+                # Check basic format
+                if not re.match(hostname_pattern, ns):
+                    invalid_hostnames.append(ns)
+                    continue
+                    
+                # Check for invalid characters
+                if any(char in ns for char in ['_', ' ', '@', '!']):
+                    invalid_hostnames.append(ns)
+                    continue
+                    
+                # Check label length
+                labels = ns.split('.')
+                if any(len(label) > 63 for label in labels):
+                    invalid_hostnames.append(ns)
+            
+            if invalid_hostnames:
+                return {
+                    'type': 'name_of_nameservers_valid',
+                    'status': 'error',
+                    'message': f'ERROR: Some nameserver names are invalid: {', '.join(invalid_hostnames)}',
+                    'details': invalid_hostnames
+                }
+            else:
+                return {
+                    'type': 'name_of_nameservers_valid',
+                    'status': 'pass',
+                    'message': 'OK: All of the NS records that your nameservers report have valid names',
+                    'details': []
+                }
+                
+        except Exception as e:
+            return {
+                'type': 'name_of_nameservers_valid',
+                'status': 'info',
+                'message': 'Could not validate nameserver hostnames',
+                'details': str(e)
+            }
+
+    async def _check_nameserver_ping(self, all_records: List[Dict]) -> Dict[str, Any]:
+        """Test ICMP ping to nameservers (may be blocked by firewalls)"""
+        try:
+            import asyncio
+            import platform
+            
+            ping_results = []
+            responsive_count = 0
+            
+            # Test up to 5 nameservers (to avoid long delays)
+            for record in all_records[:5]:
+                ips = record.get('ips', [])
+                ns_name = record.get('host', '')
+                
+                if ips:
+                    ip = ips[0]  # Test first IP
+                    
+                    # Platform-specific ping command
+                    param = '-n' if platform.system().lower() == 'windows' else '-c'
+                    command = ['ping', param, '1', '-w', '2000', ip] if platform.system().lower() == 'windows' else ['ping', param, '1', '-W', '2', ip]
+                    
+                    try:
+                        # Run ping with timeout
+                        process = await asyncio.create_subprocess_exec(
+                            *command,
+                            stdout=asyncio.subprocess.DEVNULL,
+                            stderr=asyncio.subprocess.DEVNULL
+                        )
+                        await asyncio.wait_for(process.wait(), timeout=3)
+                        
+                        if process.returncode == 0:
+                            responsive_count += 1
+                            ping_results.append({'ns': ns_name, 'ip': ip, 'ping': True})
+                        else:
+                            ping_results.append({'ns': ns_name, 'ip': ip, 'ping': False})
+                    except (asyncio.TimeoutError, Exception):
+                        ping_results.append({'ns': ns_name, 'ip': ip, 'ping': False})
+            
+            # Ping failures are common (firewalls block ICMP), so only warning if ALL fail
+            if responsive_count == 0 and len(ping_results) > 0:
+                return {
+                    'type': 'is_ping_nameservers_work',
+                    'status': 'warning',
+                    'message': 'WARNING: None of your nameservers responded to ping. This may be normal if ICMP is blocked by firewalls.',
+                    'details': ping_results
+                }
+            elif responsive_count > 0:
+                return {
+                    'type': 'is_ping_nameservers_work',
+                    'status': 'pass',
+                    'message': f'Good: {responsive_count} out of {len(ping_results)} nameservers responded to ping.',
+                    'details': ping_results
+                }
+            else:
+                return {
+                    'type': 'is_ping_nameservers_work',
+                    'status': 'info',
+                    'message': 'Could not test ping (no IPs available)',
+                    'details': []
+                }
+                
+        except Exception as e:
+            return {
+                'type': 'is_ping_nameservers_work',
+                'status': 'info',
+                'message': 'Ping test not available on this system',
+                'details': str(e)
             }
 
     async def _check_soa_record(self) -> Dict[str, Any]:
