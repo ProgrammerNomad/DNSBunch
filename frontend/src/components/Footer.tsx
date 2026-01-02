@@ -12,12 +12,9 @@ import {
 } from '@mui/material';
 import {
   GitHub as GitHubIcon,
-  Code as CodeIcon,
   Favorite as FavoriteIcon,
   Public as PublicIcon,
-  LocalOffer as VersionIcon,
-  Palette as PaletteIcon,
-  Storage as StorageIcon
+  LocalOffer as VersionIcon
 } from '@mui/icons-material';
 import { APP_VERSION } from '../config/version';
 

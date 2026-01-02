@@ -216,7 +216,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
       // Special handling for glue records (nameserver IPs)
       if (checkType.includes('glue') || checkType.includes('Glue')) {
         const entries = Object.entries(obj);
-        if (entries.length > 0 && entries.every(([_, value]) => Array.isArray(value))) {
+        if (entries.length > 0 && entries.every(([_key, value]) => Array.isArray(value))) {
           return (
             <Box sx={{ mt: 1 }}>
               {entries.map(([ns, ips]) => {
