@@ -250,7 +250,7 @@ class DNSChecker:
                         "type": "missing_at_domain",
                         "status": "error", 
                         "message": "Missing nameservers reported by your nameservers",
-                        "details": f"ERROR: One or more of the nameservers listed at the parent servers are not listed as NS records at your nameservers. The problem NS records are: {', '.join(parent_records - domain_records)}"
+                        "details": list(parent_records - domain_records)
                     })
                 
                 if domain_records - parent_records:
@@ -258,7 +258,7 @@ class DNSChecker:
                         "type": "missing_at_parent",
                         "status": "error",
                         "message": "Missing nameservers reported by parent", 
-                        "details": f"FAIL: The following nameservers are listed at your nameservers as nameservers for your domain, but are not listed at the parent nameservers. You need to make sure that these nameservers are working: {', '.join(domain_records - parent_records)}"
+                        "details": list(domain_records - parent_records)
                     })
             
             # Build all_records FIRST before new checks that need it
