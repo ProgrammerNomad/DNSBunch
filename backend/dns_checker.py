@@ -2524,10 +2524,27 @@ class DNSChecker:
         elif "error" not in comparison_result:
             checks.append({
                 "type": "comparison",
-                "status": "warning",
+                "status": "error",
                 "message": "Parent delegation and domain NS records differ",
                 "details": comparison_result
             })
+            
+            # Add separate checks for missing nameservers like IntoDNS
+            if comparison_result.get("only_in_parent") and len(comparison_result["only_in_parent"]) > 0:
+                checks.append({
+                    "type": "missing_at_domain",
+                    "status": "error",
+                    "message": "Missing nameservers reported by your nameservers",
+                    "details": comparison_result["only_in_parent"]
+                })
+            
+            if comparison_result.get("only_in_domain") and len(comparison_result["only_in_domain"]) > 0:
+                checks.append({
+                    "type": "missing_at_parent",
+                    "status": "error",
+                    "message": "Missing nameservers reported by parent",
+                    "details": comparison_result["only_in_domain"]
+                })
         
         return checks
 
