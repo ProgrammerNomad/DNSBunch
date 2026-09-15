@@ -26,6 +26,14 @@ DNSBunch is a **completely free alternative to IntoDNS**, providing professional
 
 ---
 
+## Documentation
+
+Feature specs, architecture, and implementation tracker: **[docs/README.md](docs/README.md)**
+
+- [Architecture](docs/ARCHITECTURE.md) · [Product strategy](docs/PRODUCT_STRATEGY.md) · [API reference](docs/API.md)
+
+---
+
 ## Repository Information
 
 - **Live Site:** [https://www.dnsbunch.com/](https://www.dnsbunch.com/)

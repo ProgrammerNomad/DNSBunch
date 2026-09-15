@@ -2,6 +2,10 @@
 
 This document provides comprehensive information about all DNS record types checked by DNSBunch.
 
+**See also:** [ARCHITECTURE.md](ARCHITECTURE.md) (authoritative engine §8) · [README.md](README.md) · [features/shipped/dns-health-single.md](features/shipped/dns-health-single.md) · [API.md](API.md)
+
+**Engine entry point:** `DNSChecker.run_all_checks()` in [backend/dns_checker.py](../backend/dns_checker.py). Top-level categories: [ARCHITECTURE.md §8](ARCHITECTURE.md#8-dns-health-engine-architecture-current).
+
 ---
 
 ## 1. Domain Health Check

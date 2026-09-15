@@ -1,5 +1,7 @@
 # Future Ideas for DNSBunch
 
+> **Tracked features:** Specs, status, and build order live in **[docs/README.md](docs/README.md)**. Use that index and [docs/roadmap/IMPLEMENTATION_ORDER.md](docs/roadmap/IMPLEMENTATION_ORDER.md) for implementation. This file remains informal brainstorming history.
+
 **Prioritized suggestions to help users and grow the project**
 
 ---

@@ -2,6 +2,22 @@
 
 Complete API reference for DNSBunch backend services.
 
+**Documentation index:** [README.md](README.md) · **As-built single-domain feature:** [features/shipped/dns-health-single.md](features/shipped/dns-health-single.md)
+
+**Architecture (boundaries, security behavior classes, CURRENT vs PLANNED):** [ARCHITECTURE.md](ARCHITECTURE.md) - normative for layers and invariants; this file is canonical for **HTTP endpoints and payloads**.
+
+---
+
+## Next.js BFF (browser-facing)
+
+The production site does **not** call Flask directly from the browser for DNS health. The frontend posts to:
+
+| Method | Path | Proxies to |
+|--------|------|------------|
+| POST | `/api/dns/check` | `{BACKEND_URL}/api/check` (after CSRF fetch) |
+
+Implementation: [frontend/src/app/api/dns/check/route.ts](../frontend/src/app/api/dns/check/route.ts). Env: `BACKEND_URL` in [frontend/.env.example](../frontend/.env.example).
+
 ---
 
 ## Base URL
@@ -77,12 +93,18 @@ X-CSRF-Token: <your-csrf-token>
 - `domain` (required, string): Domain name to analyze
 - `checks` (optional, array): Specific check types to run. If omitted, all checks are performed.
 
-**Available Check Types:**
-- `parent` - Parent delegation checks
-- `ns` - Nameserver checks
-- `soa` - Start of Authority checks
+**Available Check Types** (top-level keys in `checks`; omit `checks` to run all):
+
+- `domain_status` - Domain health / resolution status
+- `ns` - Nameserver checks (includes parent delegation, comparison, glue, etc.)
+- `soa` - SOA checks
+- `a`, `aaaa` - Address records
 - `mx` - Mail exchange checks
+- `spf`, `txt`, `cname`, `ptr`, `caa`, `dmarc`, `dkim`
+- `glue`, `dnssec`, `axfr`, `wildcard`
 - `www` - WWW subdomain checks
+
+Source of truth: `all_check_types` in [backend/dns_checker.py](../backend/dns_checker.py). Parent delegation is **not** a separate top-level key; it is part of `ns`.
 
 **Response:**
 ```json
@@ -91,10 +113,6 @@ X-CSRF-Token: <your-csrf-token>
   "timestamp": "2026-01-02T12:00:00.000000",
   "status": "completed",
   "checks": {
-    "parent": {
-      "status": "pass",
-      "checks": [...]
-    },
     "ns": {
       "status": "pass",
       "checks": [...]
@@ -258,21 +276,19 @@ X-CSRF-Token: <your-csrf-token>
 
 ## Rate Limiting
 
-- **Limit**: 50 requests per 5 minutes per IP address
-- **Headers**: Rate limit information is included in response headers
-  ```
-  X-RateLimit-Limit: 50
-  X-RateLimit-Remaining: 45
-  X-RateLimit-Reset: 1704196800
-  ```
+- **Limit**: 50 requests per 300 seconds (5 minutes) per IP address (`RATE_LIMIT_REQUESTS`, `RATE_LIMIT_WINDOW`)
+- **Headers** (set by [backend/app.py](../backend/app.py) when the rate limiter runs): `X-RateLimit-Remaining`, `X-RateLimit-Reset` - there is **no** `X-RateLimit-Limit` header in the current implementation.
 
 **Rate Limit Exceeded Response:**
 ```json
 {
-  "error": "Rate limit exceeded",
-  "retry_after": 300
+  "error": "Rate limit exceeded: 50 requests per 300 seconds.",
+  "retry_after": 60,
+  "code": "RATE_LIMITED"
 }
 ```
+
+`retry_after` reflects `BLOCK_DURATION` (default **60** seconds) when the IP is temporarily blocked.
 
 ---
 
@@ -315,21 +331,24 @@ X-CSRF-Token: <your-csrf-token>
 
 ## Security
 
+See also [ARCHITECTURE.md §6](ARCHITECTURE.md#6-current-security-model-current) for full security model (CURRENT vs PLANNED).
+
 ### CSRF Protection
-- All POST requests require a valid CSRF token
-- Tokens are bound to IP address and User-Agent
-- Tokens expire after 1 hour
+- All POST requests to `/api/check` require a valid CSRF token
+- Tokens are bound to IP address and User-Agent (hashed)
+- Tokens expire after **1 hour** (`CSRF_TOKEN_EXPIRES`, default 3600 seconds)
 - Include token in `X-CSRF-Token` header
 
 ### Input Validation
-- Domain names validated against RFC standards
-- Suspicious patterns (localhost, private IPs) blocked
-- Maximum domain length: 253 characters
+- Domain names validated in [backend/app.py](../backend/app.py) (`is_valid_domain`)
+- Suspicious patterns blocked (e.g. `localhost`, `127.0.0.1`, `test.test`, `example.example`)
+- Maximum domain length: **253** characters
 
 ### Rate Limiting
-- 50 requests per 5-minute window per IP
-- Automatic IP blocking for violations (1 hour)
-- Progressive retry mechanisms recommended
+- **50** requests per **300** seconds (5 minutes) per IP (`RATE_LIMIT_REQUESTS`, `RATE_LIMIT_WINDOW`)
+- When exceeded: HTTP **429** and IP blocked for **`BLOCK_DURATION`** (default **60 seconds**, not 1 hour)
+- Response may include `retry_after` (seconds)
+- Headers: `X-RateLimit-Remaining`, `X-RateLimit-Reset` when applicable
 
 ---
 
@@ -432,4 +451,4 @@ RATE_LIMIT_WINDOW=300
 
 ---
 
-*Last Updated: 2026-01-02*
+*Last verified against repo: 2026-09-15* (see [ARCHITECTURE.md](ARCHITECTURE.md) for security behavior classes; this file is canonical for HTTP endpoints and payloads per ADR-003.)
