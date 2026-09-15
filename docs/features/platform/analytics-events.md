@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P1 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 0 |
 | **access** | both |
 | **tool_id** | `_platform` |
@@ -69,14 +69,14 @@ Informs which Pro experiment to try; not a paid feature itself.
 
 ## Implementation checklist
 
-- [ ] Event schema documented in TOOL_PLUGIN_CONTRACT (already) + TypeScript type
-- [ ] BFF emits `tool_run` / `tool_error`
+- [x] Event schema documented in TOOL_PLUGIN_CONTRACT (already) + TypeScript type
+- [x] BFF emits `tool_run` / `tool_error`
 - [ ] Privacy note in PRODUCT_STRATEGY / privacy doc cross-link
 
 ## Acceptance criteria
 
-- [ ] Each successful/failed tool proxy produces one aggregate-safe event record
-- [ ] Domain strings absent from default event payload
+- [x] Each successful/failed tool proxy produces one aggregate-safe event record
+- [x] Domain strings absent from default event payload
 
 ## References
 

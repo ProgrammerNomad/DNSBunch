@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P1 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 0 |
 | **access** | both |
 | **tool_id** | `_platform` |
@@ -71,14 +71,14 @@ N/A.
 
 ## Implementation checklist
 
-- [ ] Env vars documented in `.env.example`
-- [ ] Flask middleware + tests (unsigned → 401)
-- [ ] Next signing helper used by generic BFF
+- [x] Env vars documented in `.env.example`
+- [x] Flask middleware + tests (unsigned → 401)
+- [x] Next signing helper used by generic BFF
 
 ## Acceptance criteria
 
-- [ ] Unsigned or tampered internal request rejected
-- [ ] Signed `dns_health` call returns equivalent result to legacy check for same domain
+- [x] Unsigned or tampered internal request rejected
+- [x] Signed `dns_health` call returns equivalent result to legacy check for same domain
 
 ## References
 

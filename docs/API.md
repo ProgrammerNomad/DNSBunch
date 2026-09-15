@@ -443,9 +443,31 @@ RATE_LIMIT_WINDOW=300
 
 ---
 
-## Planned internal tools and BFF
+## Internal tools and BFF
 
-**Status: PLANNED** - not implemented in repo yet. Normative specs: [generic-tool-bff.md](features/platform/generic-tool-bff.md), [internal-jwt-proxy.md](features/platform/internal-jwt-proxy.md), [TOOL_PLUGIN_CONTRACT.md](TOOL_PLUGIN_CONTRACT.md).
+**Status: SHIPPED (Phase 0)** - generic BFF + HMAC internal proxy. Specs: [generic-tool-bff.md](features/platform/generic-tool-bff.md), [internal-jwt-proxy.md](features/platform/internal-jwt-proxy.md), [TOOL_PLUGIN_CONTRACT.md](TOOL_PLUGIN_CONTRACT.md).
+
+### Internal auth (Next → Python)
+
+HMAC-SHA256 over `timestamp + "." + raw_request_body` (UTF-8 timestamp string, body as received).
+
+| Header | Value |
+|--------|--------|
+| `X-Internal-Timestamp` | Unix seconds |
+| `X-Internal-Signature` | Hex HMAC-SHA256 using `INTERNAL_API_SECRET` |
+| `X-Request-Id` | Optional UUID for log correlation (BFF sets if missing) |
+
+Reject if skew > 60s or signature mismatch. Set the same `INTERNAL_API_SECRET` in backend and Next (see `.env.example` files).
+
+**Local dev - generic DNS health via BFF:**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/dns_health \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example.com","checks":["ns"]}'
+```
+
+Legacy **`POST /api/dns/check`** (CSRF → `/api/check`) remains unchanged for the home UI until T1 migration.
 
 ### Browser → Next BFF
 

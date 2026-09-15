@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P1 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 0 |
 | **access** | both |
 | **tool_id** | `_platform` |
@@ -71,14 +71,14 @@ None.
 
 ## Implementation checklist
 
-- [ ] `registry.py` + unit tests (unknown id raises)
-- [ ] Register `dns_health` adapter
-- [ ] Wire internal route to registry dispatch
+- [x] `registry.py` + unit tests (unknown id raises)
+- [x] Register `dns_health` adapter
+- [x] Wire internal route to registry dispatch
 
 ## Acceptance criteria
 
-- [ ] Adding a tool requires registration + module only, not new public Flask `/api/check` variants
-- [ ] `dns_health` via registry matches current `/api/check` JSON for same input
+- [x] Adding a tool requires registration + module only, not new public Flask `/api/check` variants
+- [x] `dns_health` via registry matches current `/api/check` JSON for same input
 
 ## References
 

@@ -33,6 +33,26 @@ class DNSApi {
   }
 
   /**
+   * Run any registered tool via generic BFF (Phase 0+).
+   */
+  async runTool<T = unknown>(toolId: string, body: Record<string, unknown>): Promise<T> {
+    try {
+      const response: AxiosResponse<T> = await this.client.post(`/tools/${toolId}`, body);
+      return response.data;
+    } catch (apiError) {
+      if (axios.isAxiosError(apiError)) {
+        const responseData = apiError.response?.data as { error?: string; code?: string } | undefined;
+        if (apiError.response?.status === 429 && responseData?.code === 'RATE_LIMITED') {
+          throw new Error('Rate limit exceeded. Please try again later.');
+        }
+        const message = responseData?.error || apiError.message;
+        throw new Error(`Tool run failed: ${message}`);
+      }
+      throw new Error('Unknown error occurred during tool run');
+    }
+  }
+
+  /**
    * Check domain DNS records
    */
   async checkDomain(domain: string, checks: string[] = []): Promise<DNSAnalysisResult> {

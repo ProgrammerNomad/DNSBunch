@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P1 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 0 |
 | **access** | both |
 | **tool_id** | `_platform` |
@@ -74,16 +74,16 @@ Hook point for future quota denial messages to UI.
 
 ## Implementation checklist
 
-- [ ] Route handler + toolId allowlist or registry sync
-- [ ] JWT/HMAC signing
-- [ ] Analytics hooks
-- [ ] Parallel path for `dns_health` (optional dev flag)
+- [x] Route handler + toolId allowlist or registry sync
+- [x] JWT/HMAC signing
+- [x] Analytics hooks
+- [x] Parallel path for `dns_health` (optional dev flag)
 
 ## Acceptance criteria
 
-- [ ] Unknown `toolId` → 404 JSON error
-- [ ] Valid signed proxy returns tool JSON envelope
-- [ ] `canRun` stub allows anonymous for free tools
+- [x] Unknown `toolId` → 404 JSON error
+- [x] Valid signed proxy returns tool JSON envelope
+- [x] `canRun` stub allows anonymous for free tools
 
 ## References
 

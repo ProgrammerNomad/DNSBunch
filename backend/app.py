@@ -6,7 +6,6 @@ import secrets
 from flask import Flask, request, jsonify, g
 from flask_cors import CORS
 from functools import wraps
-import asyncio
 import json
 from datetime import datetime, timedelta
 from collections import defaultdict, deque
@@ -14,9 +13,12 @@ import ipaddress
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 import jwt
 
-from dns_checker import DNSChecker
+from tools.bootstrap import register_all_tools
+from tools.internal_auth import verify_internal_request
+from tools.registry import ToolNotFoundError, run_tool
 
 app = Flask(__name__)
+register_all_tools()
 
 # Fixed CORS Configuration - MUST set supports_credentials=True
 CORS(app, 
@@ -258,25 +260,6 @@ def validate_request(f):
     
     return decorated_function
 
-def is_valid_domain(domain: str) -> bool:
-    """Validate domain format"""
-    if not domain or len(domain) > MAX_DOMAIN_LENGTH:
-        return False
-    
-    # Basic domain regex
-    import re
-    domain_pattern = r'^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$'
-    
-    if not re.match(domain_pattern, domain):
-        return False
-    
-    # Check for suspicious patterns
-    suspicious = ['localhost', '127.0.0.1', 'test.test', 'example.example']
-    if any(pattern in domain.lower() for pattern in suspicious):
-        return False
-    
-    return True
-
 @app.before_request
 def before_request():
     """Clean up expired tokens periodically"""
@@ -367,22 +350,14 @@ def check_dns():
             response.headers['Access-Control-Allow-Headers'] = 'Content-Type, X-CSRF-Token'
         return response
     
+    domain = ""
     try:
-        data = request.get_json()
-        domain = data.get('domain', '').strip().lower()
-        checks = data.get('checks', [])
-        
-        if not domain:
-            return jsonify({'error': 'Domain is required'}), 400
-        
-        # Validate domain format
-        if not is_valid_domain(domain):
-            return jsonify({'error': 'Invalid domain format'}), 400
-        
-        # FIXED: Pass domain to DNSChecker constructor
-        checker = DNSChecker(domain)
-        results = asyncio.run(checker.run_all_checks(checks))
-        
+        data = request.get_json() or {}
+        domain = data.get("domain", "")
+        checks = data.get("checks", [])
+
+        results = run_tool("dns_health", domain=domain, checks=checks)
+
         response = jsonify(results)
         origin = request.headers.get('Origin')
         if origin in ALLOWED_ORIGINS:
@@ -390,7 +365,9 @@ def check_dns():
             response.headers['Access-Control-Allow-Origin'] = origin
         
         return response
-        
+
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
     except Exception as e:
         app.logger.error(f"DNS check failed for {domain}: {e}")
         error_response = jsonify({'error': 'DNS analysis failed'})
@@ -399,6 +376,39 @@ def check_dns():
             error_response.headers['Access-Control-Allow-Credentials'] = 'true'
             error_response.headers['Access-Control-Allow-Origin'] = origin
         return error_response, 500
+
+
+@app.route("/internal/v1/tools/<tool_id>", methods=["POST"])
+def internal_run_tool(tool_id: str):
+    """Server-to-server tool dispatch (Next BFF only)."""
+    body = request.get_data()
+    ok, message = verify_internal_request(
+        request.headers.get("X-Internal-Timestamp"),
+        request.headers.get("X-Internal-Signature"),
+        body,
+    )
+    if not ok:
+        return jsonify({"error": message}), 401
+
+    data = request.get_json(silent=True) or {}
+    try:
+        if tool_id == "dns_health":
+            result = run_tool(
+                tool_id,
+                domain=data.get("domain", ""),
+                checks=data.get("checks", []),
+            )
+        else:
+            result = run_tool(tool_id, **data)
+        return jsonify(result)
+    except ToolNotFoundError:
+        return jsonify({"error": "Unknown tool"}), 404
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        app.logger.error(f"Internal tool {tool_id} failed: {e}")
+        return jsonify({"error": "Tool execution failed"}), 500
+
 
 @app.errorhandler(404)
 def not_found(error):

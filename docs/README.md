@@ -33,10 +33,10 @@ Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) 
 |----------|---------|--------|-------|----------|-------|
 | [features/shipped/dns-health-single.md](features/shipped/dns-health-single.md) | DNS health (single domain) | **shipped** | - | P0 | verified 2026-09-15 |
 | [features/dns-health/bulk-checker.md](features/dns-health/bulk-checker.md) | Bulk DNS health | planned | 1 | P1 | `surface` bulk - [§9](ARCHITECTURE.md#9-bulk-architecture-planned) |
-| [features/platform/tool-registry.md](features/platform/tool-registry.md) | Tool registry | planned | 0 | P1 | |
-| [features/platform/analytics-events.md](features/platform/analytics-events.md) | Analytics events | planned | 0 | P1 | |
-| [features/platform/internal-jwt-proxy.md](features/platform/internal-jwt-proxy.md) | Internal JWT proxy | planned | 0 | P1 | |
-| [features/platform/generic-tool-bff.md](features/platform/generic-tool-bff.md) | Generic tool BFF | planned | 0 | P1 | `/api/tools/[toolId]` |
+| [features/platform/tool-registry.md](features/platform/tool-registry.md) | Tool registry | **shipped** | 0 | P1 | Phase 0 |
+| [features/platform/analytics-events.md](features/platform/analytics-events.md) | Analytics events | **shipped** | 0 | P1 | BFF hooks |
+| [features/platform/internal-jwt-proxy.md](features/platform/internal-jwt-proxy.md) | Internal JWT proxy | **shipped** | 0 | P1 | HMAC |
+| [features/platform/generic-tool-bff.md](features/platform/generic-tool-bff.md) | Generic tool BFF | **shipped** | 0 | P1 | `/api/tools/[toolId]` |
 | [features/platform/scale-async-jobs.md](features/platform/scale-async-jobs.md) | Bulk 4 / async jobs | planned | 4 | P2 | queues |
 | [features/platform/privacy-anonymous-mode.md](features/platform/privacy-anonymous-mode.md) | Privacy policy | planned | 2 | P2 | analytics + accounts |
 | [features/platform/auth-optional-accounts.md](features/platform/auth-optional-accounts.md) | Optional accounts | planned | 2 | P1 | retention |
