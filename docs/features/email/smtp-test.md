@@ -6,7 +6,7 @@
 |-------|--------|
 | **priority** | P2 |
 | **status** | planned |
-| **phase** | organic |
+| **phase** | 1 |
 | **access** | free |
 | **tool_id** | `smtp_test` |
 | **last_reviewed** | 2026-09-15 |

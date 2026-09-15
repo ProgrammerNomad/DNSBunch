@@ -235,6 +235,7 @@ DNSChecker.run_all_checks()     ← INV-1 / INV-2
 | Partial failure | Per-domain error row; job continues for other domains |
 | tool_id | `dns_health` with `surface: bulk` (ADR-001)-not a separate product tool_id |
 | Transport | Next BFF → Python orchestration endpoint (future) |
+| Product phases | Bulk **1–3** → [Phase 1](roadmap/PHASES.md#phase-1-free-diagnostic-expansion); Bulk **4** (queues, job IDs) → [Phase 4](roadmap/PHASES.md#phase-4-scale--advanced) |
 
 Detail: [features/dns-health/bulk-checker.md](features/dns-health/bulk-checker.md).
 

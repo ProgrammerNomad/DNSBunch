@@ -6,7 +6,7 @@
 |-------|--------|
 | **priority** | P3 |
 | **status** | planned |
-| **phase** | ux |
+| **phase** | 5 |
 | **access** | free |
 | **tool_id** | `pwa` |
 | **last_reviewed** | 2026-09-15 |

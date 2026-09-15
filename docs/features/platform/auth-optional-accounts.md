@@ -6,7 +6,7 @@
 |-------|--------|
 | **priority** | P1 |
 | **status** | planned |
-| **phase** | 1 |
+| **phase** | 2 |
 | **access** | both |
 | **tool_id** | `_platform` |
 | **last_reviewed** | 2026-09-15 |

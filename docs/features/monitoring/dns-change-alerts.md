@@ -6,7 +6,7 @@
 |-------|--------|
 | **priority** | P2 |
 | **status** | planned |
-| **phase** | pro |
+| **phase** | 3 |
 | **access** | both |
 | **tool_id** | `dns_watch` |
 | **last_reviewed** | 2026-09-15 |

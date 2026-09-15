@@ -45,13 +45,17 @@ STUB = {
 def priority_for(phase: str, status: str) -> str:
     if status == "shipped":
         return "P0"
-    if phase in ("0", "1", "2"):
+    if phase == "0":
         return "P1"
-    if phase == "organic":
+    if phase == "1":
         return "P2"
-    if phase == "pro":
+    if phase == "2":
+        return "P1"
+    if phase == "3":
         return "P2"
-    if phase == "ux":
+    if phase == "4":
+        return "P2"
+    if phase == "5":
         return "P3"
     return "P2"
 
@@ -94,7 +98,7 @@ def ensure_metadata_rows(text: str, status: str, phase: str) -> str:
 
 def parse_phase_status(text: str) -> tuple[str, str]:
     status = "planned"
-    phase = "organic"
+    phase = "1"
     m = re.search(r"\| \*\*status\*\* \| ([^\n|]+)", text)
     if m:
         status = m.group(1).strip()

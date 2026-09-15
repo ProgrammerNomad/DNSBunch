@@ -6,65 +6,56 @@ How the doc system stays precise and consistent over months of development. **Do
 
 | Level | Paths | Purpose |
 |-------|--------|---------|
-| **1 - Source of truth** | [ARCHITECTURE.md](ARCHITECTURE.md), [TOOL_PLUGIN_CONTRACT.md](TOOL_PLUGIN_CONTRACT.md), [PRODUCT_STRATEGY.md](PRODUCT_STRATEGY.md), [API.md](API.md), [DNS_RECORDS.md](DNS_RECORDS.md) | Global rules, boundaries, CURRENT vs PLANNED, HTTP payloads |
-| **2 - Feature specifications** | [features/**/*.md](features/) | Per-feature behavior, checklists, acceptance criteria |
-| **3 - Execution tracking** | [README.md](README.md), [roadmap/IMPLEMENTATION_ORDER.md](roadmap/IMPLEMENTATION_ORDER.md), [roadmap/METRICS_DASHBOARD.md](roadmap/METRICS_DASHBOARD.md) | What to work on next |
+| **1 - Source of truth** | [ARCHITECTURE.md](ARCHITECTURE.md), [TOOL_PLUGIN_CONTRACT.md](TOOL_PLUGIN_CONTRACT.md), [PRODUCT_STRATEGY.md](PRODUCT_STRATEGY.md), [API.md](API.md), [DNS_RECORDS.md](DNS_RECORDS.md) | Global rules; CURRENT vs PLANNED |
+| **2 - Feature specifications** | [features/**/*.md](features/) | Per-feature behavior and checklists |
+| **3 - Execution tracking** | [README.md](README.md), [roadmap/](roadmap/) | What to build next |
 
 Feature docs **link upward** to Level 1; they do not restate full architecture or duplicate API reference bodies.
 
+## Development phases (0–5)
+
+**Phase** = maturity stage ([roadmap/PHASES.md](roadmap/PHASES.md)). **Not** the same as priority or access.
+
+| Phase | Name |
+|-------|------|
+| 0 | Foundation (platform) |
+| 1 | Free tool platform |
+| 2 | Retention and mail |
+| 3 | Monetization (Pro experiments) |
+| 4 | Scale and advanced (Bulk 4, queues) |
+| 5 | UX and ecosystem |
+
+**Implementation order** (what you code next) lives in [roadmap/IMPLEMENTATION_ORDER.md](roadmap/IMPLEMENTATION_ORDER.md)-it can pick any Phase 1 tool when you need it.
+
 ## Mandatory feature sections
 
-Every file under `features/<category>/<name>.md` (not `_TEMPLATE.md`) must include **all** sections from [_TEMPLATE.md](features/_TEMPLATE.md), in order:
-
-1. Metadata  
-2. Summary  
-3. Problem  
-4. Scope  
-5. User flows  
-6. Architecture  
-7. Data model  
-8. API  
-9. UI  
-10. Limits and abuse  
-11. Monetization  
-12. Dependencies  
-13. Implementation checklist  
-14. Acceptance criteria  
-15. References  
-
-If a section does not apply yet, write **`None for v1.`**, **`TBD`**, or **`See ARCHITECTURE.md §X`** - do not omit the heading.
-
-**Exception:** Architecturally unique features (e.g. Mail Tester) may add **extra** subsections after Architecture (e.g. inbound SMTP diagram) but must still include every standard section.
+Every file under `features/<category>/<name>.md` (not `_TEMPLATE.md`) must include **all** sections from [_TEMPLATE.md](features/_TEMPLATE.md), in order. Use `TBD` or `None for v1` if not applicable yet.
 
 ## Metadata fields
 
 | Field | Required | Notes |
 |-------|----------|--------|
 | status | Yes | `shipped` \| `planned` \| `in-progress` \| `deferred` |
-| priority | Yes | `P0` (live core) \| `P1` (platform / bulk / mail) \| `P2` (organic / pro tools) \| `P3` (ux / deferred) |
-| phase | Yes | Must match [README.md](README.md) tracker: `0` \| `1` \| `2` \| `organic` \| `pro` \| `ux` \| `-` |
-| access | Yes | `free` \| `pro` \| `both` |
-| tool_id | Yes | See [TOOL_PLUGIN_CONTRACT.md](TOOL_PLUGIN_CONTRACT.md) |
-| surface | If applicable | `single` \| `bulk` \| `api` for `dns_health` only |
-| last_verified_against_repo | Shipped only | Date when checked against git |
-| last_reviewed | Planned / in-progress | Date spec was last aligned with Level 1 docs |
+| priority | Yes | `P0` (live core) \| `P1` \| `P2` \| `P3` - importance, independent of phase |
+| phase | Yes | `0`–`5` or `-` (shipped predating phases); must match [README.md](README.md) |
+| access | Yes | `free` \| `pro` \| `both` - **not** a phase |
+| tool_id | Yes | [TOOL_PLUGIN_CONTRACT.md](TOOL_PLUGIN_CONTRACT.md) |
+| surface | If applicable | `dns_health` only |
+| last_verified_against_repo | Shipped only | Date verified against git |
+| last_reviewed | Planned / in-progress | Date aligned with Level 1 docs |
 
-## Shipped vs planned maintenance
+Example:
 
-- **Shipped:** Re-verify against repo when code changes; update `last_verified_against_repo`.
-- **Planned:** Update `last_reviewed` when ARCHITECTURE or plugin contract changes; no claim of deployed behavior.
+```text
+status: planned | priority: P2 | phase: 1 | access: free | tool_id: dmarc_checker
+```
 
 ## Workflow
 
 ```text
-README (Level 3) → pick planned row → feature doc (Level 2) → implement checklist → test → status shipped → CHANGELOG
+README → pick row → feature doc → implement → shipped → CHANGELOG
 ```
 
-## Quality gate before new features
+## Quality gate
 
-Before adding a new `features/*/*.md` file:
-
-1. Copy [_TEMPLATE.md](features/_TEMPLATE.md) into the correct category folder.  
-2. Fill every section (stubs allowed).  
-3. Add a row to [README.md](README.md).  
-4. Do not duplicate Level 1 content-link instead.
+Copy [_TEMPLATE.md](features/_TEMPLATE.md) into `features/<category>/`, fill every section, set phase per [PHASES.md](roadmap/PHASES.md), add README row.

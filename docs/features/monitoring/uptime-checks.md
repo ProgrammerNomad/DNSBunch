@@ -6,7 +6,7 @@
 |-------|--------|
 | **priority** | P2 |
 | **status** | planned |
-| **phase** | pro |
+| **phase** | 3 |
 | **access** | pro |
 | **tool_id** | `uptime_check` |
 | **last_reviewed** | 2026-09-15 |

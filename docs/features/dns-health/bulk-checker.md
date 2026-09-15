@@ -32,16 +32,17 @@ Agencies and admins managing many domains need a quick pass/fail overview withou
 **Out of scope:**
 
 - Different diagnostic rules than single-domain health
-- Phase 4 large jobs until queue infrastructure exists ([ARCHITECTURE §9](../../ARCHITECTURE.md#9-bulk-architecture-planned))
+- **Bulk 4** (100+ domains, queues, job IDs) - **[Phase 4](../../roadmap/PHASES.md)** scale work, not Phase 1
 
-**Delivery phases:**
+**Bulk delivery steps (this feature, Phase 1):**
 
-| Phase | Deliverable |
-|-------|-------------|
-| 1 | Paste list, concurrency cap, summary table |
-| 2 | CSV in/out |
-| 3 | Row drill-down to existing UI |
-| 4 | Pro: queued jobs, very large lists |
+| Step | Deliverable |
+|------|-------------|
+| Bulk 1 | Paste list (~10–50 domains), concurrency cap, summary table |
+| Bulk 2 | CSV in/out |
+| Bulk 3 | Row drill-down to existing single-domain UI |
+
+**Bulk 4** (large async jobs, workers, progress, download) is documented under Phase 4 in [PHASES.md](../../roadmap/PHASES.md) and [ARCHITECTURE §22](../../ARCHITECTURE.md#22-scaling-strategy-planned).
 
 ## User flows
 

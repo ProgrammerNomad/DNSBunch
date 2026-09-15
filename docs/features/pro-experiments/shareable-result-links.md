@@ -6,7 +6,7 @@
 |-------|--------|
 | **priority** | P2 |
 | **status** | planned |
-| **phase** | organic |
+| **phase** | 3 |
 | **access** | both |
 | **tool_id** | `share_link` |
 | **last_reviewed** | 2026-09-15 |

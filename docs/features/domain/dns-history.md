@@ -6,7 +6,7 @@
 |-------|--------|
 | **priority** | P2 |
 | **status** | planned |
-| **phase** | pro |
+| **phase** | 1 |
 | **access** | pro |
 | **tool_id** | `dns_history` |
 | **last_reviewed** | 2026-09-15 |
