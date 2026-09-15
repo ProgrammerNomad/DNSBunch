@@ -443,6 +443,57 @@ RATE_LIMIT_WINDOW=300
 
 ---
 
+## Planned internal tools and BFF
+
+**Status: PLANNED** - not implemented in repo yet. Normative specs: [generic-tool-bff.md](features/platform/generic-tool-bff.md), [internal-jwt-proxy.md](features/platform/internal-jwt-proxy.md), [TOOL_PLUGIN_CONTRACT.md](TOOL_PLUGIN_CONTRACT.md).
+
+### Browser → Next BFF
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| POST | `/api/tools/[toolId]` | Generic tool run; validates input, `canRun()`, analytics, proxies to Python |
+
+**Example body (conceptual):**
+
+```json
+{ "domain": "example.com" }
+```
+
+**Tool id** uses snake_case from [TOOL_CATALOG.md](roadmap/TOOL_CATALOG.md) (e.g. `dmarc_checker`, `dns_health`).
+
+**DNS health surfaces:** same `tool_id` `dns_health`; bulk requests include `surface: "bulk"` and domain list per [bulk-checker.md](features/dns-health/bulk-checker.md).
+
+**Errors:**
+
+| Code | Meaning |
+|------|---------|
+| 400 | Validation failed |
+| 403 | Entitlement / quota denied (Phase 3) |
+| 404 | Unknown `toolId` |
+| 429 | Rate limit |
+| 502 | Upstream Python error |
+
+Legacy **`POST /api/dns/check`** remains until T1 migrates to generic BFF.
+
+### Next → Python (internal only)
+
+| Method | Path | Auth |
+|--------|------|------|
+| POST | `/internal/v1/tools/{tool_id}` | HMAC/JWT `INTERNAL_API_SECRET` |
+
+Browsers must not call this URL ([INV-3](ARCHITECTURE.md)).
+
+### Async jobs (Phase 4)
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| POST | `/api/tools/dns_health` | Async bulk → `{ "job_id" }` |
+| GET | `/api/jobs/{job_id}` | Poll status / download URL |
+
+See [scale-async-jobs.md](features/platform/scale-async-jobs.md).
+
+---
+
 ## Support
 
 - **Issues**: [GitHub Issues](https://github.com/ProgrammerNomad/DNSBunch/issues)

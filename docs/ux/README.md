@@ -1,0 +1,21 @@
+# DNSBunch UX documentation
+
+**Authority level 1.5** - product UX and frontend stack. Normative for layout, templates, and shadcn usage. Feature specs link here from `## UI`; they do not duplicate wireframes.
+
+| Doc | Purpose |
+|-----|---------|
+| [CURRENT_UI.md](CURRENT_UI.md) | As-built UI (legacy MUI home) |
+| [FRONTEND_STACK.md](FRONTEND_STACK.md) | Tailwind + shadcn/ui (target stack) |
+| [INFORMATION_ARCHITECTURE.md](INFORMATION_ARCHITECTURE.md) | URLs, sitemap, navigation |
+| [SITE_SHELL.md](SITE_SHELL.md) | Global header, footer, AppShell |
+| [PAGE_TEMPLATES.md](PAGE_TEMPLATES.md) | T1–T6 page patterns |
+| [PHASE_UI_MAP.md](PHASE_UI_MAP.md) | Feature → template → route |
+| [COMPONENT_LIBRARY.md](COMPONENT_LIBRARY.md) | shadcn components and composites |
+| [MOCKUP_PLAN.md](MOCKUP_PLAN.md) | Design review order and sign-off |
+| [STATES_AND_FEEDBACK.md](STATES_AND_FEEDBACK.md) | Loading, errors, empty, rate limits |
+
+**Upstream:** [ARCHITECTURE.md §11](../ARCHITECTURE.md#11-tool-execution-contract-current--planned), [TOOL_PLUGIN_CONTRACT.md](../TOOL_PLUGIN_CONTRACT.md).
+
+**Downstream:** Every [features/](../features/) `## UI` section references a template id (T1–T6) and route from [PHASE_UI_MAP.md](PHASE_UI_MAP.md).
+
+**Doc completion gate:** [roadmap/DOC_COMPLETION_CHECKLIST.md](../roadmap/DOC_COMPLETION_CHECKLIST.md).

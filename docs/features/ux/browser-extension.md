@@ -17,24 +17,21 @@ Quick DNS check from toolbar (FUTURE_IDEAS #8).
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Quick check from browser toolbar (FUTURE_IDEAS #8).
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** MV3 extension opens DNSBunch tool or runs check via public BFF.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Extension store launch day one.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Click extension → popup with domain from active tab → open results on DNSBunch.
 
 ## Architecture
 
-See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail TBD.
-
-**Reuses existing engine?** TBD.
+Thin extension; API calls same-origin or API keys Phase 3.
 
 ## Data model
 
@@ -42,19 +39,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+Reuse `/api/dns/check` or tool BFF with CORS policy decision documented.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Extension popup minimal shadcn-not applicable - HTML + brand; links to **T1**.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Extension obeys same rate limits via server.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -62,11 +59,11 @@ Public API or extension calling dnsbunch.com.
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Spec implemented per FRONTEND_STACK
+- [ ] Document in CHANGELOG when shipped
 
 ## Acceptance criteria
 
-- [ ] TBD
 
 ## References
 

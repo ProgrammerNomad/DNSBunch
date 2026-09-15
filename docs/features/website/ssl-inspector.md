@@ -17,22 +17,22 @@ Certificate expiry, issuer, chain, TLS versions for HTTPS host.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Quick cert expiry and name mismatch checks for admins.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Connect TLS; parse cert; SAN/CN vs input host.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Full vulnerability scan; client cert auth.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Enter hostname → cert details table.
+- **Logged-in (future):** Same.
 
 ## Architecture
 
-Python (`ssl`/`cryptography`) or Next edge fetch with cert parse; prefer Python for consistency. SSRF rules: [ARCHITECTURE.md §20](../../ARCHITECTURE.md#20-http--website-tool-security-planned).
+Python ssl/socket; SSRF rules [ARCHITECTURE §20](../../ARCHITECTURE.md).
 
 ## Data model
 
@@ -40,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+POST `/api/tools/ssl_inspector` `{ "host" }`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T2**, `/tools/ssl-inspector`.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Block private/reserved IPs; timeout 15s.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -65,7 +65,9 @@ Platform skeleton recommended.
 
 ## Acceptance criteria
 
-- [ ] Valid/invalid/expired clearly shown
+- [ ] Expiry date shown
+- [ ] Hostname mismatch warning
+- [ ] Connection failures explained
 
 ## References
 

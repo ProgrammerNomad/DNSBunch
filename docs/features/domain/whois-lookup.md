@@ -17,22 +17,22 @@ Registrar, dates, nameservers via WHOIS/RDAP.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Registration context without leaving DNSBunch.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** WHOIS text or structured fields where library supports.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Bulk WHOIS; legal WHOIS for all TLDs guaranteed.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Enter domain → WHOIS fields panel.
+- **Logged-in (future):** Same.
 
 ## Architecture
 
-Python python-whois or RDAP HTTP; rate limit heavily.
+Python whois library; rate limit heavily.
 
 ## Data model
 
@@ -40,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+POST `/api/tools/whois_lookup` `{ "domain" }`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T2**, `/tools/whois-lookup`.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Strict rate limits; cache responses short TTL optional.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -60,11 +60,14 @@ None for v1 unless listed elsewhere in this doc.
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Python tool module
+- [ ] T2 page + BFF proxy
+- [ ] Analytics `tool_run`
 
 ## Acceptance criteria
 
-- [ ] Parsed fields + raw snippet
+- [ ] Key fields shown when available
+- [ ] Rate limit message on 429
 
 ## References
 

@@ -32,81 +32,73 @@ Agencies and admins managing many domains need a quick pass/fail overview withou
 **Out of scope:**
 
 - Different diagnostic rules than single-domain health
-- **Bulk 4** (100+ domains, queues, job IDs) - **[Phase 4](../../roadmap/PHASES.md)** scale work, not Phase 1
+- **Bulk 4** (100+ domains, queues, job IDs) - **[Phase 4](../../roadmap/PHASES.md)** - see [scale-async-jobs.md](../platform/scale-async-jobs.md)
 
-**Bulk delivery steps (this feature, Phase 1):**
+**Bulk delivery steps (Phase 1):**
 
 | Step | Deliverable |
 |------|-------------|
 | Bulk 1 | Paste list (~10–50 domains), concurrency cap, summary table |
 | Bulk 2 | CSV in/out |
-| Bulk 3 | Row drill-down to existing single-domain UI |
-
-**Bulk 4** (large async jobs, workers, progress, download) is documented under Phase 4 in [PHASES.md](../../roadmap/PHASES.md) and [ARCHITECTURE §22](../../ARCHITECTURE.md#22-scaling-strategy-planned).
+| Bulk 3 | Row drill-down to single-domain UI |
 
 ## User flows
 
-- **Anonymous:** Paste domains → wait for table → click row for full analysis (limits TBD)
-- **Logged-in (future):** Higher limits, saved bulk jobs (TBD)
+- **Anonymous:** Paste domains on **T3** → progress → summary table → row opens drill-down (Sheet or `/` with domain).
+- **Logged-in (future):** Higher batch limits; saved bulk runs on dashboard (Phase 2+).
 
 ## Architecture
 
 [ARCHITECTURE.md §9](../../ARCHITECTURE.md#9-bulk-architecture-planned), **INV-1, INV-2**, [ADR-001](../../ARCHITECTURE.md#adr-001-dns-health-bulk-is-a-surface-not-a-separate-tool_id).
 
 ```text
-DNSChecker.run_all_checks()
-    → analyze_domain()
-    → bulk_analyze(semaphore)
-    → rollup_for_bulk()
-    → table / CSV / drill-down
+DNSChecker.run_all_checks() → analyze_domain() → bulk_analyze(semaphore) → rollup_for_bulk()
 ```
 
 | Layer | Responsibility |
 |--------|----------------|
-| Next.js | BFF, job UI, CSV upload/download |
-| Python | Orchestration only; calls same engine per domain |
+| Next.js | BFF `dns_health` surface bulk, CSV, **T3** UI |
+| Python | Orchestration only |
 
-**Reuses existing engine?** yes - `DNSChecker.run_all_checks()`.
+**Reuses existing engine?** Yes.
 
 ## Data model
 
-None for v1 (phase 1–3). Phase 4: optional `bulk_jobs` table - TBD.
+None for Bulk 1–3. Phase 4: `bulk_jobs` table - [scale-async-jobs.md](../platform/scale-async-jobs.md).
 
 ## API
 
-TBD in [API.md](../../API.md) (e.g. `POST /api/dns/bulk`). Next BFF only; not direct Flask from browser.
+`POST /api/tools/dns_health` with `{ "surface": "bulk", "domains": ["..."] }` or dedicated bulk body - [API.md §Planned](../../API.md#planned-internal-tools-and-bff). Sync response for Phase 1; async job id Phase 4.
 
 ## UI
 
-TBD: e.g. `frontend/src/app/tools/bulk-dns-health/page.tsx` or `/bulk` - reuse results components for drill-down.
+Template **T3**, route `/tools/bulk-dns-health` - shadcn `Textarea`, `Progress`, `Table`, drill-down to **T1** ([PAGE_TEMPLATES.md](../../ux/PAGE_TEMPLATES.md#t3--bulk-dns-health)).
 
 ## Limits and abuse
 
-Stricter than single-domain: max domains per request, concurrency cap, IP rate limits. Partial failure: per-domain error rows, job continues.
+Max domains per request (e.g. 50 free), semaphore concurrency 10–50, IP rate limits stricter than single check. Per-domain error rows; job continues.
 
 ## Monetization
 
-Free tier with tight caps; larger batches / async jobs as Pro experiment ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
-
-Analytics: `{ tool_id: "dns_health", surface: "bulk" }`.
+Free tier with tight caps; larger batches / async jobs as Pro experiment ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)). Analytics: `{ tool_id: "dns_health", surface: "bulk" }`.
 
 ## Dependencies
 
-Shipped [dns-health-single.md](../shipped/dns-health-single.md). Platform skeleton optional for phase 1.
+[dns-health-single.md](../shipped/dns-health-single.md), [generic-tool-bff.md](../platform/generic-tool-bff.md) recommended.
 
 ## Implementation checklist
 
 - [ ] `analyze_domain`, `bulk_analyze`, `rollup_for_bulk` in Python
-- [ ] Next UI + limits
-- [ ] CSV phase 2
+- [ ] T3 page + BFF bulk surface
+- [ ] CSV Bulk 2
 - [ ] Document endpoints in API.md when shipped
 
 ## Acceptance criteria
 
 - [ ] Same engine output as single domain for each row
-- [ ] Bounded concurrency; stable under max free-tier batch size
+- [ ] Bounded concurrency under max free-tier batch size
 - [ ] No duplicate NS/MX/SOA implementation
 
 ## References
 
-- [bulk-checker architectural intent](../../ARCHITECTURE.md#9-bulk-architecture-planned)
+- [ARCHITECTURE.md §9](../../ARCHITECTURE.md#9-bulk-architecture-planned)

@@ -17,42 +17,22 @@ User sends email to a unique address; DNSBunch receives via inbound SMTP, scores
 
 ## Problem
 
-DNS-only checks cannot show what receivers actually see (headers, authentication at receive time, spam score on the real message).
+mail-tester.com-style inbound scoring is highest retention potential vs another DNS lookup.
 
 ## Scope
 
-**In scope:**
+**In scope:** Session-bound address `@mail.dnsbunch.com`, inbound SMTP receiver, scoring worker, results UI.
 
-- Session-bound inbound address, MIME parse, scoring, results UI
-- Separate inbound service ([ARCHITECTURE §19](../../ARCHITECTURE.md#19-mail-tester-architecture-planned))
-
-**Out of scope:**
-
-- Outbound bulk sending, general mailbox hosting, embedding in Flask `/api/check`
+**Out of scope:** Outbound bulk mail; unlimited free abuse.
 
 ## User flows
 
-- **Anonymous:** Create session → copy address → send email → poll for score (limits TBD)
-- **Logged-in (future):** History of past tests, higher quota
+- **Anonymous:** Start session → copy address → send email → poll score on **T4**.
+- **Logged-in (future):** History of tests on **T5**.
 
 ## Architecture
 
-Not a standard Python tool route - dedicated inbound path:
-
-```text
-Internet SMTP → inbound SMTP service → RCPT session validation
-  → raw .eml store (TTL) → scoring worker → PostgreSQL + Next.js poll/UI
-```
-
-| Layer | Responsibility |
-|--------|----------------|
-| Next.js | Session API, results page, poll status |
-| Python (separate process) | Inbound SMTP, scoring (Rspamd/SpamAssassin optional) |
-| PostgreSQL | Sessions, metadata; blob or object storage for .eml |
-
-Full diagram: [ARCHITECTURE.md §19](../../ARCHITECTURE.md#19-mail-tester-architecture-planned).
-
-**Reuses existing engine?** no for inbound; may **call** DNS health for related domain checks in report (TBD).
+Separate Python SMTP ingress + worker; PostgreSQL sessions; Next polls BFF.
 
 ## Data model
 
@@ -63,18 +43,15 @@ Full diagram: [ARCHITECTURE.md §19](../../ARCHITECTURE.md#19-mail-tester-archit
 
 ## API
 
-TBD in [API.md](../../API.md): e.g. `POST /api/mail-test/session`, `GET /api/mail-test/[id]`. Inbound SMTP is not HTTP.
+Session create, status poll, result fetch - [API.md](../../API.md#planned-internal-tools-and-bff).
 
 ## UI
 
-TBD: e.g. `frontend/src/app/tools/mail-test/page.tsx` - copy address, countdown, score display.
+Template **T4**, `/tools/mail-tester` - `Card`, copy `Button`, `Progress`, score `Table`.
 
 ## Limits and abuse
 
-- Reject RCPT unless session valid and unexpired
-- Rate limit session creation per IP
-- Short TTL on raw messages
-- MX on dedicated subdomain (`mail.dnsbunch.com` or env-specific)
+RCPT TO session-bound; TTL expiry; rate limit new sessions per IP.
 
 ## Monetization
 

@@ -17,22 +17,22 @@ Return status code and timing for URL.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Simple up/down and status code check.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Single URL; status + latency ms.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Global uptime monitoring (Phase 3).
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Enter URL → status badge and timing.
+- **Logged-in (future):** Same.
 
 ## Architecture
 
-Python or Next server fetch with timeout. SSRF: [ARCHITECTURE.md §20](../../ARCHITECTURE.md#20-http--website-tool-security-planned).
+Python httpx; SSRF gate.
 
 ## Data model
 
@@ -40,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+POST `/api/tools/http_status` `{ "url" }`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T2**, `/tools/http-status`.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+SSRF; timeout.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -60,11 +60,14 @@ None for v1 unless listed elsewhere in this doc.
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Python tool module + SSRF tests
+- [ ] T2 page + BFF proxy
+- [ ] Analytics `tool_run`
 
 ## Acceptance criteria
 
-- [ ] 4xx/5xx/timeout distinct messages
+- [ ] Status code accurate
+- [ ] Timeout handled
 
 ## References
 

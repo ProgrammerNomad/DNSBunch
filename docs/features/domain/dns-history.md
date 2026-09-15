@@ -17,24 +17,22 @@ Timeline of detected DNS changes for watched domains.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Troubleshoot what changed after incidents.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** UI for timeline/table of past records; v1 may use third-party API or stub with Pro gate.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Authoritative long-term archive operated by DNSBunch day one.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Free tier: limited preview or message to sign in.
+- **Logged-in (future):** Pro: full history views.
 
 ## Architecture
 
-See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail TBD.
-
-**Reuses existing engine?** TBD.
+Next + Python; external data provider (vendor TBD at implementation); store queries in DB Phase 2+.
 
 ## Data model
 
@@ -42,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+POST `/api/tools/dns_history` - entitlement checked Phase 3.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T2**, `/tools/dns-history` - timeline `Table`; access pro per metadata.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Pro quota; no scraping without license.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -62,11 +60,14 @@ PostgreSQL, [dns-change-alerts.md](../monitoring/dns-change-alerts.md)
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Python tool module
+- [ ] T2 page + BFF proxy
+- [ ] Analytics `tool_run`
 
 ## Acceptance criteria
 
-- [ ] Timeline UI for NS/MX/SOA serial changes
+- [ ] Access gate matches access: pro
+- [ ] Empty history explained
 
 ## References
 

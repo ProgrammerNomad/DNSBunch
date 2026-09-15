@@ -17,24 +17,21 @@ HTTP(S) ping on interval; downtime alerts.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+HTTP uptime monitoring monetizes well but usage is lower - experiment only.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** HTTP GET watch URL; interval check; down/up alert.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Global multi-region SLA v1.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Logged-in (future):** Add URL watch on dashboard.
 
 ## Architecture
 
-See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail TBD.
-
-**Reuses existing engine?** TBD.
+Worker HTTP checks; store last status.
 
 ## Data model
 
@@ -42,19 +39,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+Watch API type `uptime`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+**T5** watches table with last status `Badge`.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Min interval 5m Pro; block internal IPs in URL.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -62,11 +59,12 @@ Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METR
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Watch model + worker job
+- [ ] T5 UI CRUD
+- [ ] Alert delivery channel
 
 ## Acceptance criteria
 
-- [ ] TBD
 
 ## References
 

@@ -17,24 +17,21 @@ Agency branding on PDF/export (FUTURE_IDEAS monetization #14).
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Agencies want PDF with their logo for clients.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Upload logo + brand color; PDF template for DNS health summary.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Full custom domain hosting.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Logged-in Pro:** Configure brand on **T5** `/dashboard/reports`.
 
 ## Architecture
 
-See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail TBD.
-
-**Reuses existing engine?** TBD.
+Store brand assets; PDF worker.
 
 ## Data model
 
@@ -42,19 +39,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+Brand settings CRUD authenticated.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+**T5** report settings form; preview `Card`.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Asset size limits; scan uploads.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -62,11 +59,12 @@ Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METR
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Entitlement gate
+- [ ] UI affordance on tool or dashboard
+- [ ] Metrics event
 
 ## Acceptance criteria
 
-- [ ] TBD
 
 ## References
 

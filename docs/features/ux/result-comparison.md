@@ -17,24 +17,22 @@ Side-by-side two domains’ health summaries (FUTURE_IDEAS #6).
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Compare two runs (domains or dates) for regressions (FUTURE_IDEAS #6).
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Side-by-side or diff view for DNS health results; may attach to **T1/T3**.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Arbitrary cross-tool diff v1.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Select two cached results in session or paste two domains sequential compare.
+- **Logged-in (future):** Pick from history.
 
 ## Architecture
 
-See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail TBD.
-
-**Reuses existing engine?** TBD.
+Client diff on `DNSAnalysisResult` JSON structure.
 
 ## Data model
 
@@ -42,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+None v1.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Mode on **T1** or modal `Sheet`; shadcn two-column `Table` with changed rows highlighted.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Client-only memory bounds.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -62,11 +60,11 @@ Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METR
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Spec implemented per FRONTEND_STACK
+- [ ] Document in CHANGELOG when shipped
 
 ## Acceptance criteria
 
-- [ ] TBD
 
 ## References
 

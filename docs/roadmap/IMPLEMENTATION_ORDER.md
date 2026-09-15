@@ -2,10 +2,15 @@
 
 What to **code next**-independent of **phase** (maturity stage). Phases: [PHASES.md](PHASES.md). Tracker: [README.md](../README.md).
 
-## Suggested sequence
+## Step 0 - Documentation gate (before code)
+
+Complete [DOC_COMPLETION_CHECKLIST.md](DOC_COMPLETION_CHECKLIST.md) and sign off. Includes full [ux/](../ux/) pack and filled feature specs.
+
+## Suggested sequence (after gate)
 
 | Step | Phase | Feature doc | Rationale |
 |------|-------|-------------|-----------|
+| 0b | - | [ux/SITE_SHELL.md](../ux/SITE_SHELL.md) + [FRONTEND_STACK.md](../ux/FRONTEND_STACK.md) | AppShell + Tailwind/shadcn T1 migration |
 | 1 | 0 | [tool-registry.md](../features/platform/tool-registry.md) | Shared dispatch |
 | 2 | 0 | [internal-jwt-proxy.md](../features/platform/internal-jwt-proxy.md) | Server-to-server security |
 | 3 | 0 | [analytics-events.md](../features/platform/analytics-events.md) | Measure before Pro |

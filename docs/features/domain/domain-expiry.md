@@ -17,24 +17,22 @@ Days until registration expiry from WHOIS/RDAP.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Renewal reminders start with knowing expiry.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Expiry date + countdown.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Registrar API renew; alerts (Phase 3 monitoring).
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Enter domain → expiry date and days left.
+- **Logged-in (future):** Same.
 
 ## Architecture
 
-See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail TBD.
-
-**Reuses existing engine?** TBD.
+Reuse WHOIS/RDAP layer from whois tool.
 
 ## Data model
 
@@ -42,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+POST `/api/tools/domain_expiry` `{ "domain" }`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T2**, `/tools/domain-expiry`.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+WHOIS rate limits.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -62,11 +60,14 @@ Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METR
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Python tool module
+- [ ] T2 page + BFF proxy
+- [ ] Analytics `tool_run`
 
 ## Acceptance criteria
 
-- [ ] Expiry date + days remaining
+- [ ] Expiry displayed or unknown explained
+- [ ] Past expiry flagged warn
 
 ## References
 

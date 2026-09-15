@@ -17,24 +17,21 @@ Monitor HTTPS cert expiry; notify before threshold.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Certificate expiry causes outages; proactive alerts add Pro value.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Watch host:443 cert expiry; alert thresholds (30/7/1 days).
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Full cert inventory for all SANs enterprise-wide.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Logged-in (future):** Add SSL watch from ssl-inspector or dashboard.
 
 ## Architecture
 
-See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail TBD.
-
-**Reuses existing engine?** TBD.
+Reuse ssl_inspector engine on schedule; store next expiry.
 
 ## Data model
 
@@ -42,19 +39,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+Same watch API as DNS alerts with type `ssl`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+**T5** watches list; create from **T2** ssl-inspector optional button.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Poll interval minimum 24h free tier.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -62,7 +59,9 @@ Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METR
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Watch model + worker job
+- [ ] T5 UI CRUD
+- [ ] Alert delivery channel
 
 ## Acceptance criteria
 

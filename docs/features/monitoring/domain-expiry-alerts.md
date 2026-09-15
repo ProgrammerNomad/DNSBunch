@@ -17,24 +17,21 @@ Watch registration expiry from RDAP/WHOIS.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Domain renewal misses are costly; alert complements domain-expiry tool.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** WHOIS expiry watch; email alert before expiry.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Auto-renew at registrar.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Logged-in (future):** Watch from domain-expiry tool or dashboard.
 
 ## Architecture
 
-See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail TBD.
-
-**Reuses existing engine?** TBD.
+Scheduled WHOIS/RDAP; compare expiry date.
 
 ## Data model
 
@@ -42,19 +39,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+Watch API type `domain_expiry`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+**T5** watches; link from **T2** domain-expiry.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+WHOIS rate limits; max watches per user.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -62,11 +59,12 @@ Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METR
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Watch model + worker job
+- [ ] T5 UI CRUD
+- [ ] Alert delivery channel
 
 ## Acceptance criteria
 
-- [ ] TBD
 
 ## References
 

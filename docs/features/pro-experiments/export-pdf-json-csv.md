@@ -17,24 +17,22 @@ Download health results as JSON/CSV; PDF report for professionals (maps to FUTUR
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Users want to share or archive results offline.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Export buttons on **T1/T2/T3** results - JSON/CSV free; PDF Pro optional.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Branded report design (white-label separate).
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** JSON/CSV export where enabled.
+- **Logged-in (future):** PDF export if Pro.
 
 ## Architecture
 
-See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail TBD.
-
-**Reuses existing engine?** TBD.
+Client-side JSON/CSV generation; server PDF render optional.
 
 ## Data model
 
@@ -42,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+None or POST generate PDF authenticated.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+`DropdownMenu` on ResultsPanel - Export.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+PDF rate limit; no massive bulk export free.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -62,7 +60,9 @@ Shipped results UI; ReportLab or client-side PDF optional.
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Entitlement gate
+- [ ] UI affordance on tool or dashboard
+- [ ] Metrics event
 
 ## Acceptance criteria
 

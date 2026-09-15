@@ -17,22 +17,21 @@ REST API with keys, daily quotas, documented in extended [API.md](../../API.md).
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Developers request programmatic access after web tool traction.
 
 ## Scope
 
-Reuse `DNSChecker.run_all_checks` behind keyed endpoints-not separate DNS code.
+**In scope:** API keys in dashboard; rate limits per key; public REST facade in Next.
+
+**Out of scope:** Unlimited free API.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Logged-in (future):** Create/revoke keys on **T5** `/dashboard/api-keys`.
 
 ## Architecture
 
-See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail TBD.
-
-**Reuses existing engine?** TBD.
+Next validates `Authorization: Bearer`; maps to plan quotas.
 
 ## Data model
 
@@ -40,19 +39,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+Document public REST in API.md Phase 3 section.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+**T5** keys table; masked secret shown once on create.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Key rotation; abuse revoke; per-key rate limit.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -60,11 +59,12 @@ Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METR
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Entitlement gate
+- [ ] UI affordance on tool or dashboard
+- [ ] Metrics event
 
 ## Acceptance criteria
 
-- [ ] TBD
 
 ## References
 

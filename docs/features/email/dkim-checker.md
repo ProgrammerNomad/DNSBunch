@@ -17,22 +17,22 @@ Discover common DKIM selectors and validate DNS records.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Operators need to verify DKIM publication without manual dig.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Selector input + domain; TXT fetch; show public key metadata and record validity.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Signing mail; automatic selector discovery across all selectors.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Enter domain and selector → Run → DKIM record or not found.
+- **Logged-in (future):** Same.
 
 ## Architecture
 
-Python: `_check_dkim_records` logic or dedicated module. Next: `/tools/dkim-checker`.
+Python `backend/tools/dkim_checker/`; DNS TXT.
 
 ## Data model
 
@@ -40,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+POST `/api/tools/dkim_checker` `{ "domain", "selector"? }`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T2**, `/tools/dkim-checker` - selector `Input` + domain.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Rate limits per IP; validate domain/selector charset.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -65,7 +65,9 @@ Optional [tool-registry.md](../platform/tool-registry.md).
 
 ## Acceptance criteria
 
-- [ ] Shows record or clear missing-selector guidance
+- [ ] Record shown when present
+- [ ] Invalid selector rejected client-side
+- [ ] Clear not-found state
 
 ## References
 

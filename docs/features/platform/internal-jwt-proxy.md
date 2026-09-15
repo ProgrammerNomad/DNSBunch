@@ -13,25 +13,37 @@
 
 ## Summary
 
-Next.js server routes call Python with short-lived HMAC/JWT (`INTERNAL_API_SECRET`); browser never calls Python tool URLs directly for new tools.
+Next.js BFF signs server-to-server requests to Python `/internal/v1/*`; Flask verifies signature. Browsers never call internal tool URLs directly ([INV-3](../../ARCHITECTURE.md)).
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+New tools must not expose Flask on the public internet with only CORS. CSRF protects legacy browser POST to `/api/check`; internal tools need a server-only trust boundary.
 
 ## Scope
 
-**In:** Sign requests from Next; verify in Flask middleware on `/internal/v1/*`.  
-**Out:** Public API keys for developers (separate doc).
+**In scope:**
+
+- Shared secret `INTERNAL_API_SECRET` (Next + Python)
+- Sign: HMAC or short-lived JWT on BFF outbound requests
+- Verify: middleware on `/internal/v1/tools/<tool_id>`
+- Sample route: `POST /internal/v1/tools/dns_health`
+
+**Out of scope:**
+
+- Developer API keys (public API) - [developer-api-keys.md](../pro-experiments/developer-api-keys.md)
+- mTLS (future hardening)
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** N/A (browser uses `/api/tools/[toolId]` BFF only).
+- **Logged-in (future):** Same; session handled in Next before proxy.
 
 ## Architecture
 
-Reuse pattern from CSRF in [app.py](../../../backend/app.py) but server-to-server only; drop browser CORS on internal routes.
+- Next: `signInternalRequest(body)` in shared lib
+- Flask: `@before_request` on `/internal/v1/*` - 401 if invalid/missing
+- No CORS allowlist required for internal routes (not browser-facing)
+- Legacy `/api/check` + CSRF unchanged until T1 migrates BFF path
 
 ## Data model
 
@@ -39,19 +51,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+Documented in [API.md §Planned internal tools](../../API.md#planned-internal-tools-and-bff).
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+None for v1.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Reject replay: include timestamp in signed payload; max skew e.g. 60s (implementation detail). Rate limits still apply at BFF edge.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+N/A.
 
 ## Dependencies
 
@@ -59,13 +71,16 @@ Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METR
 
 ## Implementation checklist
 
-- [ ] Env `INTERNAL_API_SECRET` both sides
-- [ ] Middleware + sample `/internal/v1/tools/dns_health`
+- [ ] Env vars documented in `.env.example`
+- [ ] Flask middleware + tests (unsigned → 401)
+- [ ] Next signing helper used by generic BFF
 
 ## Acceptance criteria
 
-- [ ] Unsigned internal requests rejected
+- [ ] Unsigned or tampered internal request rejected
+- [ ] Signed `dns_health` call returns equivalent result to legacy check for same domain
 
 ## References
 
-None for v1.
+- [generic-tool-bff.md](generic-tool-bff.md)
+- [backend/app.py](../../../backend/app.py) CSRF pattern (browser-only contrast)

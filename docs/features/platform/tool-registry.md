@@ -13,25 +13,37 @@
 
 ## Summary
 
-Central registry mapping `tool_id` → runner function and metadata (timeout, category). Enables one Flask/FastAPI router for all tools.
+Central registry mapping `tool_id` → async runner and metadata (category, timeout_ms). Enables one internal router to dispatch all Python tools without growing `app.py` route lists.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Without a registry, each new tool adds bespoke Flask routes and duplicate validation. That blocks the plugin model in [TOOL_PLUGIN_CONTRACT.md](../../TOOL_PLUGIN_CONTRACT.md).
 
 ## Scope
 
-**In:** `register(tool_id, runner, meta)`, dispatch by id.  
-**Out:** Individual tool logic (lives in tool modules).
+**In scope:**
+
+- `register(tool_id, runner, meta)` and `get(tool_id)`
+- Metadata: `category`, `timeout_ms`, `title` (for future T6 hub)
+- Register shipped `dns_health` adapter wrapping `DNSChecker.run_all_checks`
+
+**Out of scope:**
+
+- Individual tool business logic (lives in `backend/tools/<tool_id>/`)
+- HTTP routing (internal JWT layer + Flask blueprint)
+- PostgreSQL
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** N/A (server-side only).
+- **Logged-in (future):** N/A.
 
 ## Architecture
 
-Python `backend/tools/registry.py`; health registers `DNSChecker.run_all_checks` wrapper as `dns_health`.
+- Module: `backend/tools/registry.py`
+- Startup: register `dns_health` from `backend/tools/dns_health/`
+- Dispatch: internal handler resolves `tool_id`, enforces timeout, calls runner
+- See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned)
 
 ## Data model
 
@@ -39,33 +51,36 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+No public browser API. Internal dispatch only - see [API.md §Planned internal tools](../../API.md#planned-internal-tools-and-bff).
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+None for v1. Registry metadata later feeds **T6** `/tools` card grid ([PHASE_UI_MAP.md](../../ux/PHASE_UI_MAP.md)).
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Registry enforces per-tool `timeout_ms`; default cap 30s align with `NEXT_PUBLIC_API_TIMEOUT`).
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+N/A (platform).
 
 ## Dependencies
 
-None (platform skeleton).
+None.
 
 ## Implementation checklist
 
-- [ ] Registry module + unit test
-- [ ] Register shipped dns_health adapter
+- [ ] `registry.py` + unit tests (unknown id raises)
+- [ ] Register `dns_health` adapter
+- [ ] Wire internal route to registry dispatch
 
 ## Acceptance criteria
 
-- [ ] New tool added by registration only, no changes to `app.py` route list explosion
+- [ ] Adding a tool requires registration + module only, not new public Flask `/api/check` variants
+- [ ] `dns_health` via registry matches current `/api/check` JSON for same input
 
 ## References
 
-None for v1.
+- [internal-jwt-proxy.md](internal-jwt-proxy.md)
+- [generic-tool-bff.md](generic-tool-bff.md)

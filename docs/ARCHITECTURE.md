@@ -290,7 +290,12 @@ flowchart TB
 
 - Generic `/api/tools/[toolId]`, entitlement check, internal JWT, request ID.
 
-Stack (verified [frontend/package.json](../frontend/package.json)): Next ^15.4.7, React ^19.1.1, MUI ^7.3.1.
+Stack (verified [frontend/package.json](../frontend/package.json)): Next ^15.4.7, React ^19.1.1.
+
+| UI | Status |
+|----|--------|
+| **MUI** | **CURRENT** - shipped DNS health home only ([ux/CURRENT_UI.md](ux/CURRENT_UI.md)) |
+| **Tailwind + shadcn/ui** | **PLANNED** - all new/migrated surfaces ([ux/FRONTEND_STACK.md](ux/FRONTEND_STACK.md)) |
 
 ---
 

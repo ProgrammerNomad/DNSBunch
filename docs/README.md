@@ -8,9 +8,10 @@ Master tracker for shipped and planned features. **Implementation:** follow [roa
 |-------|-----------|------|
 | **1 - Source of truth** | [ARCHITECTURE.md](ARCHITECTURE.md), [TOOL_PLUGIN_CONTRACT.md](TOOL_PLUGIN_CONTRACT.md), [PRODUCT_STRATEGY.md](PRODUCT_STRATEGY.md), [API.md](API.md), [DNS_RECORDS.md](DNS_RECORDS.md) | Global rules; CURRENT vs PLANNED |
 | **2 - Feature specs** | [features/](features/) | Per-feature behavior and checklists |
+| **1.5 - Product UX** | [ux/](ux/) | Site shell, page templates, Tailwind + shadcn |
 | **3 - Execution tracking** | This README, [roadmap/](roadmap/) | What to build next |
 
-Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) (mandatory sections, metadata, no new features until specs are consistent).
+Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) (mandatory sections, metadata, no new features until specs are consistent). **Doc gate:** [roadmap/DOC_COMPLETION_CHECKLIST.md](roadmap/DOC_COMPLETION_CHECKLIST.md).
 
 ## Foundation
 
@@ -24,6 +25,7 @@ Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) 
 | [API.md](API.md) | **Canonical** HTTP API reference |
 | [DNS_RECORDS.md](DNS_RECORDS.md) | **Canonical** record/check descriptions |
 | [features/_TEMPLATE.md](features/_TEMPLATE.md) | Template for new feature docs |
+| [ux/README.md](ux/README.md) | UX index (templates, stack, IA) |
 
 ## Feature tracker
 
@@ -34,6 +36,9 @@ Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) 
 | [features/platform/tool-registry.md](features/platform/tool-registry.md) | Tool registry | planned | 0 | P1 | |
 | [features/platform/analytics-events.md](features/platform/analytics-events.md) | Analytics events | planned | 0 | P1 | |
 | [features/platform/internal-jwt-proxy.md](features/platform/internal-jwt-proxy.md) | Internal JWT proxy | planned | 0 | P1 | |
+| [features/platform/generic-tool-bff.md](features/platform/generic-tool-bff.md) | Generic tool BFF | planned | 0 | P1 | `/api/tools/[toolId]` |
+| [features/platform/scale-async-jobs.md](features/platform/scale-async-jobs.md) | Bulk 4 / async jobs | planned | 4 | P2 | queues |
+| [features/platform/privacy-anonymous-mode.md](features/platform/privacy-anonymous-mode.md) | Privacy policy | planned | 2 | P2 | analytics + accounts |
 | [features/platform/auth-optional-accounts.md](features/platform/auth-optional-accounts.md) | Optional accounts | planned | 2 | P1 | retention |
 | [features/platform/billing-stripe-ready.md](features/platform/billing-stripe-ready.md) | Stripe-ready billing | planned | 3 | P1 | experiment |
 | [features/platform/entitlements-quotas.md](features/platform/entitlements-quotas.md) | Entitlements | planned | 3 | P1 | experiment |
@@ -72,6 +77,8 @@ Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) 
 |----------|-------------|
 | [roadmap/PHASES.md](roadmap/PHASES.md) | Phase 0–5 map (maturity; not build order) |
 | [roadmap/IMPLEMENTATION_ORDER.md](roadmap/IMPLEMENTATION_ORDER.md) | Suggested build sequence |
+| [roadmap/DOC_COMPLETION_CHECKLIST.md](roadmap/DOC_COMPLETION_CHECKLIST.md) | Doc gate before code |
+| [roadmap/TOOL_CATALOG.md](roadmap/TOOL_CATALOG.md) | tool_id ↔ slug ↔ template |
 | [roadmap/METRICS_DASHBOARD.md](roadmap/METRICS_DASHBOARD.md) | Funnel and Pro decisions |
 
 ## FUTURE_IDEAS.md mapping
@@ -86,14 +93,14 @@ Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) 
 | 6 | Result Comparison | [result-comparison.md](features/ux/result-comparison.md) |
 | 7 | Mobile PWA | [pwa-mobile.md](features/ux/pwa-mobile.md) |
 | 8 | Browser Extension | [browser-extension.md](features/ux/browser-extension.md) |
-| 9 | Interactive DNS Tutorial | - (deferred; no feature doc) |
-| 10 | DNS Best Practices Guide | - (deferred; content/SEO, not a tool spec) |
-| 11 | Community Forum | - (deferred; no feature doc) |
+| 9 | Interactive DNS Tutorial | [deferred/interactive-tutorial.md](features/deferred/interactive-tutorial.md) |
+| 10 | DNS Best Practices Guide | [deferred/dns-best-practices-guide.md](features/deferred/dns-best-practices-guide.md) |
+| 11 | Community Forum | [deferred/community-forum.md](features/deferred/community-forum.md) |
 | 12 | API Access | [developer-api-keys.md](features/pro-experiments/developer-api-keys.md) |
 | 13 | Premium Features | [billing-stripe-ready.md](features/platform/billing-stripe-ready.md), [entitlements-quotas.md](features/platform/entitlements-quotas.md) |
 | 14 | White Label | [white-label-reports.md](features/pro-experiments/white-label-reports.md) |
-| 15 | DNSSEC | Extend engine / future doc when scoped |
-| 16 | Privacy Mode | Product policy-track under [PRODUCT_STRATEGY.md](PRODUCT_STRATEGY.md) |
+| 15 | DNSSEC | [deferred/dnssec-validation.md](features/deferred/dnssec-validation.md) |
+| 16 | Privacy Mode | [platform/privacy-anonymous-mode.md](features/platform/privacy-anonymous-mode.md) |
 
 Legacy brainstorming: [FUTURE_IDEAS.md](../FUTURE_IDEAS.md) (pointer only).
 

@@ -40,7 +40,7 @@
 
 ## API
 
-[API.md](../../API.md) or TBD.
+See [API.md](../../API.md) (shipped) or [API.md §Planned](../../API.md#planned-internal-tools-and-bff).
 
 ## UI
 

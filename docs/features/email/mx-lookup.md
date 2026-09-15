@@ -17,22 +17,22 @@ Simple MX record list with priorities and resolved A/AAAA-lighter than full heal
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Quick MX inspection separate from full health report.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** MX RRset sorted by preference; target hostnames.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** SMTP banner test (use smtp-test tool).
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Enter domain → MX table.
+- **Logged-in (future):** Same.
 
 ## Architecture
 
-Python: MX query + resolution; may share helpers from `_check_mx_records`.
+Python `backend/tools/mx_lookup/`; dnspython.
 
 ## Data model
 
@@ -40,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+POST `/api/tools/mx_lookup` `{ "domain" }`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T2**, `/tools/mx-lookup`.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Rate limits per IP.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -65,7 +65,8 @@ None.
 
 ## Acceptance criteria
 
-- [ ] MX list matches health check MX section for domain
+- [ ] All MX rows shown with priority
+- [ ] No MX case handled
 
 ## References
 

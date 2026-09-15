@@ -17,24 +17,22 @@ Periodic re-run of health or key records; email when NS/MX/SOA serial changes.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Users want notification when DNS records change after initial check.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Watch definition (domain + record types); scheduled poller; email/webhook alert (experiment).
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Guaranteed SLA monitoring day one.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** CTA to sign in to create watch.
+- **Logged-in (future):** Create watch on **T5** → alerts on change.
 
 ## Architecture
 
-See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail TBD.
-
-**Reuses existing engine?** TBD.
+Worker cron + PostgreSQL watches; compare hashes; queue notifications.
 
 ## Data model
 
@@ -42,15 +40,15 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+CRUD watches authenticated - planned REST under `/api/watches`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T5**, `/dashboard/watches` - create form + list `Table`.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Cap watches per plan; poller backoff; no amplification DNS queries.
 
 ## Monetization
 
@@ -68,7 +66,8 @@ Strong Pro candidate-validate via [METRICS_DASHBOARD.md](../../roadmap/METRICS_D
 
 ## Acceptance criteria
 
-- [ ] TBD
+- [ ] User receives alert when watched record changes
+- [ ] Poller respects minimum interval and rate limits
 
 ## References
 

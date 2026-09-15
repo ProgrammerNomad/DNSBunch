@@ -17,21 +17,22 @@ Free accounts for saved history, mail-test sessions, and higher limits-**never r
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Users need saved history and mail-test sessions without forcing signup for basic lookups ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)).
 
 ## Scope
 
-**In:** Register/login, session, dashboard shell.  
-**Out:** Paywall on basic lookups.
+**In scope:** Optional NextAuth (or Clerk) + PostgreSQL users/sessions; link runs to user when logged in.
+
+**Out of scope:** Required login for public tools; social graph.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** All Phase 1 tools unchanged.
+- **Logged-in (future):** Sign in from header → **T5** dashboard with history.
 
 ## Architecture
 
-Next.js (NextAuth or Clerk) + PostgreSQL + Prisma; no auth in Flask for v1.
+Next.js auth; Prisma schema `User`, `Session`, `SavedCheck` (high level). BFF attaches optional `user_id` to events.
 
 ## Data model
 
@@ -39,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+Auth routes via provider; no change to public tool JSON shape.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T5**, `/dashboard` - shadcn `Tabs`, `Table` ([PHASE_UI_MAP.md](../../ux/PHASE_UI_MAP.md)).
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Session fixation protections; GDPR delete account flow documented in privacy doc.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 

@@ -17,41 +17,42 @@ Single `canRun(user, toolId)` used by all API routes; defaults allow anonymous f
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Pro experiments need `canRun(user, toolId)` beyond stub.
 
 ## Scope
 
-**In:** Helper + usage counters (optional DB).  
-**Out:** Complex enterprise RBAC.
+**In scope:** Plan tiers, feature flags per tool, quota counters (daily runs, bulk size).
+
+**Out of scope:** Paywall on basic Phase 1 free lookups.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Free tier limits only.
+- **Logged-in (future):** Pro unlocks watches, API, larger bulk.
 
 ## Architecture
 
-Next.js before proxy to Python; pass `tier` in internal JWT when implemented.
+Next `canRun()` reads DB + Stripe subscription state; BFF enforces before proxy.
 
 ## Data model
 
-None for v1.
+Plans and usage counters in PostgreSQL when billing live; stub returns allow-all for free tools in v0.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+BFF returns `403` JSON `{ "allowed": false, "reason": "..." }` when quota exceeded - see [generic-tool-bff.md](generic-tool-bff.md).
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Upgrade prompts on **T2/T3** via `Alert`; manage on **T5**.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Fail closed for paid features; soft messaging for free tier 429.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 

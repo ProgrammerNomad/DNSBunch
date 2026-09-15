@@ -7,6 +7,7 @@ How the doc system stays precise and consistent over months of development. **Do
 | Level | Paths | Purpose |
 |-------|--------|---------|
 | **1 - Source of truth** | [ARCHITECTURE.md](ARCHITECTURE.md), [TOOL_PLUGIN_CONTRACT.md](TOOL_PLUGIN_CONTRACT.md), [PRODUCT_STRATEGY.md](PRODUCT_STRATEGY.md), [API.md](API.md), [DNS_RECORDS.md](DNS_RECORDS.md) | Global rules; CURRENT vs PLANNED |
+| **1.5 - Product UX** | [ux/**/*.md](ux/) | IA, templates T1–T6, Tailwind + shadcn stack, shell |
 | **2 - Feature specifications** | [features/**/*.md](features/) | Per-feature behavior and checklists |
 | **3 - Execution tracking** | [README.md](README.md), [roadmap/](roadmap/) | What to build next |
 
@@ -29,7 +30,9 @@ Feature docs **link upward** to Level 1; they do not restate full architecture o
 
 ## Mandatory feature sections
 
-Every file under `features/<category>/<name>.md` (not `_TEMPLATE.md`) must include **all** sections from [_TEMPLATE.md](features/_TEMPLATE.md), in order. Use `TBD` or `None for v1` if not applicable yet.
+Every file under `features/<category>/<name>.md` (not `_TEMPLATE.md`) must include **all** sections from [_TEMPLATE.md](features/_TEMPLATE.md), in order. Use concrete text or `None for v1` - **no bare `TBD`** in Problem, Scope, User flows, API, UI, or Limits (doc completion gate).
+
+Feature `## UI` must cite template **T1–T6** and route from [ux/PHASE_UI_MAP.md](ux/PHASE_UI_MAP.md). Frontend: [ux/FRONTEND_STACK.md](ux/FRONTEND_STACK.md) (Tailwind + shadcn only for new UI).
 
 ## Metadata fields
 

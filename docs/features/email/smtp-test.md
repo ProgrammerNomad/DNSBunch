@@ -17,21 +17,22 @@ TCP connect to MX hosts, read banner, optional STARTTLS-timeout capped.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Verify mail server responsiveness without sending mail.
 
 ## Scope
 
-**In:** Banner, TLS support hint.  
-**Out:** Auth, sending message body.
+**In scope:** TCP connect, EHLO, banner capture, timeout handling.
+
+**Out of scope:** Auth login; sending DATA; open relay full test (abuse risk).
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Enter domain or host → Run → connection result and banner text.
+- **Logged-in (future):** Same.
 
 ## Architecture
 
-Python asyncio/socket; strict timeouts and rate limits.
+Python asyncio SMTP client; strict timeouts; no message send.
 
 ## Data model
 
@@ -39,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+POST `/api/tools/smtp_test` `{ "domain" | "host" }`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T2**, `/tools/smtp-test`.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Low concurrency per IP; short timeouts; block private IP targets.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -64,7 +65,9 @@ Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METR
 
 ## Acceptance criteria
 
-- [ ] No hung connections; errors surfaced clearly
+- [ ] Banner displayed on success
+- [ ] Timeout errors user-friendly
+- [ ] Does not send email
 
 ## References
 

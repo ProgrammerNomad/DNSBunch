@@ -66,8 +66,9 @@ Types: [dns.ts](../../../frontend/src/types/dns.ts) `DNSAnalysisResult`. Records
 
 ## UI
 
-- Home search + results: [page.tsx](../../../frontend/src/app/page.tsx) (and related components)
-- [DNSResultsTable.tsx](../../../frontend/src/components/DNSResultsTable.tsx), [DNSResultsAdvanced.tsx](../../../frontend/src/components/DNSResultsAdvanced.tsx)
+- Template **T1** - route `/` ([PAGE_TEMPLATES.md](../../ux/PAGE_TEMPLATES.md#t1--dns-health-home))
+- **CURRENT:** MUI [page.tsx](../../../frontend/src/app/page.tsx), [DNSResultsTable.tsx](../../../frontend/src/components/DNSResultsTable.tsx), [DNSResultsAdvanced.tsx](../../../frontend/src/components/DNSResultsAdvanced.tsx)
+- **TARGET:** Tailwind + shadcn per [FRONTEND_STACK.md](../../ux/FRONTEND_STACK.md), global [SITE_SHELL.md](../../ux/SITE_SHELL.md)
 
 ## Limits and abuse
 

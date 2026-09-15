@@ -17,24 +17,21 @@ Scheduled SPF/DMARC/DKIM/MX checks + optional periodic mail-tester prompts.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Combine SPF/DMARC/DKIM/MX signals over time for a domain.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Scheduled re-run email tools; diff summary alert.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Inbox placement tests.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Logged-in (future):** Enable email health watch per domain.
 
 ## Architecture
 
-See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail TBD.
-
-**Reuses existing engine?** TBD.
+Orchestrate existing tool runners; store snapshots.
 
 ## Data model
 
@@ -42,19 +39,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+Watch API type `email_health`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+**T5** detail view with trend badges.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Weekly schedule free; daily Pro.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -62,11 +59,12 @@ Email tool modules, [mail-tester-inbound.md](../email/mail-tester-inbound.md), [
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Watch model + worker job
+- [ ] T5 UI CRUD
+- [ ] Alert delivery channel
 
 ## Acceptance criteria
 
-- [ ] TBD
 
 ## References
 

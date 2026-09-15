@@ -17,22 +17,22 @@ Query `_dmarc.domain` TXT, parse policy (none/quarantine/reject), alignment hint
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+High SEO demand for DMARC validation; operators need policy at a glance.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** TXT at `_dmarc`; parse tags p, sp, adkim, aspf, rua, ruf, pct.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Aggregate report ingestion; mailbox verification for rua.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Enter domain → Run → policy table and raw record.
+- **Logged-in (future):** Same.
 
 ## Architecture
 
-Python: `_check_dmarc_record` or dedicated tool. High SEO value per [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Python `backend/tools/dmarc_checker/` or extract from dns_checker DMARC check.
 
 ## Data model
 
@@ -40,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+POST `/api/tools/dmarc_checker` `{ "domain" }`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T2**, `/tools/dmarc-checker`.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Standard IP limits.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -65,7 +65,9 @@ Platform skeleton recommended.
 
 ## Acceptance criteria
 
-- [ ] Policy and rua/ruf displayed when present
+- [ ] Policy p= displayed
+- [ ] rua/ruf URIs listed when present
+- [ ] Missing DMARC shows actionable message
 
 ## References
 

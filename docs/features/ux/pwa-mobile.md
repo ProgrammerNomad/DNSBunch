@@ -17,24 +17,21 @@ Installable PWA, offline cached results (FUTURE_IDEAS #7).
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Mobile users want home-screen install (FUTURE_IDEAS #7).
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Web manifest, icons, service worker for offline shell (not offline DNS).
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Native app store apps.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Install prompt on supported browsers.
 
 ## Architecture
 
-See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail TBD.
-
-**Reuses existing engine?** TBD.
+Next PWA plugin or manual manifest in `public/`.
 
 ## Data model
 
@@ -42,19 +39,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+None.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Install hint `Alert` dismissible; responsive **T1–T6** already required.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+SW cache static assets only.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -62,11 +59,11 @@ Next.js PWA config.
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Spec implemented per FRONTEND_STACK
+- [ ] Document in CHANGELOG when shipped
 
 ## Acceptance criteria
 
-- [ ] TBD
 
 ## References
 

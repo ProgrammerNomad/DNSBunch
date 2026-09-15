@@ -17,22 +17,22 @@ Follow redirects up to N hops; show status codes and final URL.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Debug redirect loops and HTTP→HTTPS chains.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Up to N hops (e.g. 10); method GET.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** JavaScript redirects.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Enter URL → hop table.
+- **Logged-in (future):** Same.
 
 ## Architecture
 
-Python httpx HEAD/GET chain. SSRF: [ARCHITECTURE.md §20](../../ARCHITECTURE.md#20-http--website-tool-security-planned).
+Python httpx follow redirects manually for logging each hop.
 
 ## Data model
 
@@ -40,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+POST `/api/tools/redirect_chain` `{ "url" }`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T2**, `/tools/redirect-chain`.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+SSRF rules; max hops.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -60,11 +60,15 @@ None for v1 unless listed elsewhere in this doc.
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Python tool module + SSRF tests
+- [ ] T2 page + BFF proxy
+- [ ] Analytics `tool_run`
 
 ## Acceptance criteria
 
-- [ ] Loop detection; max hops enforced
+- [ ] Each hop listed
+- [ ] Loop detected message
+- [ ] Final URL shown
 
 ## References
 

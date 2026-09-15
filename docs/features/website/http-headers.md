@@ -17,22 +17,22 @@ Fetch URL, display response headers (security headers highlighted).
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Inspect caching, HSTS, CSP, and related headers quickly.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Single GET; header list; highlight HSTS, CSP, X-Frame-Options, etc.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Full site crawl; POST body testing.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Enter URL → header table with highlights.
+- **Logged-in (future):** Same.
 
 ## Architecture
 
-Python httpx/aiohttp with timeout; Next `/tools/http-headers`. SSRF: [ARCHITECTURE.md §20](../../ARCHITECTURE.md#20-http--website-tool-security-planned).
+Python httpx with redirects cap; BFF SSRF validation.
 
 ## Data model
 
@@ -40,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+POST `/api/tools/http_headers` `{ "url" }`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T2**, `/tools/http-headers`.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+SSRF deny list; max redirects 5; timeout 15s.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -60,11 +60,15 @@ None for v1 unless listed elsewhere in this doc.
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Python tool module + SSRF tests
+- [ ] T2 page + BFF proxy
+- [ ] Analytics `tool_run`
 
 ## Acceptance criteria
 
-- [ ] Redirect follow limit; no SSRF to private IPs
+- [ ] Status code shown
+- [ ] Security headers section populated
+- [ ] Invalid URL rejected
 
 ## References
 

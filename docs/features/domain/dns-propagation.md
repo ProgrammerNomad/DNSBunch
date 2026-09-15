@@ -17,22 +17,22 @@ Query multiple public resolvers (Google, Cloudflare, Quad9) for a record type; s
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+See if DNS changes have propagated globally.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Fixed resolver list; record type + name input.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Custom resolver input from user (abuse); continuous monitoring.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Enter name + type → resolver result grid.
+- **Logged-in (future):** Same.
 
 ## Architecture
 
-Python parallel queries; maps to [FUTURE_IDEAS.md](../../../FUTURE_IDEAS.md) history/propagation themes.
+Python async DNS to multiple resolvers.
 
 ## Data model
 
@@ -40,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+POST `/api/tools/dns_propagation` `{ "name", "type" }`.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T2**, `/tools/dns-propagation`.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Cap resolver count; rate limit.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -60,11 +60,14 @@ None for v1 unless listed elsewhere in this doc.
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Python tool module
+- [ ] T2 page + BFF proxy
+- [ ] Analytics `tool_run`
 
 ## Acceptance criteria
 
-- [ ] Per-resolver result grid
+- [ ] Each resolver row shows answers or error
+- [ ] Mismatch highlighted
 
 ## References
 

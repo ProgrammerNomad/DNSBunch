@@ -17,24 +17,22 @@ Short-lived URL with stored result snapshot (e.g. 7 days)-FUTURE_IDEAS #2.
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Teams share one-off results without account collab.
 
 ## Scope
 
-**In scope:** TBD.
+**In scope:** Signed URL or short id storing result snapshot TTL 7d.
 
-**Out of scope:** None for v1 unless noted.
+**Out of scope:** Permanent public indexing of all checks.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Copy share link after run.
+- **Logged-in (future):** Longer TTL Pro.
 
 ## Architecture
 
-See [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail TBD.
-
-**Reuses existing engine?** TBD.
+PostgreSQL or object store snapshot; Next `/r/{id}` read-only page.
 
 ## Data model
 
@@ -42,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+POST create share link; GET public read.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Share `Button` on **T1/T2** results; public read-only **T2** layout.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+TTL; no secrets in snapshot; rate limit link creation.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -62,7 +60,9 @@ Object storage or DB blob; privacy policy update.
 
 ## Implementation checklist
 
-- [ ] TBD
+- [ ] Entitlement gate
+- [ ] UI affordance on tool or dashboard
+- [ ] Metrics event
 
 ## Acceptance criteria
 

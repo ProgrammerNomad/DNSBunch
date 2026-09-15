@@ -17,21 +17,22 @@ Standalone SPF record lookup and syntax validation for a domain (SEO: “check S
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+Senders need a fast SPF validation without running full DNS health.
 
 ## Scope
 
-**In:** TXT at root, parse mechanisms, note DNS lookup count / common errors.  
-**Out:** Sending live test mail (see mail-tester).
+**In scope:** TXT lookup for SPF record; parse `v=spf1`; count DNS lookups (warn >10); display mechanisms and modifiers.
+
+**Out of scope:** Sending test mail; DMARC/DKIM combined report (link to other tools).
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** Enter domain → Run → see SPF record, pass/warn/fail, mechanism list.
+- **Logged-in (future):** Same; optional save to history (Phase 2).
 
 ## Architecture
 
-Python: dnspython TXT parse; optional reuse of `_check_spf_record` from [dns_checker.py](../../../backend/dns_checker.py). Next: `/tools/spf-checker`.
+Python `backend/tools/spf_checker/` - DNS TXT only; register in tool registry. May reuse TXT helpers from dns_checker later.
 
 ## Data model
 
@@ -39,19 +40,19 @@ None for v1.
 
 ## API
 
-Extend via [TOOL_PLUGIN_CONTRACT.md](../../TOOL_PLUGIN_CONTRACT.md); [API.md](../../API.md) when shipped.
+POST `/api/tools/spf_checker` body `{ "domain": "example.com" }` - see [API.md](../../API.md#planned-internal-tools-and-bff).
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T2**, route `/tools/spf-checker` - shadcn `Input`, `Button`, `Table`, `Alert` ([PAGE_TEMPLATES.md](../../ux/PAGE_TEMPLATES.md#t2--generic-tool-page)).
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Same IP rate limits as DNS health; max one domain per run.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
@@ -64,7 +65,9 @@ Platform skeleton recommended, not required.
 
 ## Acceptance criteria
 
-- [ ] Output matches health check SPF section for same domain
+- [ ] Valid SPF record parsed and displayed
+- [ ] Missing SPF reported clearly
+- [ ] Too many DNS lookups flagged as warning
 
 ## References
 

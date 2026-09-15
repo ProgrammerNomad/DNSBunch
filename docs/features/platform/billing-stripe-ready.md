@@ -17,21 +17,22 @@ Wire Stripe Checkout, Customer Portal, and webhooks in Next.js-**inactive** unti
 
 ## Problem
 
-TBD - align with Summary and [PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md).
+When metrics justify a SKU, billing must not require architecture rewrite.
 
 ## Scope
 
-**In:** Webhook handler, customer id on user, plan enum stub.  
-**Out:** Launching paid tiers without data.
+**In scope:** Stripe Checkout + Customer portal wiring in Next; webhook handler; inactive until experiment flag.
+
+**Out of scope:** Launching paid plans day one.
 
 ## User flows
 
-- **Anonymous:** TBD.
-- **Logged-in (future):** TBD.
+- **Anonymous:** N/A.
+- **Logged-in (future):** Upgrade from dashboard billing tab.
 
 ## Architecture
 
-Next.js API routes only; entitlements read plan from DB.
+Stripe in Next only; webhooks update entitlements table.
 
 ## Data model
 
@@ -39,19 +40,19 @@ None for v1.
 
 ## API
 
-TBD. Canonical reference when shipped: [API.md](../../API.md).
+Stripe webhooks internal; checkout session create authenticated.
 
 ## UI
 
-TBD (e.g. `frontend/src/app/tools/...`).
+Template **T5**, `/dashboard/billing` - pricing `Card`, manage subscription link.
 
 ## Limits and abuse
 
-TBD; follow [ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current) and tool-specific caps.
+Verify webhook signatures; idempotent event handling.
 
 ## Monetization
 
-Default free unless noted; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
 
 ## Dependencies
 
