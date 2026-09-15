@@ -5,6 +5,7 @@
 | Field | Value |
 |-------|--------|
 | **status** | shipped |
+| **priority** | P0 |
 | **phase** | - |
 | **access** | free |
 | **tool_id** | `dns_health` |
@@ -15,25 +16,43 @@
 
 Comprehensive IntoDNS-style DNS and mail-related diagnostics for one domain. Production feature at [dnsbunch.com](https://www.dnsbunch.com/).
 
-## Architecture reference
+## Problem
 
-Normative flow, security, engine, and invariants: **[ARCHITECTURE.md §3, §6, §8, INV-1](../../ARCHITECTURE.md)**.
+Admins and developers need a single report showing NS/MX/SOA/WWW and related issues without paying for commercial tools or creating an account.
 
-- **Engine:** `DNSChecker.run_all_checks()` only ([dns_checker.py](../../../backend/dns_checker.py)).
-- **Bulk/API:** same `tool_id`, different `surface` - [bulk-checker.md](../dns-health/bulk-checker.md), [ADR-001](../../ARCHITECTURE.md#adr-001-dns-health-bulk-is-a-surface-not-a-separate-tool_id).
+## Scope
 
-## Request flow (summary)
+**In scope:**
 
-Browser → `POST /api/dns/check` → Flask `POST /api/check` → engine.  
-Details: [ARCHITECTURE.md §3](../../ARCHITECTURE.md#3-current-dns-health-request-flow-current).
+- Full or partial health check via `checks[]` filter
+- Normal and advanced UI presentation
+- Anonymous use with rate limits
 
-**Code:** [route.ts](../../../frontend/src/app/api/dns/check/route.ts), [app.py](../../../backend/app.py), [useDNSAnalysis.ts](../../../frontend/src/hooks/useDNSAnalysis.ts), [DNSResultsTable.tsx](../../../frontend/src/components/DNSResultsTable.tsx).
+**Out of scope:**
 
-Domain deep links: [page.tsx](../../../frontend/src/app/[...domain]/page.tsx) → `/?domain=...`.
+- Multi-domain bulk (see [bulk-checker.md](../dns-health/bulk-checker.md))
+- Persistent history, accounts, API keys
+
+## User flows
+
+- **Anonymous:** Enter domain on home → view results table; optional deep link `/?domain=...`
+- **Logged-in (future):** Same flow; optional saved history (not shipped)
+
+## Architecture
+
+[ARCHITECTURE.md §3, §6, §8, INV-1](../../ARCHITECTURE.md). Engine: `DNSChecker.run_all_checks()` only ([dns_checker.py](../../../backend/dns_checker.py)).
+
+Flow: Browser → `POST /api/dns/check` → Flask `POST /api/check` → engine. Code: [route.ts](../../../frontend/src/app/api/dns/check/route.ts), [app.py](../../../backend/app.py), [useDNSAnalysis.ts](../../../frontend/src/hooks/useDNSAnalysis.ts), [DNSResultsTable.tsx](../../../frontend/src/components/DNSResultsTable.tsx), [page.tsx](../../../frontend/src/app/[...domain]/page.tsx).
+
+**Reuses existing engine?** N/A (this is the engine surface).
+
+## Data model
+
+None for v1. No server-side persistence of queries or results.
 
 ## API
 
-Canonical HTTP: [API.md](../../API.md).
+[API.md](../../API.md).
 
 | Surface | Method | Path |
 |---------|--------|------|
@@ -41,41 +60,39 @@ Canonical HTTP: [API.md](../../API.md).
 | Flask | GET | `/api/csrf-token` |
 | Flask | POST | `/api/check` |
 
-**Body:** `{ "domain": "example.com", "checks": ["ns", "soa", "mx", "www"] }` - `checks` optional (all categories if omitted).
+Body: `{ "domain": "example.com", "checks": ["ns", "soa", "mx", "www"] }` - omit `checks` for all categories ([ARCHITECTURE §8](../../ARCHITECTURE.md#8-dns-health-engine-architecture-current)).
 
-**Categories:** see [ARCHITECTURE.md §8](../../ARCHITECTURE.md#8-dns-health-engine-architecture-current) and [dns_checker.py](../../../backend/dns_checker.py) `all_check_types`.
+Types: [dns.ts](../../../frontend/src/types/dns.ts) `DNSAnalysisResult`. Records: [DNS_RECORDS.md](../../DNS_RECORDS.md).
 
-**Types:** [dns.ts](../../../frontend/src/types/dns.ts) `DNSAnalysisResult`.
+## UI
 
-## Check coverage
+- Home search + results: [page.tsx](../../../frontend/src/app/page.tsx) (and related components)
+- [DNSResultsTable.tsx](../../../frontend/src/components/DNSResultsTable.tsx), [DNSResultsAdvanced.tsx](../../../frontend/src/components/DNSResultsAdvanced.tsx)
 
-NS (incl. parent delegation), SOA, MX, WWW, plus optional spf/dmarc/dkim/etc. when requested.  
-Human-readable sub-checks under `checks.<category>.checks[]`.  
-Record reference: [DNS_RECORDS.md](../../DNS_RECORDS.md).
+## Limits and abuse
 
-## Security and limits
-
-See **[ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current)** (CSRF 1h, rate limit 50/300s, block 60s, CORS, domain validation).
-
-## Client configuration
-
-[api.ts](../../../frontend/src/services/api.ts), env: [frontend/.env.example](../../../frontend/.env.example).
+[ARCHITECTURE.md §6](../../ARCHITECTURE.md#6-current-security-model-current): CSRF, 50 req / 300 s / IP, 60 s block, domain validation, CORS.
 
 ## Monetization
 
-Free, anonymous. No account required.
+Free, anonymous. No account required ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)).
 
 ## Dependencies
 
 None.
 
-## Maintenance checklist
+## Implementation checklist
 
-- [ ] Engine changes → update [DNS_RECORDS.md](../../DNS_RECORDS.md), [API.md](../../API.md), [ARCHITECTURE.md §8](../../ARCHITECTURE.md)
-- [ ] Bump `last_verified_against_repo` when behavior changes
+- [x] BFF CSRF proxy
+- [x] Engine + UI
+- [ ] On engine change: update DNS_RECORDS, API, ARCHITECTURE §8 and bump `last_verified_against_repo`
 
-## Acceptance criteria (shipped)
+## Acceptance criteria
 
 - [x] BFF obtains CSRF and proxies check
 - [x] Normal and advanced UI render results
 - [x] Rate limit returns 429 when exceeded
+
+## References
+
+- IntoDNS-style check parity (see root [README.md](../../../README.md))

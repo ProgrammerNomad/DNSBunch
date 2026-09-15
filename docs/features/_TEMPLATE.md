@@ -1,24 +1,27 @@
 # Feature: [Title]
 
-> **Location:** Copy this file to `docs/features/<category>/<name>.md` before filling in. All links below use `../../` for that path.
+> Copy to `docs/features/<category>/<name>.md`. All links use `../../`. **Every section below is required** ([DOCUMENTATION_STANDARDS.md](../../DOCUMENTATION_STANDARDS.md)).
 
 ## Metadata
 
 | Field | Value |
 |-------|--------|
 | **status** | `shipped` \| `planned` \| `in-progress` \| `deferred` |
-| **phase** | `0` \| `1` \| `2` \| `organic` \| `pro` \| `ux` \| `-` (shipped core only; must match [README.md](../../README.md) tracker) |
+| **priority** | `P0` \| `P1` \| `P2` \| `P3` |
+| **phase** | `0` \| `1` \| `2` \| `organic` \| `pro` \| `ux` \| `-` (match [README.md](../../README.md)) |
 | **access** | `free` \| `pro` \| `both` |
 | **tool_id** | From [TOOL_PLUGIN_CONTRACT.md](../../TOOL_PLUGIN_CONTRACT.md) |
-| **surface** | Optional: `single` \| `bulk` \| `api` (only for `dns_health`) |
+| **surface** | Optional: `single` \| `bulk` \| `api` (only `dns_health`) |
+| **last_verified_against_repo** | Shipped only: `YYYY-MM-DD` |
+| **last_reviewed** | Planned/in-progress: `YYYY-MM-DD` |
 
 ## Summary
 
-One paragraph: what this feature does and who it is for.
+One paragraph.
 
 ## Problem
 
-Who needs this and in what situation.
+Who needs this and when.
 
 ## Scope
 
@@ -37,42 +40,38 @@ Who needs this and in what situation.
 
 ## Architecture
 
-Layer rules: [ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Do not duplicate full architecture here.
+[ARCHITECTURE.md §11](../../ARCHITECTURE.md#11-tool-execution-contract-current--planned). Feature-specific detail only.
 
 | Layer | Responsibility |
 |--------|----------------|
 | Next.js | … |
 | Python | … |
 
-**Reuses existing engine?** yes/no - if yes, entry function (e.g. `DNSChecker.run_all_checks`).
+**Reuses existing engine?** yes/no - entry function if yes.
 
 ## Data model
 
-Tables/collections if any (otherwise “none”).
+PostgreSQL / storage, or `None for v1.`
 
 ## API
 
-Link canonical reference: [API.md](../../API.md).
-
-- Next.js route (planned or shipped): `POST /api/...`
-- Python (planned or shipped): `POST /api/check` or `/internal/v1/tools/{tool_id}`
+[API.md](../../API.md) when endpoints exist; else `TBD`.
 
 ## UI
 
-- Page: `frontend/src/app/...`
-- Components: …
+Routes and components, or `TBD`.
 
 ## Limits and abuse
 
-Rate limits, max input size, concurrency.
+Rate limits, caps, SSRF (HTTP tools), or `TBD`.
 
 ## Monetization
 
-Default: free. Pro attachment: TBD until [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md) shows demand.
+Default free; Pro TBD per [METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md).
 
 ## Dependencies
 
-Other docs/features that must exist first.
+Other features or `None`.
 
 ## Implementation checklist
 
@@ -84,4 +83,4 @@ Other docs/features that must exist first.
 
 ## References
 
-- RFCs, MXToolbox/mail-tester analogs, external links.
+RFCs, external tools, or `None for v1.`

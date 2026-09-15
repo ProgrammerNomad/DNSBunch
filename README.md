@@ -30,7 +30,7 @@ DNSBunch is a **completely free alternative to IntoDNS**, providing professional
 
 Feature specs, architecture, and implementation tracker: **[docs/README.md](docs/README.md)**
 
-- [Architecture](docs/ARCHITECTURE.md) · [Product strategy](docs/PRODUCT_STRATEGY.md) · [API reference](docs/API.md)
+- [Documentation standards](docs/DOCUMENTATION_STANDARDS.md) · [Architecture](docs/ARCHITECTURE.md) · [Product strategy](docs/PRODUCT_STRATEGY.md) · [API reference](docs/API.md)
 
 ---
 
