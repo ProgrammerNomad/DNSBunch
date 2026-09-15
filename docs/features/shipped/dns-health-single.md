@@ -67,8 +67,7 @@ Types: [dns.ts](../../../frontend/src/types/dns.ts) `DNSAnalysisResult`. Records
 ## UI
 
 - Template **T1** - route `/` ([PAGE_TEMPLATES.md](../../ux/PAGE_TEMPLATES.md#t1--dns-health-home))
-- **CURRENT:** MUI [page.tsx](../../../frontend/src/app/page.tsx), [DNSResultsTable.tsx](../../../frontend/src/components/DNSResultsTable.tsx), [DNSResultsAdvanced.tsx](../../../frontend/src/components/DNSResultsAdvanced.tsx)
-- **TARGET:** Tailwind + shadcn per [FRONTEND_STACK.md](../../ux/FRONTEND_STACK.md), global [SITE_SHELL.md](../../ux/SITE_SHELL.md)
+- **CURRENT:** Tailwind + shadcn T1 - [page.tsx](../../../frontend/src/app/page.tsx), [DomainSearchForm.tsx](../../../frontend/src/components/DomainSearchForm.tsx), [DNSResultsTable.tsx](../../../frontend/src/components/DNSResultsTable.tsx), [DNSResultsAdvanced.tsx](../../../frontend/src/components/DNSResultsAdvanced.tsx), global [AppShell](../../../frontend/src/components/layout/AppShell.tsx)
 
 ## Limits and abuse
 

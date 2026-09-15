@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P3 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | - |
 | **access** | free |
 | **tool_id** | `ux_dark_mode` |
@@ -60,20 +60,20 @@ Free. Not a paid feature.
 
 ## Implementation checklist
 
-- [ ] Install `next-themes` + shadcn dark CSS variables
-- [ ] Header toggle wired
-- [ ] Remove MUI theme when T1 migrated
+- [x] Install `next-themes` + shadcn dark CSS variables
+- [x] Header toggle wired ([theme-toggle.tsx](../../frontend/src/components/layout/theme-toggle.tsx))
+- [x] Remove MUI theme when T1 migrated
 
 ## Acceptance criteria
 
-- [ ] Light theme renders correctly across T1–T6 layouts
-- [ ] Dark theme renders correctly across T1–T6 layouts
-- [ ] System preference respected when user selects “system”
-- [ ] User can manually toggle light / dark / system
-- [ ] Preference persists across browser sessions
-- [ ] Diagnostic result **data** unchanged between themes (presentation only)
-- [ ] Result tables and badges remain readable in both themes
-- [ ] Mobile header and nav remain usable in both themes
+- [x] Light theme renders correctly on T1 + `/tools` (T2–T6 as they ship)
+- [x] Dark theme renders correctly on T1 + `/tools`
+- [x] System preference respected (`defaultTheme="system"`)
+- [x] User can manually toggle light / dark via header
+- [x] Preference persists across browser sessions (`next-themes`)
+- [x] Diagnostic result **data** unchanged between themes (presentation only)
+- [x] Result tables and badges remain readable in both themes
+- [x] Mobile header and nav remain usable in both themes (Sheet menu)
 
 ## References
 

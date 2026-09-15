@@ -60,12 +60,11 @@ Used by T2, T3, T4 (not T1 home):
 
 | Phase | Shell deliverable |
 |-------|-------------------|
-| 0 (code, post-docs) | AppShell + footer global; T1 still MUI until migrated in same sprint |
-| 1 | T6 `/tools` + T2/T3 pages use shell |
+| 0 (code, post-docs) | **Shipped:** AppShell + SiteFooter; T1 on shadcn; theme toggle in header |
+| 1 | Full T6 grid + T2/T3 tool pages |
 | 2 | Account entry in header |
-| 5 | Theme toggle wired |
 
 ## Acceptance (documentation)
 
-- [ ] Every template T1–T6 specifies which shell slots it uses
-- [ ] Header nav matches [INFORMATION_ARCHITECTURE.md](INFORMATION_ARCHITECTURE.md)
+- [x] T1 + minimal T6 use AppShell slots ([AppShell.tsx](../../frontend/src/components/layout/AppShell.tsx))
+- [x] Header nav matches [INFORMATION_ARCHITECTURE.md](INFORMATION_ARCHITECTURE.md) (DNS health, Tools)

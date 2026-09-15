@@ -1,28 +1,21 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Share2, X } from 'lucide-react';
+
+import { DnsStatusIcon } from '@/components/dns-health/dns-status-icon';
+import { Box, Typography } from '@/components/dns-health/legacy-layout';
 import {
-  Paper,
-  Typography,
-  Box,
   Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Chip,
-  Alert,
-  Button,
-  Stack,
-  Divider
-} from '@mui/material';
-import {
-  ExpandMore as ExpandMoreIcon,
-  CheckCircle as CheckCircleIcon,
-  Warning as WarningIcon,
-  Error as ErrorIcon,
-  Info as InfoIcon,
-  Clear as ClearIcon,
-  Share as ShareIcon
-} from '@mui/icons-material';
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import { DNSAnalysisResult, CheckResult } from '../types/dns';
 
 interface WWWCheckDetail {
@@ -65,24 +58,8 @@ interface DNSResultsAdvancedProps {
   onClear: () => void;
 }
 
-const StatusIcon: React.FC<{ status: string }> = ({ status }) => {
-  switch (status) {
-    case 'success':
-    case 'pass':
-      return <CheckCircleIcon sx={{ color: '#4caf50', fontSize: '20px' }} />;
-    case 'warning':
-      return <WarningIcon sx={{ color: '#ff9800', fontSize: '20px' }} />;
-    case 'error':
-    case 'fail':
-      return <ErrorIcon sx={{ color: '#f44336', fontSize: '20px' }} />;
-    case 'info':
-    default:
-      return <InfoIcon sx={{ color: '#2196f3', fontSize: '20px' }} />;
-  }
-};
-
 export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvancedProps) {
-  const [expandedPanels, setExpandedPanels] = useState<Set<string>>(new Set(['summary']));
+  const [expandedPanels, setExpandedPanels] = useState<string[]>(['summary']);
 
   // Share functionality
   const handleShare = async () => {
@@ -114,33 +91,12 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
     }
   };
 
-  const handlePanelChange = (panel: string) => {
-    const newExpanded = new Set(expandedPanels);
-    if (newExpanded.has(panel)) {
-      newExpanded.delete(panel);
-    } else {
-      newExpanded.add(panel);
-    }
-    setExpandedPanels(newExpanded);
-  };
-
   const formatJsonData = (data: unknown) => {
     if (!data) return 'No data available';
     return (
-      <Box 
-        component="pre" 
-        sx={{ 
-          backgroundColor: '#f5f5f5', 
-          p: 2, 
-          borderRadius: 1, 
-          overflow: 'auto',
-          fontSize: '0.875rem',
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'break-word'
-        }}
-      >
+      <pre className="overflow-auto rounded-md bg-muted p-4 text-sm whitespace-pre-wrap break-words">
         {JSON.stringify(data, null, 2)}
-      </Box>
+      </pre>
     );
   };
 
@@ -169,75 +125,42 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
   const overallStatus = getOverallStatus();
 
   return (
-    <Paper elevation={2} sx={{ mt: 3 }}>
-      {/* Header */}
-      <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h5" component="h2">
-            Advanced DNS Analysis for {domain}
-          </Typography>
-          <Stack direction="row" spacing={1}>
-            <Button
-              variant="outlined"
-              startIcon={<ShareIcon />}
-              onClick={handleShare}
-              size="small"
-            >
+    <Card className="mt-6">
+      <CardHeader className="border-b">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <CardTitle className="text-xl">Advanced DNS Analysis for {domain}</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Detailed technical analysis with raw DNS data and comprehensive validation
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" onClick={handleShare}>
+              <Share2 className="mr-2 h-4 w-4" />
               Share
             </Button>
-            <Button
-              variant="outlined"
-              startIcon={<ClearIcon />}
-              onClick={onClear}
-              size="small"
-            >
+            <Button variant="outline" size="sm" onClick={onClear}>
+              <X className="mr-2 h-4 w-4" />
               Clear Results
             </Button>
-          </Stack>
-        </Box>
-        <Typography variant="body2" color="text.secondary">
-          Detailed technical analysis with raw DNS data and comprehensive validation
-        </Typography>
-      </Box>
+          </div>
+        </div>
+      </CardHeader>
 
-      {/* Summary Panel */}
-      <Accordion 
-        expanded={expandedPanels.has('summary')}
-        onChange={() => handlePanelChange('summary')}
-      >
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <StatusIcon status={overallStatus} />
-            <Typography variant="h6">Summary</Typography>
-            <Stack direction="row" spacing={1}>
-              <Chip 
-                label={`${stats.total} Total`} 
-                size="small" 
-                color="default"
-              />
-              <Chip 
-                label={`${stats.passed} Passed`} 
-                size="small" 
-                color="success"
-              />
-              {stats.warnings > 0 && (
-                <Chip 
-                  label={`${stats.warnings} Warnings`} 
-                  size="small" 
-                  color="warning"
-                />
-              )}
-              {stats.errors > 0 && (
-                <Chip 
-                  label={`${stats.errors} Errors`} 
-                  size="small" 
-                  color="error"
-                />
-              )}
-            </Stack>
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails>
+      <CardContent className="p-0">
+      <Accordion type="multiple" value={expandedPanels} onValueChange={setExpandedPanels}>
+      <AccordionItem value="summary">
+        <AccordionTrigger className="px-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <DnsStatusIcon status={overallStatus} />
+            <span className="font-semibold">Summary</span>
+            <Badge variant="secondary">{stats.total} Total</Badge>
+            <Badge className="bg-green-600/15 text-green-700 dark:text-green-400">{stats.passed} Passed</Badge>
+            {stats.warnings > 0 && <Badge className="bg-amber-500/15 text-amber-700">{stats.warnings} Warnings</Badge>}
+            {stats.errors > 0 && <Badge variant="destructive">{stats.errors} Errors</Badge>}
+          </div>
+        </AccordionTrigger>
+        <AccordionContent className="px-4">
           <Box sx={{ mb: 2 }}>
             <Typography variant="body1" gutterBottom>
               DNS analysis completed for <strong>{domain}</strong>
@@ -248,29 +171,24 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
             </Typography>
             
             {overallStatus === 'error' && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                <Typography variant="body2">
-                  <strong>Critical Issues Found:</strong> Your domain has DNS configuration 
-                  errors that need immediate attention.
-                </Typography>
+              <Alert variant="destructive" className="mb-4">
+                <AlertDescription>
+                  <strong>Critical issues found:</strong> Your domain has DNS configuration errors that need immediate attention.
+                </AlertDescription>
               </Alert>
             )}
-            
             {overallStatus === 'warning' && (
-              <Alert severity="warning" sx={{ mb: 2 }}>
-                <Typography variant="body2">
-                  <strong>Warnings Detected:</strong> Your domain configuration has some 
-                  issues that should be reviewed.
-                </Typography>
+              <Alert className="mb-4 border-amber-500/50 bg-amber-500/10">
+                <AlertDescription>
+                  <strong>Warnings detected:</strong> Your domain configuration has issues that should be reviewed.
+                </AlertDescription>
               </Alert>
             )}
-            
             {overallStatus === 'pass' && (
-              <Alert severity="success" sx={{ mb: 2 }}>
-                <Typography variant="body2">
-                  <strong>All Checks Passed:</strong> Your domain DNS configuration 
-                  appears to be properly set up.
-                </Typography>
+              <Alert className="mb-4 border-green-500/50 bg-green-500/10">
+                <AlertDescription>
+                  <strong>All checks passed:</strong> Your domain DNS configuration appears properly set up.
+                </AlertDescription>
               </Alert>
             )}
           </Box>
@@ -280,35 +198,20 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
             Raw Analysis Data
           </Typography>
           {formatJsonData(results.summary || results)}
-        </AccordionDetails>
-      </Accordion>
+        </AccordionContent>
+      </AccordionItem>
 
-      {/* Individual Check Sections */}
-      {results?.checks && Object.entries(results.checks).map(([checkType, checkData]: [string, CheckResult]) => (
-        <Accordion 
-          key={checkType}
-          expanded={expandedPanels.has(checkType)}
-          onChange={() => handlePanelChange(checkType)}
-        >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <StatusIcon status={checkData?.status || 'info'} />
-              <Typography variant="h6" sx={{ textTransform: 'uppercase' }}>
-                {checkType} Records
-              </Typography>
-              <Chip 
-                label={checkData?.status || 'unknown'}
-                size="small"
-                color={
-                  checkData?.status === 'pass' || checkData?.status === 'success' ? 'success' :
-                  checkData?.status === 'warning' ? 'warning' :
-                  checkData?.status === 'error' || checkData?.status === 'fail' ? 'error' :
-                  'default'
-                }
-              />
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
+      {results?.checks &&
+        Object.entries(results.checks).map(([checkType, checkData]: [string, CheckResult]) => (
+        <AccordionItem key={checkType} value={checkType}>
+          <AccordionTrigger className="px-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <DnsStatusIcon status={checkData?.status || 'info'} />
+              <span className="font-semibold uppercase">{checkType} Records</span>
+              <Badge variant="outline">{checkData?.status || 'unknown'}</Badge>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="px-4">
             <Box>
               <Typography variant="subtitle1" gutterBottom>
                 {checkType.toUpperCase()} Record Analysis
@@ -317,15 +220,13 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
               {/* Special handling for Domain Status check - only show if issues exist */}
               {checkType === 'domain_status' && (checkData.status === 'warning' || checkData.status === 'error') && (
                 <Box sx={{ mb: 2 }}>
-                  <Alert 
-                    severity={
-                      checkData.status === 'warning' ? 'warning' : 'error'
-                    }
-                    sx={{ mb: 2 }}
+                  <Alert
+                    variant={checkData.status === 'error' ? 'destructive' : undefined}
+                    className={checkData.status === 'warning' ? 'mb-4 border-amber-500/50' : 'mb-4'}
                   >
-                    <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>
+                    <AlertDescription className="font-semibold">
                       {String(checkData.message || 'Domain status check completed')}
-                    </Typography>
+                    </AlertDescription>
                   </Alert>
                   
                   {/* Detailed Status Information */}
@@ -337,7 +238,7 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
                       {Object.entries((checkData as DomainStatusResult).detailed_checks!).map(([checkName, result]: [string, DomainStatusDetailCheck]) => (
                         <Box key={checkName} sx={{ mb: 1, p: 1, border: '1px solid #e0e0e0', borderRadius: 1 }}>
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                            <StatusIcon status={result?.status || 'info'} />
+                            <DnsStatusIcon status={result?.status || 'info'} />
                             <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
                               {checkName.replace('_', ' ').toUpperCase()}
                             </Typography>
@@ -374,7 +275,7 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
                   {((checkData as WWWCheckResult).checks!).map((check, index: number) => (
                     <Box key={index} sx={{ mb: 2 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                        <StatusIcon status={check.status || 'info'} />
+                        <DnsStatusIcon status={check.status || 'info'} />
                         <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
                           {check.type === 'www_a_record' ? 'WWW A Record' :
                            check.type === 'www_ip_public' ? 'IPs are public' :
@@ -382,19 +283,8 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
                            check.type}
                         </Typography>
                       </Box>
-                      <Alert 
-                        severity={
-                          check.status === 'pass' ? 'success' :
-                          check.status === 'warning' ? 'warning' :
-                          check.status === 'error' ? 'error' :
-                          'info'
-                        }
-                        sx={{ mb: 1 }}
-                      >
-                        <Typography 
-                          variant="body2" 
-                          dangerouslySetInnerHTML={{ __html: check.message || '' }}
-                        />
+                      <Alert className="mb-2">
+                        <AlertDescription dangerouslySetInnerHTML={{ __html: check.message || '' }} />
                       </Alert>
                     </Box>
                   ))}
@@ -418,36 +308,33 @@ export function DNSResultsAdvanced({ results, domain, onClear }: DNSResultsAdvan
                     Issues Found:
                   </Typography>
                   {checkData.issues.map((issue: { severity?: 'error' | 'warning' | 'info' | 'success'; message?: string; description?: string }, index: number) => (
-                    <Alert 
+                    <Alert
                       key={index}
-                      severity={issue.severity || 'info'}
-                      sx={{ mb: 1 }}
+                      variant={issue.severity === 'error' ? 'destructive' : undefined}
+                      className="mb-2"
                     >
-                      <Typography variant="body2">
-                        {issue.message || issue.description || 'Unknown issue'}
-                      </Typography>
+                      <AlertDescription>{issue.message || issue.description || 'Unknown issue'}</AlertDescription>
                     </Alert>
                   ))}
                 </Box>
               )}
 
-              <Divider sx={{ my: 2 }} />
+              <Separator className="my-4" />
               
               <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 1 }}>
                 Raw Data:
               </Typography>
               {formatJsonData(checkData)}
             </Box>
-          </AccordionDetails>
-        </Accordion>
+          </AccordionContent>
+        </AccordionItem>
       ))}
+      </Accordion>
 
-      {/* Footer */}
-      <Box sx={{ p: 2, textAlign: 'center', borderTop: '1px solid #e0e0e0', backgroundColor: '#f9f9f9' }}>
-        <Typography variant="body2" color="text.secondary">
-          Advanced analysis completed • Raw DNS data displayed • Powered by DNSBunch
-        </Typography>
-      </Box>
-    </Paper>
+      <p className="border-t bg-muted/30 py-3 text-center text-sm text-muted-foreground">
+        Advanced analysis completed • Raw DNS data displayed • Powered by DNSBunch
+      </p>
+      </CardContent>
+    </Card>
   );
 }

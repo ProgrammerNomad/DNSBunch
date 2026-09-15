@@ -18,15 +18,14 @@
 - `@mui/material`, `@mui/icons-material`, and similar UI kits
 - Adding a second parallel design system alongside shadcn
 
-## Legacy (CURRENT in production)
+## Legacy (removed)
 
-| Item | Location | Migration |
-|------|----------|-----------|
-| MUI `ThemeProvider` | [layout.tsx](../../frontend/src/app/layout.tsx) | Remove when T1 + AppShell migrate |
-| Home + results | [page.tsx](../../frontend/src/app/page.tsx), `DomainSearchForm`, `DNSResultsTable`, `DNSResultsAdvanced` | Rewrite to shadcn as part of **T1** ([PAGE_TEMPLATES.md](PAGE_TEMPLATES.md)) |
-| Footer | [Footer.tsx](../../frontend/src/components/Footer.tsx) | Move content into global **SiteFooter** (shadcn layout) |
+| Item | Status |
+|------|--------|
+| MUI `@mui/*` | Removed from [package.json](../../frontend/package.json) (Step 0b) |
+| Per-page footer | Migrated to [SiteFooter.tsx](../../frontend/src/components/layout/SiteFooter.tsx) |
 
-**Target:** single stack (Tailwind + shadcn). Remove `@mui/*` from [package.json](../../frontend/package.json) when no imports remain.
+**CURRENT:** single stack (Tailwind + shadcn) on T1, AppShell, and minimal T6 `/tools`.
 
 ## Theming
 

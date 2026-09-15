@@ -294,8 +294,8 @@ Stack (verified [frontend/package.json](../frontend/package.json)): Next ^15.4.7
 
 | UI | Status |
 |----|--------|
-| **MUI** | **CURRENT** - shipped DNS health home only ([ux/CURRENT_UI.md](ux/CURRENT_UI.md)) |
-| **Tailwind + shadcn/ui** | **PLANNED** - all new/migrated surfaces ([ux/FRONTEND_STACK.md](ux/FRONTEND_STACK.md)) |
+| **Tailwind + shadcn/ui** | **CURRENT** - AppShell, T1 home, `/tools` hub ([ux/FRONTEND_STACK.md](ux/FRONTEND_STACK.md), [ux/SITE_SHELL.md](ux/SITE_SHELL.md)) |
+| **MUI** | **Removed** (Step 0b migration) |
 
 ---
 

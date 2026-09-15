@@ -1,15 +1,17 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 
-import { theme } from '../theme/theme';
+import { AppShell } from '@/components/layout/AppShell';
+import { ThemeProvider } from '@/components/providers/theme-provider';
+
+import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'DNSBunch - DNS Analysis & Mail Server Diagnostics',
-  description: 'Comprehensive DNS record analysis, mail server diagnostics, and email security validation tool. Check SPF, DMARC, DKIM, and more.',
+  description:
+    'Comprehensive DNS record analysis, mail server diagnostics, and email security validation tool. Check SPF, DMARC, DKIM, and more.',
   keywords: ['DNS', 'mail server', 'SPF', 'DMARC', 'DKIM', 'DNS analysis', 'email security'],
   authors: [{ name: 'Nomad Programmer' }],
 };
@@ -25,12 +27,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className} style={{ margin: 0, padding: 0, minHeight: '100vh' }} suppressHydrationWarning={true}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          {children}
-          {/* No footer here - it's handled in the page component */}
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <AppShell>{children}</AppShell>
         </ThemeProvider>
       </body>
     </html>

@@ -1,26 +1,26 @@
 'use client';
 
 import React from 'react';
+import { Share2 } from 'lucide-react';
+
+import { DnsStatusIcon } from '@/components/dns-health/dns-status-icon';
+import { Box, Typography } from '@/components/dns-health/legacy-layout';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
+  TableHeader,
   TableRow,
-  Paper,
-  Typography,
-  Box,
-  IconButton,
-  Tooltip
-} from '@mui/material';
+} from '@/components/ui/table';
 import {
-  CheckCircle as PassIcon,
-  Warning as WarnIcon,
-  Error as ErrorIcon,
-  Info as InfoIcon,
-  Share as ShareIcon
-} from '@mui/icons-material';
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { DNSAnalysisResult, CheckResult, SOARecord, DNSCheck } from '../types/dns';
 
 interface WWWCheckDetail {
@@ -60,10 +60,6 @@ interface DomainStatusResult extends CheckResult {
 interface DNSResultsTableProps {
   results: DNSAnalysisResult;
   domain: string;
-}
-
-interface StatusIconProps {
-  status: 'pass' | 'warning' | 'error' | 'info';
 }
 
 interface TestResult {
@@ -120,20 +116,6 @@ interface EnhancedCheckResult extends CheckResult {
   parent_server?: string;
   glue_records?: boolean;
 }
-
-const StatusIcon: React.FC<StatusIconProps> = ({ status }) => {
-  switch (status) {
-    case 'pass':
-      return <PassIcon sx={{ color: '#4caf50', fontSize: '20px' }} />;
-    case 'warning':
-      return <WarnIcon sx={{ color: '#ff9800', fontSize: '20px' }} />;
-    case 'error':
-      return <ErrorIcon sx={{ color: '#f44336', fontSize: '20px' }} />;
-    case 'info':
-    default:
-      return <InfoIcon sx={{ color: '#2196f3', fontSize: '20px' }} />;
-  }
-};
 
 export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
 
@@ -329,7 +311,7 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
       // Special handling for glue records (nameserver IPs)
       if (checkType.includes('glue') || checkType.includes('Glue')) {
         const entries = Object.entries(obj);
-        if (entries.length > 0 && entries.every(([_key, value]) => Array.isArray(value))) {
+        if (entries.length > 0 && entries.every(([, value]) => Array.isArray(value))) {
           return (
             <Box sx={{ mt: 1 }}>
               {entries.map(([ns, ips]) => {
@@ -786,85 +768,76 @@ export function DNSResultsTable({ results, domain }: DNSResultsTableProps) {
   const testSections = generateTestRows();
 
   return (
-    <Paper elevation={2} sx={{ mt: 3 }}>
-      <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Box>
-          <Typography variant="h5" component="h2" gutterBottom>
-            DNS Analysis Results for {domain}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Comprehensive DNS and mail server diagnostics
-          </Typography>
-        </Box>
-        <Tooltip title="Share this DNS analysis">
-          <IconButton 
-            onClick={handleShare}
-            color="primary"
-            size="large"
-          >
-            <ShareIcon />
-          </IconButton>
-        </Tooltip>
-      </Box>
-
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-              <TableCell sx={{ fontWeight: 'bold', minWidth: '100px' }}>Category</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', width: '60px', textAlign: 'center' }}>Status</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', minWidth: '200px' }}>Test name</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Information</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {testSections.map((section, sectionIndex) => 
-              section.tests.map((test, testIndex) => (
-                <TableRow 
-                  key={`${sectionIndex}-${testIndex}`}
-                  sx={{ 
-                    '&:hover': { backgroundColor: '#f9f9f9' },
-                    backgroundColor: test.status === 'error' ? '#ffebee' : 
-                                   test.status === 'warning' ? '#fff3e0' : 
-                                   test.status === 'info' ? '#f3f4f6' : 'transparent'
-                  }}
-                >
-                  {testIndex === 0 && (
-                    <TableCell 
-                      rowSpan={section.rowSpan} 
-                      sx={{ 
-                        verticalAlign: 'top',
-                        fontWeight: 'bold',
-                        backgroundColor: '#ffffff',
-                        borderRight: '2px solid #e0e0e0'
-                      }}
-                    >
-                      {section.category}
+    <Card className="mt-6">
+      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
+        <div>
+          <CardTitle className="text-xl">DNS Analysis Results for {domain}</CardTitle>
+          <p className="text-sm text-muted-foreground">Comprehensive DNS and mail server diagnostics</p>
+        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="outline" size="icon" onClick={handleShare} aria-label="Share results">
+                <Share2 className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Share this DNS analysis</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </CardHeader>
+      <CardContent className="p-0 pt-0">
+        <div className="overflow-x-auto rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/50">
+                <TableHead className="min-w-[100px]">Category</TableHead>
+                <TableHead className="w-[60px] text-center">Status</TableHead>
+                <TableHead className="min-w-[200px]">Test name</TableHead>
+                <TableHead>Information</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {testSections.map((section, sectionIndex) =>
+                section.tests.map((test, testIndex) => (
+                  <TableRow
+                    key={`${sectionIndex}-${testIndex}`}
+                    className={
+                      test.status === 'error'
+                        ? 'bg-destructive/5'
+                        : test.status === 'warning'
+                          ? 'bg-amber-500/10'
+                          : test.status === 'info'
+                            ? 'bg-muted/30'
+                            : undefined
+                    }
+                  >
+                    {testIndex === 0 && (
+                      <TableCell
+                        rowSpan={section.rowSpan}
+                        className="align-top border-r-2 font-bold bg-background"
+                      >
+                        {section.category}
+                      </TableCell>
+                    )}
+                    <TableCell className="text-center">
+                      <DnsStatusIcon status={test.status} />
                     </TableCell>
-                  )}
-                  <TableCell sx={{ textAlign: 'center', py: 1 }}>
-                    <StatusIcon status={test.status} />
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 'medium' }}>
-                    {test.name}
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: '500px' }}>
-                    <Typography variant="body2" component="div">
-                      {test.info}
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      <Box sx={{ p: 2, textAlign: 'center', borderTop: '1px solid #e0e0e0', backgroundColor: '#f9f9f9' }}>
-        <Typography variant="body2" color="text.secondary">
+                    <TableCell className="font-medium">{test.name}</TableCell>
+                    <TableCell className="max-w-[500px]">
+                      <Typography variant="body2" component="div">
+                        {test.info}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                )),
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        <p className="border-t bg-muted/30 py-3 text-center text-sm text-muted-foreground">
           Analysis completed • Powered by DNSBunch
-        </Typography>
-      </Box>
-    </Paper>
+        </p>
+      </CardContent>
+    </Card>
   );
 }
