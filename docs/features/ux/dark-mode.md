@@ -6,37 +6,37 @@
 |-------|--------|
 | **priority** | P3 |
 | **status** | planned |
-| **phase** | 5 |
+| **phase** | - |
 | **access** | free |
 | **tool_id** | `ux_dark_mode` |
 | **last_reviewed** | 2026-09-15 |
 
 ## Summary
 
-`next-themes` + shadcn CSS variables; system preference; localStorage (FUTURE_IDEAS #5).
+Cross-cutting UX: `next-themes` + shadcn CSS variables; system preference; persisted toggle in site shell (FUTURE_IDEAS #5). **Not a Phase 5 product feature** - ships with [SITE_SHELL.md](../../ux/SITE_SHELL.md) / AppShell when UI migrates to shadcn.
 
 ## Problem
 
-Users expect dark theme for long diagnostic sessions (FUTURE_IDEAS #5).
+Users expect dark theme for long diagnostic sessions (FUTURE_IDEAS #5). Waiting until “ecosystem phase” delays a basic presentation improvement.
 
 ## Scope
 
-**In scope:** `next-themes` + shadcn CSS variables; toggle in SiteHeader.
+**In scope:** Light/dark/system modes; header toggle; tokens in `globals.css`; readable tables and alerts in both themes.
 
-**Out of scope:** Per-component one-off colors outside design tokens.
+**Out of scope:** Per-tool custom palettes outside design tokens; MUI dual-theme (legacy home removed on migration).
 
 ## User flows
 
-- **Anonymous:** Toggle theme; preference in localStorage.
-- **Logged-in (future):** Optional sync preference to account.
+- **Anonymous:** Toggle theme in header; preference in `localStorage` via `next-themes`.
+- **Logged-in (future):** Optional sync preference to account settings on **T5**.
 
 ## Architecture
 
-Root layout `ThemeProvider`; `.dark` on `html` ([FRONTEND_STACK.md](../../ux/FRONTEND_STACK.md)).
+Root layout `ThemeProvider` from `next-themes`; `.dark` class on `<html>` ([FRONTEND_STACK.md](../../ux/FRONTEND_STACK.md)).
 
 ## Data model
 
-None for v1.
+Optional `User.theme_preference` when accounts exist; none for v1.
 
 ## API
 
@@ -44,7 +44,7 @@ None.
 
 ## UI
 
-Shell header `Button` with Sun/Moon icons; tokens in [SITE_SHELL.md](../../ux/SITE_SHELL.md).
+Cross-cutting - not a standalone route. Shell header `Button` (Sun/Moon); applies to **T1–T6** ([SITE_SHELL.md](../../ux/SITE_SHELL.md)). See [STATES_AND_FEEDBACK.md](../../ux/STATES_AND_FEEDBACK.md) for contrast/readability.
 
 ## Limits and abuse
 
@@ -52,20 +52,30 @@ None.
 
 ## Monetization
 
-Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
+Free. Not a paid feature.
 
 ## Dependencies
 
-None.
+[FRONTEND_STACK.md](../../ux/FRONTEND_STACK.md), AppShell implementation (Step 0b in [IMPLEMENTATION_ORDER.md](../../roadmap/IMPLEMENTATION_ORDER.md)).
 
 ## Implementation checklist
 
-- [ ] Theme provider dual palette
-- [ ] Persist preference
+- [ ] Install `next-themes` + shadcn dark CSS variables
+- [ ] Header toggle wired
+- [ ] Remove MUI theme when T1 migrated
 
 ## Acceptance criteria
 
+- [ ] Light theme renders correctly across T1–T6 layouts
+- [ ] Dark theme renders correctly across T1–T6 layouts
+- [ ] System preference respected when user selects “system”
+- [ ] User can manually toggle light / dark / system
+- [ ] Preference persists across browser sessions
+- [ ] Diagnostic result **data** unchanged between themes (presentation only)
+- [ ] Result tables and badges remain readable in both themes
+- [ ] Mobile header and nav remain usable in both themes
 
 ## References
 
-None for v1.
+- FUTURE_IDEAS #5
+- [PHASES.md](../../roadmap/PHASES.md) - cross-cutting UX

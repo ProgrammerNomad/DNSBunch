@@ -66,10 +66,10 @@ Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) 
 | [features/pro-experiments/export-pdf-json-csv.md](features/pro-experiments/export-pdf-json-csv.md) | Export | planned | 3 | P2 | access both |
 | [features/pro-experiments/shareable-result-links.md](features/pro-experiments/shareable-result-links.md) | Share links | planned | 3 | P2 | access both |
 | [features/pro-experiments/white-label-reports.md](features/pro-experiments/white-label-reports.md) | White label | planned | 3 | P2 | experiment |
-| [features/ux/dark-mode.md](features/ux/dark-mode.md) | Dark mode | planned | 5 | P3 | |
-| [features/ux/result-comparison.md](features/ux/result-comparison.md) | Compare domains | planned | 5 | P3 | may move earlier |
-| [features/ux/pwa-mobile.md](features/ux/pwa-mobile.md) | PWA | planned | 5 | P3 | |
-| [features/ux/browser-extension.md](features/ux/browser-extension.md) | Browser extension | planned | 5 | P3 | |
+| [features/ux/dark-mode.md](features/ux/dark-mode.md) | Dark mode | planned | - | P3 | cross-cutting UX / shell |
+| [features/ux/result-comparison.md](features/ux/result-comparison.md) | Compare domains | planned | 2 | P3 | bulk + history |
+| [features/ux/pwa-mobile.md](features/ux/pwa-mobile.md) | PWA | planned | 5 | P3 | ecosystem |
+| [features/ux/browser-extension.md](features/ux/browser-extension.md) | Browser extension | planned | 5 | P3 | ecosystem |
 
 ## Roadmap
 

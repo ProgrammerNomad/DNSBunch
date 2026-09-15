@@ -13,29 +13,29 @@
 
 ## Summary
 
-Installable PWA, offline cached results (FUTURE_IDEAS #7).
+Installable PWA and mobile-friendly install path (FUTURE_IDEAS #7). **Phase 5 ecosystem** - after core tools and shell are stable.
 
 ## Problem
 
-Mobile users want home-screen install (FUTURE_IDEAS #7).
+Mobile users want home-screen install; responsive **T1–T6** alone is not installability.
 
 ## Scope
 
-**In scope:** Web manifest, icons, service worker for offline shell (not offline DNS).
+**In scope:** Web manifest, icons, service worker caching static shell (not offline DNS queries).
 
-**Out of scope:** Native app store apps.
+**Out of scope:** App Store / Play native apps; offline diagnostic engine.
 
 ## User flows
 
-- **Anonymous:** Install prompt on supported browsers.
+- **Anonymous:** Browser install prompt or “Add to Home Screen” guidance on supported devices.
 
 ## Architecture
 
-Next PWA plugin or manual manifest in `public/`.
+Next.js PWA plugin or hand-rolled `manifest.json` + SW in `public/`.
 
 ## Data model
 
-None for v1.
+None.
 
 ## API
 
@@ -43,28 +43,36 @@ None.
 
 ## UI
 
-Install hint `Alert` dismissible; responsive **T1–T6** already required.
+Dismissible install `Alert` on **T6** or shell; all templates must already meet mobile layout ([SITE_SHELL.md](../../ux/SITE_SHELL.md)).
 
 ## Limits and abuse
 
-SW cache static assets only.
+Service worker caches static assets only; no credential caching in SW.
 
 ## Monetization
 
-Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
+Free.
 
 ## Dependencies
 
-Next.js PWA config.
+AppShell + shadcn migration complete.
 
 ## Implementation checklist
 
-- [ ] Spec implemented per FRONTEND_STACK
-- [ ] Document in CHANGELOG when shipped
+- [ ] manifest + icons
+- [ ] SW registration
+- [ ] Lighthouse PWA audit pass (best effort)
 
 ## Acceptance criteria
 
+- [ ] Valid web app manifest linked from production site
+- [ ] Install prompt or iOS “Add to Home Screen” instructions shown where applicable
+- [ ] Installed PWA opens to DNS health or tools hub
+- [ ] Service worker does not cache authenticated API responses by default
+- [ ] Core tool flows usable on viewport width 320px
+- [ ] Install banner dismiss state persists for session or localStorage
 
 ## References
 
-None for v1.
+- FUTURE_IDEAS #7
+- [PHASES.md](../../roadmap/PHASES.md) Phase 5

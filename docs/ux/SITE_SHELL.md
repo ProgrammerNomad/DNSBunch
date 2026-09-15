@@ -21,7 +21,7 @@ Global chrome for all public pages. Implemented in code as `AppShell` wrapping `
 |---------|----------|
 | Logo + wordmark | Link to `/` |
 | Nav links | Tools → `/tools`; optional featured tool links (max 3) |
-| Theme toggle | Phase 5 - shadcn + `next-themes`; placeholder slot in shell v1 |
+| Theme toggle | Cross-cutting UX ([dark-mode.md](../features/ux/dark-mode.md)); ship with AppShell, not Phase 5 |
 | Account | Phase 2 - Sign in / avatar menu → dashboard |
 | Mobile | shadcn `Sheet` hamburger for nav |
 

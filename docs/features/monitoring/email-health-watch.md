@@ -65,6 +65,9 @@ Email tool modules, [mail-tester-inbound.md](../email/mail-tester-inbound.md), [
 
 ## Acceptance criteria
 
+- [ ] Scheduled re-check detects SPF/DMARC/DKIM/MX drift vs prior snapshot
+- [ ] User notified on material email-health change
+- [ ] Poll interval respects plan tier
 
 ## References
 

@@ -39,10 +39,10 @@ Maps each tracked feature to page template, public route, nav category, and prod
 | pro-experiments/export-pdf-json-csv | - | T2/T3 | export actions on tool pages | Pro | 3 |
 | pro-experiments/shareable-result-links | - | T2/T1 | share button on results | Pro | 3 |
 | pro-experiments/white-label-reports | white_label_reports | T5 | `/dashboard/reports` | Pro | 3 |
-| ux/dark-mode | - | shell | header toggle | UX | 5 |
-| ux/result-comparison | - | T1/T3 | compare mode on results | UX | 5 |
-| ux/pwa-mobile | - | shell | install prompt | UX | 5 |
-| ux/browser-extension | - | extension | browser action | UX | 5 |
+| ux/dark-mode | ux_dark_mode | shell | header toggle | Cross-cutting UX | - |
+| ux/result-comparison | compare_domains | T1/T3 | compare on results | Product | 2 |
+| ux/pwa-mobile | pwa | shell | install prompt | Ecosystem | 5 |
+| ux/browser-extension | browser_extension | extension | browser action | Ecosystem | 5 |
 | deferred/dnssec-validation | dnssec_checker | T2 | `/tools/dnssec` | Domain | deferred |
 
 Platform rows with template **-** have no public tool page (server/BFF only).

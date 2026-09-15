@@ -49,8 +49,8 @@ PHASE_BY_FILE = {
     "pro-experiments/export-pdf-json-csv.md": "3",
     "pro-experiments/shareable-result-links.md": "3",
     "pro-experiments/white-label-reports.md": "3",
-    "ux/dark-mode.md": "5",
-    "ux/result-comparison.md": "5",
+    "ux/dark-mode.md": "-",
+    "ux/result-comparison.md": "2",
     "ux/pwa-mobile.md": "5",
     "ux/browser-extension.md": "5",
 }

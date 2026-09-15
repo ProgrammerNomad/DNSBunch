@@ -65,6 +65,9 @@ Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). 
 
 ## Acceptance criteria
 
+- [ ] User can create and revoke API keys from dashboard
+- [ ] Requests with valid key authenticate and respect plan rate limits
+- [ ] Revoked keys return 401 immediately
 
 ## References
 

@@ -21,7 +21,8 @@ Complete [DOC_COMPLETION_CHECKLIST.md](DOC_COMPLETION_CHECKLIST.md) and sign off
 | 8 | 3 | [billing-stripe-ready.md](../features/platform/billing-stripe-ready.md) + [entitlements-quotas.md](../features/platform/entitlements-quotas.md) | Only after metrics justify a SKU |
 | 9 | 3 | Pro experiments | e.g. [dns-change-alerts.md](../features/monitoring/dns-change-alerts.md), [developer-api-keys.md](../features/pro-experiments/developer-api-keys.md) |
 | 10 | 4 | Bulk 4 / scale | Queues, Redis-see [PHASES.md](PHASES.md) |
-| 11 | 5 | UX | e.g. [dark-mode.md](../features/ux/dark-mode.md) when worthwhile |
+| 11 | 5 | Ecosystem | [pwa-mobile.md](../features/ux/pwa-mobile.md), [browser-extension.md](../features/ux/browser-extension.md) |
+| - | - | Cross-cutting UX | [dark-mode.md](../features/ux/dark-mode.md) with AppShell (0b); [result-comparison.md](../features/ux/result-comparison.md) after bulk/history |
 
 ## Do not
 

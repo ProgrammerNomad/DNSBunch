@@ -72,7 +72,15 @@ None for Bulk 1–3. Phase 4: `bulk_jobs` table - [scale-async-jobs.md](../platf
 
 ## UI
 
-Template **T3**, route `/tools/bulk-dns-health` - shadcn `Textarea`, `Progress`, `Table`, drill-down to **T1** ([PAGE_TEMPLATES.md](../../ux/PAGE_TEMPLATES.md#t3--bulk-dns-health)).
+| UX (cross-cutting) | Spec |
+|--------------------|------|
+| Template | **T3** bulk table; drill-down **T1** ([PAGE_TEMPLATES.md](../../ux/PAGE_TEMPLATES.md#t3--bulk-dns-health)) |
+| Route | `/tools/bulk-dns-health` ([PHASE_UI_MAP.md](../../ux/PHASE_UI_MAP.md)) |
+| Components | shadcn `Textarea`, `Progress`, `Table`, optional `Sheet` |
+| States | Loading, partial row failure, empty list, 429 - [STATES_AND_FEEDBACK.md](../../ux/STATES_AND_FEEDBACK.md) |
+| Responsive | Mobile horizontal scroll for wide table ([SITE_SHELL.md](../../ux/SITE_SHELL.md)) |
+
+Product **phase** (1) ≠ UX template (T3); **priority** P1 is separate in metadata.
 
 ## Limits and abuse
 

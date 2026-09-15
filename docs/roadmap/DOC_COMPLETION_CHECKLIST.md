@@ -28,7 +28,8 @@ Gate before any AppShell, Tailwind/shadcn, or Phase 0 backend implementation. Ch
 - [x] Platform Phase 0 docs filled (+ generic-tool-bff)
 - [x] Phase 1 tool docs filled (bulk + 14 tools)
 - [x] Phase 2–3 docs filled (auth, mail, billing, monitoring, pro)
-- [x] Phase 5 UX feature docs filled
+- [x] Phase 5 ecosystem docs (PWA, extension); cross-cutting UX (dark mode `phase: -`, compare `phase: 2`)
+- [x] [PHASES.md](PHASES.md) - Phase 5 renamed; UX cross-cutting section
 - [x] Gap docs: scale-async-jobs, privacy-anonymous-mode, deferred stubs
 - [x] Shipped dns-health UI references T1 + FRONTEND_STACK
 

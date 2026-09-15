@@ -13,58 +13,65 @@
 
 ## Summary
 
-Quick DNS check from toolbar (FUTURE_IDEAS #8).
+MV3 extension for quick domain check from the active tab (FUTURE_IDEAS #8). **Phase 5 ecosystem** extension surface.
 
 ## Problem
 
-Quick check from browser toolbar (FUTURE_IDEAS #8).
+Power users want one-click check without copy-paste to the website.
 
 ## Scope
 
-**In scope:** MV3 extension opens DNSBunch tool or runs check via public BFF.
+**In scope:** Popup reads active tab hostname; opens DNSBunch **T1** with domain or triggers check via public BFF policy.
 
-**Out of scope:** Extension store launch day one.
+**Out of scope:** Store publication day one; full in-extension results renderer v1.
 
 ## User flows
 
-- **Anonymous:** Click extension → popup with domain from active tab → open results on DNSBunch.
+- **Anonymous:** Extension icon → confirm domain → new tab to results on dnsbunch.com.
 
 ## Architecture
 
-Thin extension; API calls same-origin or API keys Phase 3.
+Separate extension repo or `extension/` folder; calls documented CORS/BFF rules; API keys optional Phase 3.
 
 ## Data model
 
-None for v1.
+None.
 
 ## API
 
-Reuse `/api/dns/check` or tool BFF with CORS policy decision documented.
+Reuse `POST /api/dns/check` or `/api/tools/dns_health` - document CORS decision in [API.md](../../API.md) when implemented.
 
 ## UI
 
-Extension popup minimal shadcn-not applicable - HTML + brand; links to **T1**.
+Extension popup (minimal HTML); primary UX remains **T1** on site ([FRONTEND_STACK.md](../../ux/FRONTEND_STACK.md) branding).
 
 ## Limits and abuse
 
-Extension obeys same rate limits via server.
+Same server rate limits; extension must not bypass CSRF rules (prefer opening site tab).
 
 ## Monetization
 
-Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
+Free.
 
 ## Dependencies
 
-Public API or extension calling dnsbunch.com.
+Stable public check API; privacy policy update.
 
 ## Implementation checklist
 
-- [ ] Spec implemented per FRONTEND_STACK
-- [ ] Document in CHANGELOG when shipped
+- [ ] MV3 manifest + popup
+- [ ] Hostname extraction from active tab
+- [ ] Deep link to `/?domain=` or path route
 
 ## Acceptance criteria
 
+- [ ] Extension loads on supported Chromium browser
+- [ ] Active tab hostname detected for http/https pages
+- [ ] User can open DNSBunch results for that domain in one click
+- [ ] Invalid pages (chrome://, empty) show friendly message
+- [ ] No API secrets embedded in extension bundle
+- [ ] Rate limiting still enforced server-side
 
 ## References
 
-None for v1.
+- FUTURE_IDEAS #8

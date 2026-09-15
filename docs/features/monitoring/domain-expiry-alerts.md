@@ -65,6 +65,9 @@ Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). 
 
 ## Acceptance criteria
 
+- [ ] Alert sent at configured days-before-expiry thresholds
+- [ ] Unknown expiry handled without false alerts
+- [ ] Watch respects WHOIS rate limits
 
 ## References
 

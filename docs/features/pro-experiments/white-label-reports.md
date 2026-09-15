@@ -65,6 +65,9 @@ Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). 
 
 ## Acceptance criteria
 
+- [ ] Pro user can upload logo and set brand color
+- [ ] Generated PDF includes brand header on DNS health summary
+- [ ] PDF generation fails gracefully when quota exceeded
 
 ## References
 

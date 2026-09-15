@@ -126,3 +126,7 @@ One wireframe per **page type**. Individual tools reuse **T2** with different co
 | T4 | Mail tester | `/tools/mail-tester` |
 | T5 | Dashboard | `/dashboard` |
 | T6 | Tools hub | `/tools` |
+
+## Cross-cutting UX (not Phase 5)
+
+Templates **T1–T6** share [SITE_SHELL.md](SITE_SHELL.md), responsive layout, and [STATES_AND_FEEDBACK.md](STATES_AND_FEEDBACK.md). [Dark mode](../features/ux/dark-mode.md) (`phase: -`) applies to all templates when AppShell ships. [Result comparison](../features/ux/result-comparison.md) attaches to **T1/T3**. Phase **5** is ecosystem only (PWA, extension) - see [PHASES.md](../roadmap/PHASES.md).

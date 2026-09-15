@@ -65,6 +65,9 @@ Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). 
 
 ## Acceptance criteria
 
+- [ ] Watch URL checked on configured interval
+- [ ] Down transition triggers alert within one interval + grace
+- [ ] Private/reserved URLs rejected at watch creation
 
 ## References
 

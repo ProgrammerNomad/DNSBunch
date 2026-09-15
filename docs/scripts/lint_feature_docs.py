@@ -40,6 +40,16 @@ def check_file(path: Path) -> list[str]:
             errors.append(f"{path.relative_to(FEATURES)}: TBD in ## {section}")
         if not body.strip():
             errors.append(f"{path.relative_to(FEATURES)}: empty ## {section}")
+
+    ac = re.search(r"## Acceptance criteria\n\n(.*?)(\n## |\Z)", text, re.DOTALL)
+    if not ac:
+        errors.append(f"{path.relative_to(FEATURES)}: missing ## Acceptance criteria")
+    else:
+        ac_body = ac.group(1).strip()
+        if not ac_body or not re.search(r"- \[[ xX]\]", ac_body):
+            errors.append(
+                f"{path.relative_to(FEATURES)}: Acceptance criteria needs at least one checkbox item"
+            )
     return errors
 
 
