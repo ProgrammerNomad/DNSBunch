@@ -80,7 +80,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
       );
     }
     proxyBody = validated.data;
-  } else if (toolId === 'http_headers') {
+  } else if (toolId === 'http_headers' || toolId === 'redirect_chain') {
     const validated = validateFetchUrlBody(body);
     if (!validated.ok) {
       return NextResponse.json(

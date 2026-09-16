@@ -8,6 +8,7 @@ export const ALLOWED_TOOL_IDS = [
   'smtp_test',
   'dnsbl_lookup',
   'http_headers',
+  'redirect_chain',
 ] as const;
 
 export type AllowedToolId = (typeof ALLOWED_TOOL_IDS)[number];

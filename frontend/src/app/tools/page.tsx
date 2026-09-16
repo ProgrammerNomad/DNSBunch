@@ -122,6 +122,17 @@ export default function ToolsHubPage() {
             </Button>
           </CardHeader>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Redirect chain</CardTitle>
+            <CardDescription>
+              Follow GET redirects hop by hop (max 5) with status codes and Location headers.
+            </CardDescription>
+            <Button asChild className="mt-2 w-fit">
+              <Link href="/tools/redirect-chain">Open redirect chain</Link>
+            </Button>
+          </CardHeader>
+        </Card>
       </section>
     </div>
   );

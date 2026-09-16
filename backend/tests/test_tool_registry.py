@@ -223,6 +223,38 @@ class TestToolRegistry:
         with pytest.raises(ValueError, match="URL is required"):
             run_tool("http_headers", url="")
 
+    def test_redirect_chain_registered(self):
+        assert "redirect_chain" in list_tool_ids()
+        entry = get("redirect_chain")
+        assert entry.meta.category == "website"
+        assert entry.meta.timeout_ms == 20_000
+
+    def test_redirect_chain_invalid_url(self):
+        with pytest.raises(ValueError, match="URL is required"):
+            run_tool("redirect_chain", url="")
+
+    def test_redirect_chain_smoke_mocked(self, monkeypatch):
+        from tools.url_fetch import RedirectChainResult, RedirectHop
+
+        def fake_chain(url, **kwargs):
+            return RedirectChainResult(
+                hops=(
+                    RedirectHop(1, "https://example.com", 301, "https://example.com/"),
+                    RedirectHop(2, "https://example.com/", 200, None),
+                ),
+                final_url="https://example.com/",
+                final_status_code=200,
+                loop_detected=False,
+                redirect_limit_exceeded=False,
+                headers={},
+            )
+
+        monkeypatch.setattr("tools.redirect_chain.runner.fetch_redirect_chain", fake_chain)
+        result = run_tool("redirect_chain", url="https://example.com")
+        assert result["status"] == "pass"
+        assert len(result["hops"]) == 2
+        assert result["final_status_code"] == 200
+
     def test_http_headers_smoke_mocked(self, monkeypatch):
         from tools.url_fetch import FetchGetResult
 

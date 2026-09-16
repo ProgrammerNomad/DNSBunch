@@ -555,6 +555,16 @@ Response: `{ "input_url", "final_url", "status_code", "status", "headers", "secu
 
 Private targets (e.g. `http://127.0.0.1`) are rejected at the BFF with **400**.
 
+**Local dev - Redirect chain (T2):**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/redirect_chain \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com"}'
+```
+
+Response: `{ "input_url", "final_url", "final_status_code", "status", "hops", "loop_detected", "issues", "error" }`.
+
 Legacy **`POST /api/dns/check`** (CSRF → `/api/check`) remains unchanged for the home UI until T1 migration.
 
 ### Browser → Next BFF

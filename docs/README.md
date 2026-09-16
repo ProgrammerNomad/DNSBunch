@@ -51,7 +51,7 @@ Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) 
 | [features/email/mail-tester-inbound.md](features/email/mail-tester-inbound.md) | Mail tester | planned | 2 | P1 | inbound SMTP |
 | [features/website/ssl-inspector.md](features/website/ssl-inspector.md) | SSL inspector | planned | 1 | P2 | |
 | [features/website/http-headers.md](features/website/http-headers.md) | HTTP headers | **shipped** | 1 | P2 | T2 website; SSRF via `url_fetch` |
-| [features/website/redirect-chain.md](features/website/redirect-chain.md) | Redirect chain | planned | 1 | P2 | |
+| [features/website/redirect-chain.md](features/website/redirect-chain.md) | Redirect chain | **shipped** | 1 | P2 | max 5 hops via `url_fetch` |
 | [features/website/http-status.md](features/website/http-status.md) | HTTP status | planned | 1 | P2 | |
 | [features/domain/whois-lookup.md](features/domain/whois-lookup.md) | WHOIS | planned | 1 | P2 | |
 | [features/domain/domain-expiry.md](features/domain/domain-expiry.md) | Domain expiry | planned | 1 | P2 | |

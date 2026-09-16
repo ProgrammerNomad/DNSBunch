@@ -206,6 +206,26 @@ class TestInternalToolsRoute:
         assert data["host"] == "smtp.example.com"
         assert data["banner"].startswith("220")
 
+    def test_redirect_chain_valid_signature(self, client, monkeypatch):
+        from tools.url_fetch import RedirectChainResult, RedirectHop
+
+        def fake_chain(url, **kwargs):
+            return RedirectChainResult(
+                hops=(RedirectHop(1, "https://example.com/", 200, None),),
+                final_url="https://example.com/",
+                final_status_code=200,
+                loop_detected=False,
+                redirect_limit_exceeded=False,
+                headers={},
+            )
+
+        monkeypatch.setattr("tools.redirect_chain.runner.fetch_redirect_chain", fake_chain)
+        response = _signed_post(client, "redirect_chain", {"url": "https://example.com"})
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data["final_status_code"] == 200
+        assert len(data["hops"]) == 1
+
     def test_http_headers_valid_signature(self, client, monkeypatch):
         from tools.url_fetch import FetchGetResult
 

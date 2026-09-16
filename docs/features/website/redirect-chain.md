@@ -5,11 +5,11 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P2 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 1 |
 | **access** | free |
 | **tool_id** | `redirect_chain` |
-| **last_reviewed** | 2026-09-15 |
+| **last_reviewed** | 2026-09-16 |
 
 ## Summary
 
@@ -21,7 +21,7 @@ Debug redirect loops and HTTP→HTTPS chains.
 
 ## Scope
 
-**In scope:** Up to N hops (e.g. 10); method GET.
+**In scope:** Up to **5** hops; method GET.
 
 **Out of scope:** JavaScript redirects.
 
@@ -32,7 +32,7 @@ Debug redirect loops and HTTP→HTTPS chains.
 
 ## Architecture
 
-Python httpx follow redirects manually for logging each hop.
+Python `requests` via shared [`url_fetch.fetch_redirect_chain`](../../../backend/tools/url_fetch.py); BFF [`validate-fetch-url`](../../../frontend/src/lib/validate-fetch-url.ts).
 
 ## Data model
 
@@ -48,7 +48,7 @@ Template **T2**, `/tools/redirect-chain`.
 
 ## Limits and abuse
 
-SSRF rules; max hops.
+SSRF rules; max **5** hops; timeout 15s.
 
 ## Monetization
 
@@ -56,19 +56,19 @@ Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). 
 
 ## Dependencies
 
-None for v1 unless listed elsewhere in this doc.
+Shared URL fetch + SSRF validation (`url_fetch`, BFF mirror).
 
 ## Implementation checklist
 
-- [ ] Python tool module + SSRF tests
-- [ ] T2 page + BFF proxy
-- [ ] Analytics `tool_run`
+- [x] Python tool module + hop/loop tests
+- [x] T2 page + BFF proxy
+- [x] Analytics `tool_run`
 
 ## Acceptance criteria
 
-- [ ] Each hop listed
-- [ ] Loop detected message
-- [ ] Final URL shown
+- [x] Each hop listed
+- [x] Loop detected message
+- [x] Final URL shown
 
 ## References
 
