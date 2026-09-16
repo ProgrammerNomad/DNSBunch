@@ -489,6 +489,16 @@ curl -s -X POST http://localhost:3000/api/tools/dmarc_checker \
 
 Response: `{ "domain", "status", "record", "parsed", "issues", "tags" }`.
 
+**Local dev - SPF checker (T2):**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/spf_checker \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example.com"}'
+```
+
+Response: `{ "domain", "status", "record", "issues", "dns_lookups", "dns_lookup_limit", "mechanisms" }`.
+
 Legacy **`POST /api/dns/check`** (CSRF → `/api/check`) remains unchanged for the home UI until T1 migration.
 
 ### Browser → Next BFF

@@ -1,5 +1,5 @@
 /** Keep in sync with Python `tools.bootstrap.register_all_tools` (Phase 0). */
-export const ALLOWED_TOOL_IDS = ['dns_health', 'dmarc_checker'] as const;
+export const ALLOWED_TOOL_IDS = ['dns_health', 'dmarc_checker', 'spf_checker'] as const;
 
 export type AllowedToolId = (typeof ALLOWED_TOOL_IDS)[number];
 

@@ -59,6 +59,43 @@ class TestToolRegistry:
         assert result["parsed"]["p"] == "reject"
         assert any(t["tag"] == "p" for t in result["tags"])
 
+    def test_spf_checker_registered(self):
+        assert "spf_checker" in list_tool_ids()
+        entry = get("spf_checker")
+        assert entry.meta.category == "email"
+
+    def test_spf_checker_invalid_domain(self):
+        with pytest.raises(ValueError, match="Domain is required"):
+            run_tool("spf_checker", domain="")
+
+    def test_spf_checker_smoke_mocked(self, monkeypatch):
+        record = "v=spf1 include:_spf.google.com -all"
+
+        async def fake_run_all_checks(self, checks):
+            return {
+                "domain": self.domain,
+                "timestamp": "2026-01-01T00:00:00Z",
+                "checks": {
+                    "spf": {
+                        "status": "pass",
+                        "record": record,
+                        "issues": [],
+                        "dns_lookups": 2,
+                    }
+                },
+                "summary": {"total": 1, "pass": 1, "warning": 0, "error": 0, "info": 0},
+            }
+
+        monkeypatch.setattr(
+            "tools.spf_checker.runner.DNSChecker.run_all_checks",
+            fake_run_all_checks,
+        )
+        result = run_tool("spf_checker", domain="example.com")
+        assert result["domain"] == "example.com"
+        assert result["status"] == "pass"
+        assert result["mechanisms"] == ["include:_spf.google.com", "-all"]
+        assert result["dns_lookups"] == 2
+
     def test_dns_health_invalid_domain(self):
         with pytest.raises(ValueError, match="Domain is required"):
             run_tool("dns_health", domain="", checks=[])

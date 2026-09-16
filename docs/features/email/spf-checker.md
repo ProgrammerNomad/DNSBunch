@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P2 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 1 |
 | **access** | free |
 | **tool_id** | `spf_checker` |
@@ -32,7 +32,7 @@ Senders need a fast SPF validation without running full DNS health.
 
 ## Architecture
 
-Python `backend/tools/spf_checker/` - DNS TXT only; register in tool registry. May reuse TXT helpers from dns_checker later.
+Python `backend/tools/spf_checker/runner.py` calls `DNSChecker.run_all_checks(["spf"])` (same engine as T1).
 
 ## Data model
 
@@ -60,14 +60,14 @@ Platform skeleton recommended, not required.
 
 ## Implementation checklist
 
-- [ ] Extract or wrap SPF logic from engine
-- [ ] SEO page + event `tool_id=spf_checker`
+- [x] Wrap SPF logic from engine via `spf_checker` runner
+- [x] SEO page `/tools/spf-checker` + BFF `tool_id=spf_checker`
 
 ## Acceptance criteria
 
-- [ ] Valid SPF record parsed and displayed
-- [ ] Missing SPF reported clearly
-- [ ] Too many DNS lookups flagged as warning
+- [x] Valid SPF record parsed and displayed
+- [x] Missing SPF reported clearly
+- [x] Too many DNS lookups flagged as warning
 
 ## References
 

@@ -102,3 +102,29 @@ class TestInternalToolsRoute:
         assert data["domain"] == "example.com"
         assert data["status"] == "warning"
         assert "issues" in data
+
+    def test_spf_checker_valid_signature(self, client, monkeypatch):
+        async def fake_run_all_checks(self, checks):
+            return {
+                "domain": self.domain,
+                "timestamp": "2026-01-01T00:00:00Z",
+                "checks": {
+                    "spf": {
+                        "status": "info",
+                        "record": "",
+                        "issues": ["No SPF record found"],
+                    }
+                },
+                "summary": {"total": 1, "pass": 0, "warning": 0, "error": 0, "info": 1},
+            }
+
+        monkeypatch.setattr(
+            "tools.spf_checker.runner.DNSChecker.run_all_checks",
+            fake_run_all_checks,
+        )
+        response = _signed_post(client, "spf_checker", {"domain": "example.com"})
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data["domain"] == "example.com"
+        assert data["status"] == "info"
+        assert data["mechanisms"] == []

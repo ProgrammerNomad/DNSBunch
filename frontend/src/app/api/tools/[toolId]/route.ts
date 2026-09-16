@@ -6,7 +6,7 @@ import { canRun } from '@/lib/can-run';
 import { postInternalTool } from '@/lib/internal-api';
 import { isAllowedToolId } from '@/lib/tool-allowlist';
 import { validateDnsHealthBulkBody } from '@/lib/validate-dns-health-bulk';
-import { validateToolDomainBody } from '@/lib/validate-tool-domain';
+import { isDomainToolId, validateToolDomainBody } from '@/lib/validate-tool-domain';
 
 type RouteContext = { params: Promise<{ toolId: string }> };
 
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
     eventSurface = 'bulk';
   }
 
-  if (toolId === 'dmarc_checker') {
+  if (isDomainToolId(toolId)) {
     const validated = validateToolDomainBody(body);
     if (!validated.ok) {
       return NextResponse.json(

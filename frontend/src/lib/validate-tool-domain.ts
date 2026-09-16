@@ -9,6 +9,15 @@ export type ToolDomainRequest = {
   domain: string;
 };
 
+/** Tools that accept POST `{ domain }` - keep in sync with BFF validation. */
+export const DOMAIN_TOOL_IDS = ['dmarc_checker', 'spf_checker'] as const;
+
+export type DomainToolId = (typeof DOMAIN_TOOL_IDS)[number];
+
+export function isDomainToolId(toolId: string): toolId is DomainToolId {
+  return (DOMAIN_TOOL_IDS as readonly string[]).includes(toolId);
+}
+
 function isValidDomain(domain: string): boolean {
   if (!domain || domain.length > MAX_DOMAIN_LENGTH) return false;
   if (!DOMAIN_PATTERN.test(domain)) return false;

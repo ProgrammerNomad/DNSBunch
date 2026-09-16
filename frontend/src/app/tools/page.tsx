@@ -52,6 +52,17 @@ export default function ToolsHubPage() {
             </Button>
           </CardHeader>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>SPF checker</CardTitle>
+            <CardDescription>
+              Validate SPF TXT at the domain root, list mechanisms, and flag excessive DNS lookups.
+            </CardDescription>
+            <Button asChild className="mt-2 w-fit">
+              <Link href="/tools/spf-checker">Open SPF checker</Link>
+            </Button>
+          </CardHeader>
+        </Card>
       </section>
 
       <p className="text-sm text-muted-foreground">More email and website tools coming in Phase 1.</p>
