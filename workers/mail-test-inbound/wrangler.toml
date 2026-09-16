@@ -1,0 +1,8 @@
+name = "dnsbunch-mail-test-inbound"
+main = "src/index.ts"
+compatibility_date = "2024-09-01"
+
+# Bind in Cloudflare dashboard:
+# INBOUND_URL = https://your-site/api/mail-test/inbound
+# MAIL_TESTER_WEBHOOK_SECRET = (same as Netlify)
+# MAIL_TESTER_DOMAIN = mail.dnsbunch.com

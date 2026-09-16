@@ -107,6 +107,17 @@ export default function ToolsHubPage() {
             </Button>
           </CardHeader>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Mail tester</CardTitle>
+            <CardDescription>
+              Send a message to a unique address and get a deliverability score (dev: upload .eml).
+            </CardDescription>
+            <Button asChild className="mt-2 w-fit">
+              <Link href="/tools/mail-tester">Open mail tester</Link>
+            </Button>
+          </CardHeader>
+        </Card>
       </section>
 
       <section className="space-y-3">

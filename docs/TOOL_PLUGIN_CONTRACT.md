@@ -82,6 +82,10 @@ Default for public tools: `allowed: true` with IP rate limits enforced in Flask/
 
 No domain names in anonymous aggregate logs by default.
 
+## mail_tester (inbound - not registry proxy)
+
+`mail_tester` uses [`/api/mail-test/*`](../frontend/src/app/api/mail-test/) and [`backend/mail_tester/`](../backend/mail_tester/). Scoring **orchestrates** `run_spf_checker`, `run_dmarc_checker`, `run_dkim_checker`, and `run_dnsbl_lookup` only ([INV-6](ARCHITECTURE.md)). Do not add `mail_tester` to the generic tools proxy allowlist.
+
 ## Related docs
 
 - [ARCHITECTURE.md](ARCHITECTURE.md)

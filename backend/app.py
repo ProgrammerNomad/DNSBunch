@@ -378,6 +378,31 @@ def check_dns():
         return error_response, 500
 
 
+@app.route("/internal/v1/mail-test/score", methods=["POST"])
+def internal_mail_test_score():
+    """Score raw RFC822 for mail-tester sessions (Next BFF only)."""
+    body = request.get_data()
+    ok, message = verify_internal_request(
+        request.headers.get("X-Internal-Timestamp"),
+        request.headers.get("X-Internal-Signature"),
+        body,
+    )
+    if not ok:
+        return jsonify({"error": message}), 401
+
+    data = request.get_json(silent=True) or {}
+    try:
+        from mail_tester.score import score_from_payload
+
+        result = score_from_payload(data)
+        return jsonify(result)
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        app.logger.error(f"Mail test score failed: {e}")
+        return jsonify({"error": "Scoring failed"}), 500
+
+
 @app.route("/internal/v1/tools/<tool_id>", methods=["POST"])
 def internal_run_tool(tool_id: str):
     """Server-to-server tool dispatch (Next BFF only)."""

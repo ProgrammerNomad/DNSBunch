@@ -15,7 +15,17 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  savedChecks   SavedCheck[]
+  savedChecks        SavedCheck[]
+  mailTestSessions   MailTestSession[]
+}
+
+enum MailTestSessionStatus {
+  pending
+  received
+  scoring
+  scored
+  expired
+  failed
 }
 
 model Account {
@@ -60,4 +70,24 @@ model SavedCheck {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model MailTestSession {
+  id           String                @id @default(cuid())
+  token        String                @unique
+  userId       String?
+  status       MailTestSessionStatus @default(pending)
+  expiresAt    DateTime
+  score        Float?
+  resultJson        String                @default("{}")
+  rawMessageBase64  String?
+  receivedAt        DateTime?
+  clientIpHash      String?
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  user         User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([expiresAt])
+  @@index([userId])
+  @@index([clientIpHash, createdAt])
 }

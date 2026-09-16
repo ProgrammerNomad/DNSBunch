@@ -48,7 +48,7 @@ Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) 
 | [features/email/mx-lookup.md](features/email/mx-lookup.md) | MX lookup | **shipped** | 1 | P2 | T2 email |
 | [features/email/smtp-test.md](features/email/smtp-test.md) | SMTP test | **shipped** | 1 | P2 | Banner + EHLO only |
 | [features/email/dnsbl-blacklist.md](features/email/dnsbl-blacklist.md) | DNSBL | **shipped** | 1 | P2 | 3 RBL zones, IPv4 |
-| [features/email/mail-tester-inbound.md](features/email/mail-tester-inbound.md) | Mail tester | planned | 2 | P1 | inbound SMTP |
+| [features/email/mail-tester-inbound.md](features/email/mail-tester-inbound.md) | Mail tester (dev ingest + webhook) | partial | 2 | P1 | retention |
 | [features/website/ssl-inspector.md](features/website/ssl-inspector.md) | SSL inspector | **shipped** | 1 | P2 | TLS 443; expiry + SAN match |
 | [features/website/http-headers.md](features/website/http-headers.md) | HTTP headers | **shipped** | 1 | P2 | T2 website; SSRF via `url_fetch` |
 | [features/website/redirect-chain.md](features/website/redirect-chain.md) | Redirect chain | **shipped** | 1 | P2 | max 5 hops via `url_fetch` |

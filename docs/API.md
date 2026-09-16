@@ -624,6 +624,25 @@ Env: `DATABASE_URL`, `AUTH_SECRET`, `AUTH_URL`, `AUTH_GOOGLE_*`, optional `AUTH_
 
 **Tool BFF:** `POST /api/tools/[toolId]` accepts anonymous requests unchanged; when a session cookie is present, analytics may include a hashed user id. Entitlement denials (403) are reserved for Phase 3.
 
+### Mail tester (Step 7 - not `/api/tools/mail_tester`)
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| POST | `/api/mail-test/sessions` | Create session; returns `{ sessionId, address, expiresAt, status, devIngestEnabled }` |
+| GET | `/api/mail-test/sessions/[id]` | Poll status and scored `result` |
+| POST | `/api/mail-test/sessions/[id]/ingest` | **Dev only** (`MAIL_TESTER_DEV_INGEST=true`); multipart field `file` (.eml) |
+| POST | `/api/mail-test/inbound` | Cloudflare Worker / provider webhook → **202 Accepted** (async score). Body: `{ token, to, from, raw (base64), received_at, message_size }`. Header `X-Mail-Test-Secret` or `Authorization: Bearer` |
+
+Session statuses: `pending` | `received` | `scoring` | `scored` | `expired` | `failed`.
+
+**Internal (Next → Python):**
+
+| Method | Path | Body |
+|--------|------|------|
+| POST | `/internal/v1/mail-test/score` | `{ "raw": "<base64 RFC822>" }` |
+
+Env: `MAIL_TESTER_*` in [frontend/.env.example](../frontend/.env.example).
+
 ### Browser → Next BFF
 
 | Method | Path | Purpose |

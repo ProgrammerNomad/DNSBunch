@@ -35,6 +35,7 @@
 | **INV-3** | Browsers use Next.js BFF routes; **new tools must not** call Flask directly from the client. |
 | **INV-4** | HTTP/website tools (planned) must enforce SSRF controls before fetching URLs. |
 | **INV-5** | [API.md](API.md) owns endpoints, request/response schemas; this document owns **boundaries** and **behavior classes**. |
+| **INV-6** | Mail tester scoring **orchestrates** existing tool runners (`run_spf_checker`, `run_dmarc_checker`, `run_dkim_checker`, `run_dnsbl_lookup`); no duplicated DNS engines in `mail_tester/` except mail-specific MIME/Received parsing. |
 
 ---
 
@@ -362,25 +363,24 @@ Schema: [`frontend/prisma/schema.prisma`](../frontend/prisma/schema.prisma) - Au
 
 ---
 
-## 19. Mail Tester architecture [PLANNED]
+## 19. Mail Tester architecture [PARTIAL - v2]
 
-Separate from Flask `/api/check`:
+Separate from Flask `/api/check`. **No SMTP daemon on the operator VPS.**
+
+**DNS:** `dnsbunch.com` MX → Google Workspace (normal mail). **`mail.dnsbunch.com` only** → Cloudflare Email Routing catch-all → thin Email Worker → `POST /api/mail-test/inbound` (202, async). See [ops/cloudflare-mail-tester-inbound.md](ops/cloudflare-mail-tester-inbound.md).
 
 ```text
-Internet SMTP
-      ↓
-Inbound SMTP service (dedicated process)
-      ↓
-RCPT TO → session validation (PostgreSQL/Redis)
-      ↓
-Message store (.eml, TTL)
-      ↓
-Scoring worker (SPF/DKIM/DMARC/spam)
-      ↓
-Next.js poll / results UI
+{token}@mail.dnsbunch.com → Cloudflare Worker → inbound API (202)
+      → MailTestSession: pending → received → scoring → scored
+      → Python /internal/v1/mail-test/score (orchestrates tool runners, INV-6)
+      → v2 report JSON → poll GET session → T4 UI
 ```
 
-Not “just another Flask route.” Detail: [features/email/mail-tester-inbound.md](features/email/mail-tester-inbound.md).
+**Local dev:** `MAIL_TESTER_DEV_INGEST=true` + `.eml` upload uses the same async pipeline.
+
+**Outbound auth email** (magic links) uses Zepto/Nodemailer `EMAIL_SERVER` - unrelated to mail-tester receive path.
+
+Detail: [features/email/mail-tester-inbound.md](features/email/mail-tester-inbound.md).
 
 ---
 
