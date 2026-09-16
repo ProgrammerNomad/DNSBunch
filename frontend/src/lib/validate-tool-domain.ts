@@ -18,12 +18,19 @@ export function isDomainToolId(toolId: string): toolId is DomainToolId {
   return (DOMAIN_TOOL_IDS as readonly string[]).includes(toolId);
 }
 
-function isValidDomain(domain: string): boolean {
+const DKIM_SELECTOR_PATTERN = /^[a-z0-9]([a-z0-9-]{0,62})?$/;
+
+export function isValidDomain(domain: string): boolean {
   if (!domain || domain.length > MAX_DOMAIN_LENGTH) return false;
   if (!DOMAIN_PATTERN.test(domain)) return false;
   const lower = domain.toLowerCase();
   if (SUSPICIOUS.some((p) => lower.includes(p))) return false;
   return true;
+}
+
+export function isValidDkimSelector(selector: string): boolean {
+  if (!selector || selector.length > 63) return false;
+  return DKIM_SELECTOR_PATTERN.test(selector);
 }
 
 export function validateToolDomainBody(

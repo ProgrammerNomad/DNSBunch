@@ -248,7 +248,7 @@ Detail: [features/dns-health/bulk-checker.md](features/dns-health/bulk-checker.m
 - **`tool_id`:** stable snake_case identifier per user-facing tool (catalog in [TOOL_PLUGIN_CONTRACT.md](TOOL_PLUGIN_CONTRACT.md)).
 - **Registry:** Python maps `tool_id` → runner; Next maps route → `tool_id`.
 - **DNS health:** `tool_id = dns_health`; surfaces: `single` (shipped), `bulk`, `api` (planned).
-- **Email T2 (Phase 1):** `dmarc_checker` and `spf_checker` at `/tools/dmarc-checker` and `/tools/spf-checker`; runners reuse `DNSChecker` single-check slices only.
+- **Email T2 (Phase 1):** `dmarc_checker`, `spf_checker`, `dkim_checker` under `/tools/*`; DMARC/SPF use `run_all_checks` slices; DKIM uses `lookup_dkim_selector` for a user-provided selector.
 
 ---
 

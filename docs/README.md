@@ -43,7 +43,7 @@ Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) 
 | [features/platform/billing-stripe-ready.md](features/platform/billing-stripe-ready.md) | Stripe-ready billing | planned | 3 | P1 | experiment |
 | [features/platform/entitlements-quotas.md](features/platform/entitlements-quotas.md) | Entitlements | planned | 3 | P1 | experiment |
 | [features/email/spf-checker.md](features/email/spf-checker.md) | SPF checker | **shipped** | 1 | P2 | T2 email tool |
-| [features/email/dkim-checker.md](features/email/dkim-checker.md) | DKIM checker | planned | 1 | P2 | |
+| [features/email/dkim-checker.md](features/email/dkim-checker.md) | DKIM checker | **shipped** | 1 | P2 | T2; domain + selector |
 | [features/email/dmarc-checker.md](features/email/dmarc-checker.md) | DMARC checker | **shipped** | 1 | P2 | First Phase 1 T2 tool |
 | [features/email/mx-lookup.md](features/email/mx-lookup.md) | MX lookup | planned | 1 | P2 | |
 | [features/email/smtp-test.md](features/email/smtp-test.md) | SMTP test | planned | 1 | P2 | |

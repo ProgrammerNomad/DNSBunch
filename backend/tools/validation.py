@@ -26,6 +26,25 @@ def is_valid_domain(domain: str) -> bool:
     return True
 
 
+_DKIM_SELECTOR_PATTERN = re.compile(r"^[a-z0-9]([a-z0-9-]{0,62})?$")
+
+
+def is_valid_dkim_selector(selector: str) -> bool:
+    if not selector or len(selector) > 63:
+        return False
+    return bool(_DKIM_SELECTOR_PATTERN.match(selector))
+
+
+def normalize_dkim_selector(selector: str) -> str:
+    """Strip and lowercase DKIM selector; raises ValueError if invalid."""
+    normalized = (selector or "").strip().lower()
+    if not normalized:
+        raise ValueError("Selector is required")
+    if not is_valid_dkim_selector(normalized):
+        raise ValueError("Invalid selector format")
+    return normalized
+
+
 def normalize_domain(domain: str) -> str:
     """Strip and lowercase domain; raises ValueError if invalid."""
     normalized = (domain or "").strip().lower()

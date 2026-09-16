@@ -499,6 +499,16 @@ curl -s -X POST http://localhost:3000/api/tools/spf_checker \
 
 Response: `{ "domain", "status", "record", "issues", "dns_lookups", "dns_lookup_limit", "mechanisms" }`.
 
+**Local dev - DKIM checker (T2):**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/dkim_checker \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example.com","selector":"google"}'
+```
+
+Response: `{ "domain", "selector", "host", "status", "record", "parsed", "issues", "tags" }`.
+
 Legacy **`POST /api/dns/check`** (CSRF → `/api/check`) remains unchanged for the home UI until T1 migration.
 
 ### Browser → Next BFF

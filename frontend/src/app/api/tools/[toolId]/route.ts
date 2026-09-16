@@ -6,6 +6,7 @@ import { canRun } from '@/lib/can-run';
 import { postInternalTool } from '@/lib/internal-api';
 import { isAllowedToolId } from '@/lib/tool-allowlist';
 import { validateDnsHealthBulkBody } from '@/lib/validate-dns-health-bulk';
+import { validateDkimCheckerBody } from '@/lib/validate-dkim-checker';
 import { isDomainToolId, validateToolDomainBody } from '@/lib/validate-tool-domain';
 
 type RouteContext = { params: Promise<{ toolId: string }> };
@@ -49,7 +50,16 @@ export async function POST(request: NextRequest, context: RouteContext) {
     eventSurface = 'bulk';
   }
 
-  if (isDomainToolId(toolId)) {
+  if (toolId === 'dkim_checker') {
+    const validated = validateDkimCheckerBody(body);
+    if (!validated.ok) {
+      return NextResponse.json(
+        { error: validated.error, code: validated.code },
+        { status: 400, headers: { 'X-Request-Id': requestId } },
+      );
+    }
+    proxyBody = validated.data;
+  } else if (isDomainToolId(toolId)) {
     const validated = validateToolDomainBody(body);
     if (!validated.ok) {
       return NextResponse.json(

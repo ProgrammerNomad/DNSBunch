@@ -1,6 +1,7 @@
 """Register all tools at application startup."""
 from __future__ import annotations
 
+from tools.dkim_checker.runner import run_dkim_checker
 from tools.dmarc_checker.runner import run_dmarc_checker
 from tools.dns_health.runner import run_dns_health
 from tools.registry import register
@@ -21,5 +22,10 @@ def register_all_tools() -> None:
     register(
         "spf_checker",
         run_spf_checker,
+        {"category": "email", "timeout_ms": 30_000},
+    )
+    register(
+        "dkim_checker",
+        run_dkim_checker,
         {"category": "email", "timeout_ms": 30_000},
     )

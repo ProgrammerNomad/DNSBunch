@@ -96,6 +96,34 @@ class TestToolRegistry:
         assert result["mechanisms"] == ["include:_spf.google.com", "-all"]
         assert result["dns_lookups"] == 2
 
+    def test_dkim_checker_registered(self):
+        assert "dkim_checker" in list_tool_ids()
+        entry = get("dkim_checker")
+        assert entry.meta.category == "email"
+
+    def test_dkim_checker_invalid_selector(self):
+        with pytest.raises(ValueError, match="Selector is required"):
+            run_tool("dkim_checker", domain="example.com", selector="")
+
+    def test_dkim_checker_smoke_mocked(self, monkeypatch):
+        async def fake_lookup(self, selector):
+            return {
+                "status": "pass",
+                "record": "v=DKIM1; k=rsa; p=abc",
+                "parsed": {"v": "DKIM1", "k": "rsa", "p": "abc"},
+                "issues": [],
+            }
+
+        monkeypatch.setattr(
+            "tools.dkim_checker.runner.DNSChecker.lookup_dkim_selector",
+            fake_lookup,
+        )
+        result = run_tool("dkim_checker", domain="example.com", selector="google")
+        assert result["domain"] == "example.com"
+        assert result["selector"] == "google"
+        assert result["host"] == "google._domainkey.example.com"
+        assert result["status"] == "pass"
+
     def test_dns_health_invalid_domain(self):
         with pytest.raises(ValueError, match="Domain is required"):
             run_tool("dns_health", domain="", checks=[])

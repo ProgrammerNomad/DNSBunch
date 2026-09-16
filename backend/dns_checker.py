@@ -1978,6 +1978,70 @@ class DNSChecker:
         
         return dmarc_data
     
+    def _dkim_issues_for_parsed(self, selector: str, parsed: Dict[str, str]) -> list[str]:
+        issues: list[str] = []
+        if "p" not in parsed or not parsed["p"]:
+            issues.append(f"DKIM selector '{selector}' is missing public key (p=)")
+        if "k" in parsed and parsed["k"] not in ["rsa", "ed25519"]:
+            issues.append(
+                f"DKIM selector '{selector}' uses unsupported key type: {parsed['k']}"
+            )
+        return issues
+
+    async def lookup_dkim_selector(self, selector: str) -> Dict[str, Any]:
+        """Look up a single DKIM TXT record for the given selector."""
+        dkim_domain = f"{selector}._domainkey.{self.domain}"
+        try:
+            answers = self.resolver.resolve(dkim_domain, "TXT")
+            if not answers:
+                return {
+                    "status": "warning",
+                    "record": "",
+                    "parsed": {},
+                    "issues": [
+                        f"No DKIM record found at {dkim_domain}. "
+                        "Verify the selector and that a TXT record is published."
+                    ],
+                }
+
+            dkim_record = str(answers[0]).strip('"')
+            if "k=" not in dkim_record and "p=" not in dkim_record:
+                return {
+                    "status": "warning",
+                    "record": dkim_record,
+                    "parsed": {},
+                    "issues": [
+                        f"TXT at {dkim_domain} does not look like a DKIM record (expected k= or p=)."
+                    ],
+                }
+
+            parsed_dkim = self._parse_dkim_record(dkim_record)
+            issues = self._dkim_issues_for_parsed(selector, parsed_dkim)
+            status = "pass" if not issues else "warning"
+            return {
+                "status": status,
+                "record": dkim_record,
+                "parsed": parsed_dkim,
+                "issues": issues,
+            }
+        except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
+            return {
+                "status": "warning",
+                "record": "",
+                "parsed": {},
+                "issues": [
+                    f"No DKIM record found at {dkim_domain}. "
+                    "Verify the selector and that a TXT record is published."
+                ],
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "record": "",
+                "parsed": {},
+                "issues": [f"DKIM lookup failed: {str(e)}"],
+            }
+
     async def _check_dkim_records(self) -> Dict[str, Any]:
         """Check DKIM (DomainKeys Identified Mail) records"""
         try:
@@ -1991,22 +2055,14 @@ class DNSChecker:
             issues = []
             
             for selector in common_selectors:
-                try:
-                    dkim_domain = f"{selector}._domainkey.{self.domain}"
-                    answers = self.resolver.resolve(dkim_domain, 'TXT')
-                    
-                    # Get the first answer (DKIM record)
-                    if answers:
-                        dkim_record = str(answers[0]).strip('"')
-                        if 'k=' in dkim_record or 'p=' in dkim_record:
-                            parsed_dkim = self._parse_dkim_record(dkim_record)
-                            dkim_records.append({
-                                'selector': selector,
-                                'record': dkim_record,
-                                'parsed': parsed_dkim
-                            })
-                except:
-                    continue  # Selector not found, which is normal
+                result = await self.lookup_dkim_selector(selector)
+                if result.get("record") and result.get("parsed"):
+                    dkim_records.append({
+                        'selector': selector,
+                        'record': result["record"],
+                        'parsed': result["parsed"],
+                    })
+                    issues.extend(result.get("issues") or [])
             
             if not dkim_records:
                 return {
@@ -2014,14 +2070,6 @@ class DNSChecker:
                     'records': [],
                     'issues': ["No DKIM records found. Consider implementing DKIM for better email authentication."]
                 }
-            
-            # Validate DKIM records
-            for dkim in dkim_records:
-                parsed = dkim['parsed']
-                if 'p' not in parsed or not parsed['p']:
-                    issues.append(f"DKIM selector '{dkim['selector']}' is missing public key (p=)")
-                if 'k' in parsed and parsed['k'] not in ['rsa', 'ed25519']:
-                    issues.append(f"DKIM selector '{dkim['selector']}' uses unsupported key type: {parsed['k']}")
             
             status = 'pass' if not issues else 'warning'
             

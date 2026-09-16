@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P2 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 1 |
 | **access** | free |
 | **tool_id** | `dkim_checker` |
@@ -32,7 +32,7 @@ Operators need to verify DKIM publication without manual dig.
 
 ## Architecture
 
-Python `backend/tools/dkim_checker/`; DNS TXT.
+Python `backend/tools/dkim_checker/runner.py` calls `DNSChecker.lookup_dkim_selector` (shared parse/validation with T1).
 
 ## Data model
 
@@ -60,14 +60,14 @@ Optional [tool-registry.md](../platform/tool-registry.md).
 
 ## Implementation checklist
 
-- [ ] Selector list + user-provided selector
-- [ ] Results UI
+- [x] Common selector presets + user-provided selector on T2
+- [x] Results UI `/tools/dkim-checker`
 
 ## Acceptance criteria
 
-- [ ] Record shown when present
-- [ ] Invalid selector rejected client-side
-- [ ] Clear not-found state
+- [x] Record shown when present
+- [x] Invalid selector rejected client-side (BFF + Python)
+- [x] Clear not-found state
 
 ## References
 

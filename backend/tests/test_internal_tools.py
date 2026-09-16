@@ -128,3 +128,26 @@ class TestInternalToolsRoute:
         assert data["domain"] == "example.com"
         assert data["status"] == "info"
         assert data["mechanisms"] == []
+
+    def test_dkim_checker_valid_signature(self, client, monkeypatch):
+        async def fake_lookup(self, selector):
+            return {
+                "status": "warning",
+                "record": "",
+                "parsed": {},
+                "issues": ["No DKIM record found."],
+            }
+
+        monkeypatch.setattr(
+            "tools.dkim_checker.runner.DNSChecker.lookup_dkim_selector",
+            fake_lookup,
+        )
+        response = _signed_post(
+            client,
+            "dkim_checker",
+            {"domain": "example.com", "selector": "google"},
+        )
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data["selector"] == "google"
+        assert data["host"] == "google._domainkey.example.com"
