@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
+import { auth } from '@/auth';
 import { logToolEvent } from '@/lib/analytics/tool-events';
 import { canRun } from '@/lib/can-run';
 import { postInternalTool } from '@/lib/internal-api';
@@ -25,7 +26,8 @@ export async function POST(request: NextRequest, context: RouteContext) {
     return NextResponse.json({ error: 'Unknown tool', code: 'UNKNOWN_TOOL' }, { status: 404 });
   }
 
-  const gate = canRun(null, toolId);
+  const session = await auth();
+  const gate = canRun(session?.user, toolId);
   if (!gate.allowed) {
     return NextResponse.json(
       { error: gate.reason || 'Not allowed', code: 'ENTITLEMENT_DENIED' },
@@ -131,6 +133,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
         durationMs: Date.now() - started,
         code: String(upstream.status),
         surface: eventSurface,
+        userId: session?.user?.id,
       });
       return NextResponse.json(data, {
         status: upstream.status,
@@ -143,6 +146,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
       success: true,
       durationMs: Date.now() - started,
       surface: eventSurface,
+      userId: session?.user?.id,
     });
 
     return NextResponse.json(data, {
@@ -156,6 +160,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
       durationMs: Date.now() - started,
       code: 'PROXY_ERROR',
       surface: eventSurface,
+      userId: session?.user?.id,
     });
     return NextResponse.json(
       {

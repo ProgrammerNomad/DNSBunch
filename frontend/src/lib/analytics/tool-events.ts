@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
@@ -11,7 +12,12 @@ export type ToolEventPayload = {
   code?: string;
   surface?: string;
   day: string;
+  user_id_hash?: string;
 };
+
+function hashUserId(userId: string): string {
+  return crypto.createHash('sha256').update(userId).digest('hex').slice(0, 16);
+}
 
 function dayBucket(): string {
   return new Date().toISOString().slice(0, 10);
@@ -38,6 +44,7 @@ export function logToolEvent(
     durationMs: number;
     code?: string;
     surface?: string;
+    userId?: string;
   },
 ): void {
   const payload: ToolEventPayload = {
@@ -48,6 +55,7 @@ export function logToolEvent(
     code: params.code,
     surface: params.surface,
     day: dayBucket(),
+    ...(params.userId ? { user_id_hash: hashUserId(params.userId) } : {}),
   };
   console.info('[tool-event]', JSON.stringify(payload));
   appendDevLog(payload);

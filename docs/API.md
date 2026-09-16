@@ -611,6 +611,19 @@ curl -s -X POST http://localhost:3000/api/tools/dns_propagation \
 
 Legacy **`POST /api/dns/check`** (CSRF → `/api/check`) remains unchanged for the home UI until T1 migration.
 
+### Auth (Phase 2 - passwordless)
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| GET, POST | `/api/auth/*` | Auth.js v5 session, OAuth, magic-link verify |
+| GET | `/sign-in` | Social + email magic link UI (no passwords) |
+| GET | `/sign-in/verify` | “Check your email” after magic-link request |
+| GET | `/dashboard` | Authenticated T5 dashboard (redirects to `/sign-in` if no session) |
+
+Env: `DATABASE_URL`, `AUTH_SECRET`, `AUTH_URL`, `AUTH_GOOGLE_*`, optional `AUTH_GITHUB_*`, `EMAIL_FROM` + `EMAIL_SERVER` - see [frontend/.env.example](../frontend/.env.example).
+
+**Tool BFF:** `POST /api/tools/[toolId]` accepts anonymous requests unchanged; when a session cookie is present, analytics may include a hashed user id. Entitlement denials (403) are reserved for Phase 3.
+
 ### Browser → Next BFF
 
 | Method | Path | Purpose |

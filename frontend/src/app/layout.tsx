@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 import { AppShell } from '@/components/layout/AppShell';
+import { AuthSessionProvider } from '@/components/providers/session-provider';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 
 import './globals.css';
@@ -30,7 +31,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <AppShell>{children}</AppShell>
+          <AuthSessionProvider>
+            <AppShell>{children}</AppShell>
+          </AuthSessionProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Menu } from 'lucide-react';
 import { useState } from 'react';
 
+import { AuthNav } from '@/components/layout/AuthNav';
 import { ThemeToggle } from '@/components/layout/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -33,6 +34,9 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-1">
+          <div className="hidden sm:block">
+            <AuthNav />
+          </div>
           <ThemeToggle />
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild className="md:hidden">
@@ -52,6 +56,9 @@ export function SiteHeader() {
                     </Link>
                   </Button>
                 ))}
+                <div className="pt-2">
+                  <AuthNav />
+                </div>
               </nav>
             </SheetContent>
           </Sheet>

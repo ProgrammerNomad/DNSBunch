@@ -17,7 +17,7 @@
 | Bulk orchestration | No | Yes | **Must reuse DNSChecker** (orchestration only) |
 | Tool registry | No | Yes | Shared tool dispatch |
 | Internal JWT | No | Yes | Server-to-server only |
-| PostgreSQL | No | Yes | Only when persistent state is needed |
+| PostgreSQL | Yes (auth on VPS) | Yes | Users/sessions via Prisma; tool results not persisted yet |
 | Auth | No | Optional | **Never required for public lookup** |
 | Stripe | No | Yes | Only after a paid experiment |
 | Mail inbound SMTP | No | Yes | **Separate service/process** |
@@ -320,10 +320,13 @@ Stack (verified [frontend/package.json](../frontend/package.json)): Next ^15.4.7
 
 ---
 
-## 15. Optional accounts [PLANNED]
+## 15. Optional accounts [PARTIAL - Phase 2 slice 1]
 
-- Auth in Next.js (NextAuth/Clerk) + PostgreSQL.
-- **Invariant:** Public DNS health works with no account (component matrix).
+- **Auth.js v5** (`next-auth@5`) in Next.js with **Prisma adapter** and **database sessions**.
+- **Passwordless only:** Google OAuth (required for dev), optional GitHub, **email magic link** via Nodemailer (`EMAIL_SERVER` + `EMAIL_FROM`). No Credentials provider, no password columns on `User`.
+- Routes: `/sign-in`, `/sign-in/verify`, `/api/auth/*`, authenticated `/dashboard` (T5).
+- BFF tool runs call `auth()`; `canRun(user, toolId)` still allows all free tools when logged out; optional `user_id_hash` on tool analytics when session exists.
+- **Invariant:** Public DNS health and `/api/tools/*` work with no account.
 
 ---
 
@@ -331,13 +334,16 @@ Stack (verified [frontend/package.json](../frontend/package.json)): Next ^15.4.7
 
 | Data | Today | Planned store | Retention (planned) |
 |------|-------|---------------|---------------------|
-| DNS lookup query/result | Not persisted | Optional user history | User-controlled / TTL |
-| Anonymous analytics | Not persisted | Daily aggregates by tool_id | No domain names in v1 aggregates |
+| Users / sessions | **PostgreSQL (VPS)** via Prisma | Same | Until user deletes account |
+| DNS lookup query/result | Not persisted | Optional user history (`SavedCheck`) | User-controlled / TTL |
+| Anonymous analytics | File/local events | Daily aggregates by tool_id | No domain names in v1 aggregates |
 | Mail test sessions | - | PostgreSQL + blob/R2 | Short TTL (e.g. 7 days) |
 | Monitoring watches | - | PostgreSQL | Until user deletes |
 | Bulk jobs (large) | - | Job table + object storage | TTL |
 
-**Today:** No PostgreSQL in repo for DNS health.
+**PostgreSQL (self-hosted VPS):** Single app database (e.g. `dnsbunch`) and role (e.g. `dnsbunch_app`). Connection string in `DATABASE_URL` with `sslmode=require` when TLS is enabled. **Firewall:** port `5432` not open to the world; allow localhost, operator dev IP, and Netlify/serverless egress as needed. **Migrations:** `cd frontend && npx prisma migrate deploy` against production; dev may use `dnsbunch_dev` on the same host. **Backups:** operator responsibility (`pg_dump` cron). Frontend on Netlify only talks to Postgres from the Next.js server (Auth + Prisma), never from the browser.
+
+Schema: [`frontend/prisma/schema.prisma`](../frontend/prisma/schema.prisma) - Auth.js models + `SavedCheck` stub.
 
 ---
 

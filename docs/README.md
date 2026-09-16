@@ -39,7 +39,7 @@ Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) 
 | [features/platform/generic-tool-bff.md](features/platform/generic-tool-bff.md) | Generic tool BFF | **shipped** | 0 | P1 | `/api/tools/[toolId]` |
 | [features/platform/scale-async-jobs.md](features/platform/scale-async-jobs.md) | Bulk 4 / async jobs | planned | 4 | P2 | queues |
 | [features/platform/privacy-anonymous-mode.md](features/platform/privacy-anonymous-mode.md) | Privacy policy | planned | 2 | P2 | analytics + accounts |
-| [features/platform/auth-optional-accounts.md](features/platform/auth-optional-accounts.md) | Optional accounts | planned | 2 | P1 | retention |
+| [features/platform/auth-optional-accounts.md](features/platform/auth-optional-accounts.md) | Optional accounts (passwordless) | partial | 2 | P1 | retention |
 | [features/platform/billing-stripe-ready.md](features/platform/billing-stripe-ready.md) | Stripe-ready billing | planned | 3 | P1 | experiment |
 | [features/platform/entitlements-quotas.md](features/platform/entitlements-quotas.md) | Entitlements | planned | 3 | P1 | experiment |
 | [features/email/spf-checker.md](features/email/spf-checker.md) | SPF checker | **shipped** | 1 | P2 | T2 email tool |

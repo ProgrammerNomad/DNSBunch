@@ -4,7 +4,12 @@
   "description": "DNSBunch Frontend - Next.js DNS and Mail Server Diagnostics",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "postinstall": "prisma generate",
+    "build": "prisma generate && next build",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:push": "prisma db push",
     "start": "next start",
     "lint": "next lint",
     "build:production": "NODE_ENV=production next build",
@@ -19,8 +24,10 @@
   "author": "Nomad Programmer",
   "license": "MIT",
   "dependencies": {
+    "@auth/prisma-adapter": "^2.11.3",
     "@hookform/resolvers": "^5.2.1",
     "@netlify/plugin-nextjs": "^5.12.0",
+    "@prisma/client": "^6.7.0",
     "@radix-ui/react-accordion": "^1.2.20",
     "@radix-ui/react-checkbox": "^1.3.11",
     "@radix-ui/react-dialog": "^1.1.23",
@@ -38,9 +45,11 @@
     "clsx": "^2.1.1",
     "lucide-react": "^1.46.0",
     "next": "^15.4.7",
+    "next-auth": "^5.0.0-beta.32",
     "next-themes": "^0.4.6",
+    "nodemailer": "^8.0.11",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react-dom": "^19.3.0",
     "react-hook-form": "^7.62.0",
     "react-toastify": "^11.0.5",
     "tailwind-merge": "^3.7.0",
@@ -49,10 +58,12 @@
     "yup": "^1.7.0"
   },
   "devDependencies": {
+    "@types/nodemailer": "^8.0.2",
     "autoprefixer": "^10.6.1",
     "eslint": "^9.33.0",
     "eslint-config-next": "^15.4.7",
     "postcss": "^8.5.28",
+    "prisma": "^6.7.0",
     "tailwindcss": "^3.4.19"
   }
 }
