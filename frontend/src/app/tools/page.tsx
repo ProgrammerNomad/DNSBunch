@@ -26,9 +26,20 @@ export default function ToolsHubPage() {
             </Button>
           </CardHeader>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Bulk DNS health</CardTitle>
+            <CardDescription>
+              Paste many domains and get a summary table (NS, SOA, MX, WWW, overall).
+            </CardDescription>
+            <Button asChild className="mt-2 w-fit">
+              <Link href="/tools/bulk-dns-health">Open bulk check</Link>
+            </Button>
+          </CardHeader>
+        </Card>
       </section>
 
-      <p className="text-sm text-muted-foreground">Additional tools (SPF, DMARC, bulk check, and more) coming in Phase 1.</p>
+      <p className="text-sm text-muted-foreground">More tools (SPF, DMARC, and more) coming in Phase 1.</p>
     </div>
   );
 }

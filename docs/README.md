@@ -32,7 +32,7 @@ Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) 
 | Doc path | Feature | Status | Phase | Priority | Notes |
 |----------|---------|--------|-------|----------|-------|
 | [features/shipped/dns-health-single.md](features/shipped/dns-health-single.md) | DNS health (single domain) | **shipped** | - | P0 | verified 2026-09-15 |
-| [features/dns-health/bulk-checker.md](features/dns-health/bulk-checker.md) | Bulk DNS health | planned | 1 | P1 | `surface` bulk - [§9](ARCHITECTURE.md#9-bulk-architecture-planned) |
+| [features/dns-health/bulk-checker.md](features/dns-health/bulk-checker.md) | Bulk DNS health | **in-progress** | 1 | P1 | Bulk 1 shipped; CSV/drill-down next |
 | [features/platform/tool-registry.md](features/platform/tool-registry.md) | Tool registry | **shipped** | 0 | P1 | Phase 0 |
 | [features/platform/analytics-events.md](features/platform/analytics-events.md) | Analytics events | **shipped** | 0 | P1 | BFF hooks |
 | [features/platform/internal-jwt-proxy.md](features/platform/internal-jwt-proxy.md) | Internal JWT proxy | **shipped** | 0 | P1 | HMAC |

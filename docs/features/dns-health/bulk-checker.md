@@ -4,7 +4,7 @@
 
 | Field | Value |
 |-------|--------|
-| **status** | planned |
+| **status** | in-progress |
 | **priority** | P1 |
 | **phase** | 1 |
 | **access** | both |
@@ -96,16 +96,16 @@ Free tier with tight caps; larger batches / async jobs as Pro experiment ([METRI
 
 ## Implementation checklist
 
-- [ ] `analyze_domain`, `bulk_analyze`, `rollup_for_bulk` in Python
-- [ ] T3 page + BFF bulk surface
+- [x] `analyze_domain`, `bulk_analyze`, `rollup_for_bulk` in Python (Bulk 1)
+- [x] T3 page + BFF bulk surface (Bulk 1)
 - [ ] CSV Bulk 2
-- [ ] Document endpoints in API.md when shipped
+- [x] Document endpoints in API.md when shipped (Bulk 1)
 
 ## Acceptance criteria
 
-- [ ] Same engine output as single domain for each row
-- [ ] Bounded concurrency under max free-tier batch size
-- [ ] No duplicate NS/MX/SOA implementation
+- [x] Same engine output as single domain for each row (Bulk 1)
+- [x] Bounded concurrency under max free-tier batch size (Bulk 1)
+- [x] No duplicate NS/MX/SOA implementation
 
 ## References
 

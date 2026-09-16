@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 
 const navLinks = [
   { href: '/', label: 'DNS health' },
+  { href: '/tools/bulk-dns-health', label: 'Bulk check' },
   { href: '/tools', label: 'Tools' },
 ];
 

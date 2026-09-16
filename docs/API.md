@@ -459,13 +459,23 @@ HMAC-SHA256 over `timestamp + "." + raw_request_body` (UTF-8 timestamp string, b
 
 Reject if skew > 60s or signature mismatch. Set the same `INTERNAL_API_SECRET` in backend and Next (see `.env.example` files).
 
-**Local dev - generic DNS health via BFF:**
+**Local dev - single DNS health via BFF:**
 
 ```bash
 curl -s -X POST http://localhost:3000/api/tools/dns_health \
   -H "Content-Type: application/json" \
   -d '{"domain":"example.com","checks":["ns"]}'
 ```
+
+**Local dev - bulk DNS health (Bulk 1, sync):**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/dns_health \
+  -H "Content-Type: application/json" \
+  -d '{"surface":"bulk","domains":["example.com","example.org"]}'
+```
+
+Response: `{ "surface": "bulk", "rows": [...], "meta": { "requested", "completed", "failed" } }`. Max domains: `BULK_MAX_DOMAINS` (default 50).
 
 Legacy **`POST /api/dns/check`** (CSRF → `/api/check`) remains unchanged for the home UI until T1 migration.
 

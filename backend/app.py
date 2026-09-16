@@ -392,14 +392,7 @@ def internal_run_tool(tool_id: str):
 
     data = request.get_json(silent=True) or {}
     try:
-        if tool_id == "dns_health":
-            result = run_tool(
-                tool_id,
-                domain=data.get("domain", ""),
-                checks=data.get("checks", []),
-            )
-        else:
-            result = run_tool(tool_id, **data)
+        result = run_tool(tool_id, **data)
         return jsonify(result)
     except ToolNotFoundError:
         return jsonify({"error": "Unknown tool"}), 404

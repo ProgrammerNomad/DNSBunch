@@ -5,6 +5,7 @@ import { logToolEvent } from '@/lib/analytics/tool-events';
 import { canRun } from '@/lib/can-run';
 import { postInternalTool } from '@/lib/internal-api';
 import { isAllowedToolId } from '@/lib/tool-allowlist';
+import { validateDnsHealthBulkBody } from '@/lib/validate-dns-health-bulk';
 
 type RouteContext = { params: Promise<{ toolId: string }> };
 
@@ -32,8 +33,23 @@ export async function POST(request: NextRequest, context: RouteContext) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
+  let proxyBody: unknown = body;
+  let eventSurface: string | undefined;
+
+  if (toolId === 'dns_health' && typeof body === 'object' && body !== null && (body as { surface?: string }).surface === 'bulk') {
+    const validated = validateDnsHealthBulkBody(body);
+    if (!validated.ok) {
+      return NextResponse.json(
+        { error: validated.error, code: validated.code },
+        { status: 400, headers: { 'X-Request-Id': requestId } },
+      );
+    }
+    proxyBody = validated.data;
+    eventSurface = 'bulk';
+  }
+
   try {
-    const upstream = await postInternalTool(toolId, body, requestId);
+    const upstream = await postInternalTool(toolId, proxyBody, requestId);
     const data = await upstream.json().catch(() => ({}));
 
     if (!upstream.ok) {
@@ -42,6 +58,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
         success: false,
         durationMs: Date.now() - started,
         code: String(upstream.status),
+        surface: eventSurface,
       });
       return NextResponse.json(data, {
         status: upstream.status,
@@ -53,6 +70,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
       toolId,
       success: true,
       durationMs: Date.now() - started,
+      surface: eventSurface,
     });
 
     return NextResponse.json(data, {
@@ -65,6 +83,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
       success: false,
       durationMs: Date.now() - started,
       code: 'PROXY_ERROR',
+      surface: eventSurface,
     });
     return NextResponse.json(
       {

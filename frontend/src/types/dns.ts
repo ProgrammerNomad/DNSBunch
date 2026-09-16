@@ -106,6 +106,30 @@ export interface DNSAnalysisResult {
   summary?: AnalysisSummary;
 }
 
+export type BulkRollupStatus = 'pass' | 'warning' | 'error' | 'info' | '-';
+
+export interface BulkDnsHealthRow {
+  domain: string;
+  overall: BulkRollupStatus | string;
+  ns: BulkRollupStatus | string;
+  soa: BulkRollupStatus | string;
+  mx: BulkRollupStatus | string;
+  www: BulkRollupStatus | string;
+  error: string | null;
+}
+
+export interface BulkDnsHealthMeta {
+  requested: number;
+  completed: number;
+  failed: number;
+}
+
+export interface BulkDnsHealthResponse {
+  surface: 'bulk';
+  rows: BulkDnsHealthRow[];
+  meta: BulkDnsHealthMeta;
+}
+
 export interface DomainSearchFormProps {
   onSearch: (domain: string, checks: string[], resultType: 'normal' | 'advanced') => void;
   loading?: boolean;
