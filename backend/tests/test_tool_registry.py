@@ -233,6 +233,78 @@ class TestToolRegistry:
         with pytest.raises(ValueError, match="URL is required"):
             run_tool("redirect_chain", url="")
 
+    def test_http_status_registered(self):
+        assert "http_status" in list_tool_ids()
+        entry = get("http_status")
+        assert entry.meta.category == "website"
+        assert entry.meta.timeout_ms == 20_000
+
+    def test_http_status_invalid_url(self):
+        with pytest.raises(ValueError, match="URL is required"):
+            run_tool("http_status", url="")
+
+    def test_ssl_inspector_registered(self):
+        assert "ssl_inspector" in list_tool_ids()
+        entry = get("ssl_inspector")
+        assert entry.meta.category == "website"
+
+    def test_ssl_inspector_invalid_host(self):
+        with pytest.raises(ValueError, match="Host is required"):
+            run_tool("ssl_inspector", host="")
+
+    def test_ssl_inspector_smoke_mocked(self, monkeypatch):
+        def fake_inspect(host):
+            return {
+                "host": host,
+                "status": "pass",
+                "tls_version": "TLSv1.3",
+                "subject_cn": host,
+                "issuer": "Test CA",
+                "sans": [host],
+                "not_before": "2026-01-01T00:00:00+00:00",
+                "not_after": "2027-01-01T00:00:00+00:00",
+                "days_until_expiry": 100,
+                "hostname_match": True,
+                "issues": [],
+                "error": None,
+            }
+
+        monkeypatch.setattr("tools.ssl_inspector.runner._inspect_tls", fake_inspect)
+        result = run_tool("ssl_inspector", host="example.com")
+        assert result["status"] == "pass"
+        assert result["tls_version"] == "TLSv1.3"
+
+    def test_http_status_smoke_mocked(self, monkeypatch):
+        from tools.url_fetch import FetchGetResult
+
+        def fake_fetch(url, **kwargs):
+            return FetchGetResult(
+                final_url="https://example.com/",
+                status_code=200,
+                headers={},
+            )
+
+        monkeypatch.setattr("tools.http_status.runner.fetch_get_with_redirect_cap", fake_fetch)
+        result = run_tool("http_status", url="https://example.com")
+        assert result["status"] == "pass"
+        assert result["status_code"] == 200
+        assert result["latency_ms"] >= 0
+
+    def test_http_status_client_error_mocked(self, monkeypatch):
+        from tools.url_fetch import FetchGetResult
+
+        def fake_fetch(url, **kwargs):
+            return FetchGetResult(
+                final_url="https://example.com/missing",
+                status_code=404,
+                headers={},
+            )
+
+        monkeypatch.setattr("tools.http_status.runner.fetch_get_with_redirect_cap", fake_fetch)
+        result = run_tool("http_status", url="https://example.com")
+        assert result["status"] == "warning"
+        assert result["status_code"] == 404
+
     def test_redirect_chain_smoke_mocked(self, monkeypatch):
         from tools.url_fetch import RedirectChainResult, RedirectHop
 
@@ -273,6 +345,51 @@ class TestToolRegistry:
         assert result["status_code"] == 200
         assert result["status"] == "warning"
         assert any(h["name"] == "strict-transport-security" and h["present"] for h in result["security_headers"])
+
+    def test_whois_lookup_smoke_mocked(self, monkeypatch):
+        def fake_rdap(domain):
+            return {
+                "domain": "example.com",
+                "registrar": "Example Registrar",
+                "created": "2020-01-01T00:00:00+00:00",
+                "updated": None,
+                "expires": "2030-01-01T00:00:00+00:00",
+                "nameservers": ["ns1.example.com"],
+                "statuses": ["active"],
+            }
+
+        monkeypatch.setattr("tools.whois_lookup.runner.fetch_domain_rdap", fake_rdap)
+        result = run_tool("whois_lookup", domain="example.com")
+        assert result["status"] == "pass"
+        assert result["registrar"] == "Example Registrar"
+
+    def test_domain_expiry_smoke_mocked(self, monkeypatch):
+        def fake_rdap(domain):
+            return {
+                "domain": "example.com",
+                "registrar": None,
+                "created": None,
+                "updated": None,
+                "expires": "2030-01-01T00:00:00+00:00",
+                "nameservers": [],
+                "statuses": [],
+            }
+
+        monkeypatch.setattr("tools.domain_expiry.runner.fetch_domain_rdap", fake_rdap)
+        result = run_tool("domain_expiry", domain="example.com")
+        assert result["status"] == "pass"
+        assert result["days_until_expiry"] is not None
+
+    def test_dns_propagation_smoke_mocked(self, monkeypatch):
+        def fake_query(resolver_ip, name, record_type):
+            if resolver_ip == "8.8.8.8":
+                return ["93.184.216.34"], None
+            return ["93.184.216.34"], None
+
+        monkeypatch.setattr("tools.dns_propagation.runner._query_resolver", fake_query)
+        result = run_tool("dns_propagation", name="example.com", type="A")
+        assert result["agreement_percent"] == 100
+        assert len(result["rows"]) == 3
 
     def test_dns_health_invalid_domain(self):
         with pytest.raises(ValueError, match="Domain is required"):

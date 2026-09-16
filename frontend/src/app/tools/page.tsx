@@ -133,6 +133,59 @@ export default function ToolsHubPage() {
             </Button>
           </CardHeader>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>HTTP status</CardTitle>
+            <CardDescription>
+              Quick up/down check: final status code and response time after redirects.
+            </CardDescription>
+            <Button asChild className="mt-2 w-fit">
+              <Link href="/tools/http-status">Open HTTP status</Link>
+            </Button>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>SSL inspector</CardTitle>
+            <CardDescription>
+              TLS certificate expiry, issuer, protocol version, and hostname match on port 443.
+            </CardDescription>
+            <Button asChild className="mt-2 w-fit">
+              <Link href="/tools/ssl-inspector">Open SSL inspector</Link>
+            </Button>
+          </CardHeader>
+        </Card>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Domain</h2>
+        <Card>
+          <CardHeader>
+            <CardTitle>WHOIS lookup</CardTitle>
+            <CardDescription>Registrar, dates, and nameservers from RDAP.</CardDescription>
+            <Button asChild className="mt-2 w-fit">
+              <Link href="/tools/whois-lookup">Open WHOIS lookup</Link>
+            </Button>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Domain expiry</CardTitle>
+            <CardDescription>Registration expiry date and days remaining.</CardDescription>
+            <Button asChild className="mt-2 w-fit">
+              <Link href="/tools/domain-expiry">Open domain expiry</Link>
+            </Button>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>DNS propagation</CardTitle>
+            <CardDescription>Compare answers from Google, Cloudflare, and Quad9 resolvers.</CardDescription>
+            <Button asChild className="mt-2 w-fit">
+              <Link href="/tools/dns-propagation">Open DNS propagation</Link>
+            </Button>
+          </CardHeader>
+        </Card>
       </section>
     </div>
   );

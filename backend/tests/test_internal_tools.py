@@ -206,6 +206,64 @@ class TestInternalToolsRoute:
         assert data["host"] == "smtp.example.com"
         assert data["banner"].startswith("220")
 
+    def test_whois_lookup_valid_signature(self, client, monkeypatch):
+        def fake_rdap(domain):
+            return {
+                "domain": domain,
+                "registrar": "Test",
+                "created": "2020-01-01T00:00:00+00:00",
+                "updated": None,
+                "expires": "2030-01-01T00:00:00+00:00",
+                "nameservers": [],
+                "statuses": [],
+            }
+
+        monkeypatch.setattr("tools.whois_lookup.runner.fetch_domain_rdap", fake_rdap)
+        response = _signed_post(client, "whois_lookup", {"domain": "example.com"})
+        assert response.status_code == 200
+        assert response.get_json()["domain"] == "example.com"
+
+    def test_ssl_inspector_valid_signature(self, client, monkeypatch):
+        def fake_inspect(host):
+            return {
+                "host": host,
+                "status": "warning",
+                "tls_version": "TLSv1.2",
+                "subject_cn": "other.example",
+                "issuer": "Test CA",
+                "sans": ["other.example"],
+                "not_before": "2026-01-01T00:00:00+00:00",
+                "not_after": "2026-09-20T00:00:00+00:00",
+                "days_until_expiry": 4,
+                "hostname_match": False,
+                "issues": ["Certificate does not match the requested hostname"],
+                "error": None,
+            }
+
+        monkeypatch.setattr("tools.ssl_inspector.runner._inspect_tls", fake_inspect)
+        response = _signed_post(client, "ssl_inspector", {"host": "example.com"})
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data["status"] == "warning"
+        assert data["hostname_match"] is False
+
+    def test_http_status_valid_signature(self, client, monkeypatch):
+        from tools.url_fetch import FetchGetResult
+
+        def fake_fetch(url, **kwargs):
+            return FetchGetResult(
+                final_url="https://example.com/",
+                status_code=200,
+                headers={},
+            )
+
+        monkeypatch.setattr("tools.http_status.runner.fetch_get_with_redirect_cap", fake_fetch)
+        response = _signed_post(client, "http_status", {"url": "https://example.com"})
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data["status_code"] == 200
+        assert "latency_ms" in data
+
     def test_redirect_chain_valid_signature(self, client, monkeypatch):
         from tools.url_fetch import RedirectChainResult, RedirectHop
 

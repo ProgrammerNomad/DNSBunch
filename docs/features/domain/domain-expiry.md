@@ -5,11 +5,11 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P2 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 1 |
 | **access** | free |
 | **tool_id** | `domain_expiry` |
-| **last_reviewed** | 2026-09-15 |
+| **last_reviewed** | 2026-09-16 |
 
 ## Summary
 
@@ -32,7 +32,7 @@ Renewal reminders start with knowing expiry.
 
 ## Architecture
 
-Reuse WHOIS/RDAP layer from whois tool.
+Reuse [`tools/rdap.py`](../../../backend/tools/rdap.py).
 
 ## Data model
 
@@ -48,26 +48,26 @@ Template **T2**, `/tools/domain-expiry`.
 
 ## Limits and abuse
 
-WHOIS rate limits.
+RDAP rate limits.
 
 ## Monetization
 
-Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)).
 
 ## Dependencies
 
-[whois-lookup.md](whois-lookup.md) or shared RDAP client.
+Shared RDAP client with [whois-lookup.md](whois-lookup.md).
 
 ## Implementation checklist
 
-- [ ] Python tool module
-- [ ] T2 page + BFF proxy
-- [ ] Analytics `tool_run`
+- [x] Python tool module
+- [x] T2 page + BFF proxy
+- [x] Analytics `tool_run`
 
 ## Acceptance criteria
 
-- [ ] Expiry displayed or unknown explained
-- [ ] Past expiry flagged warn
+- [x] Expiry displayed or unknown explained
+- [x] Past expiry flagged warn
 
 ## References
 

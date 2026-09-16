@@ -49,13 +49,13 @@ Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) 
 | [features/email/smtp-test.md](features/email/smtp-test.md) | SMTP test | **shipped** | 1 | P2 | Banner + EHLO only |
 | [features/email/dnsbl-blacklist.md](features/email/dnsbl-blacklist.md) | DNSBL | **shipped** | 1 | P2 | 3 RBL zones, IPv4 |
 | [features/email/mail-tester-inbound.md](features/email/mail-tester-inbound.md) | Mail tester | planned | 2 | P1 | inbound SMTP |
-| [features/website/ssl-inspector.md](features/website/ssl-inspector.md) | SSL inspector | planned | 1 | P2 | |
+| [features/website/ssl-inspector.md](features/website/ssl-inspector.md) | SSL inspector | **shipped** | 1 | P2 | TLS 443; expiry + SAN match |
 | [features/website/http-headers.md](features/website/http-headers.md) | HTTP headers | **shipped** | 1 | P2 | T2 website; SSRF via `url_fetch` |
 | [features/website/redirect-chain.md](features/website/redirect-chain.md) | Redirect chain | **shipped** | 1 | P2 | max 5 hops via `url_fetch` |
-| [features/website/http-status.md](features/website/http-status.md) | HTTP status | planned | 1 | P2 | |
-| [features/domain/whois-lookup.md](features/domain/whois-lookup.md) | WHOIS | planned | 1 | P2 | |
-| [features/domain/domain-expiry.md](features/domain/domain-expiry.md) | Domain expiry | planned | 1 | P2 | |
-| [features/domain/dns-propagation.md](features/domain/dns-propagation.md) | DNS propagation | planned | 1 | P2 | |
+| [features/website/http-status.md](features/website/http-status.md) | HTTP status | **shipped** | 1 | P2 | T2; latency + final status |
+| [features/domain/whois-lookup.md](features/domain/whois-lookup.md) | WHOIS | **shipped** | 1 | P2 | RDAP via rdap.org |
+| [features/domain/domain-expiry.md](features/domain/domain-expiry.md) | Domain expiry | **shipped** | 1 | P2 | Shared RDAP |
+| [features/domain/dns-propagation.md](features/domain/dns-propagation.md) | DNS propagation | **shipped** | 1 | P2 | 3 public resolvers |
 | [features/domain/dns-history.md](features/domain/dns-history.md) | DNS history | planned | 1 | P2 | access pro |
 | [features/monitoring/dns-change-alerts.md](features/monitoring/dns-change-alerts.md) | DNS change alerts | planned | 3 | P2 | experiment |
 | [features/monitoring/ssl-expiry-alerts.md](features/monitoring/ssl-expiry-alerts.md) | SSL expiry alerts | planned | 3 | P2 | experiment |

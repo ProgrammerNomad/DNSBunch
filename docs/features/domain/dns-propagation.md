@@ -5,11 +5,11 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P2 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 1 |
 | **access** | free |
 | **tool_id** | `dns_propagation` |
-| **last_reviewed** | 2026-09-15 |
+| **last_reviewed** | 2026-09-16 |
 
 ## Summary
 
@@ -21,7 +21,7 @@ See if DNS changes have propagated globally.
 
 ## Scope
 
-**In scope:** Fixed resolver list; record type + name input.
+**In scope:** Fixed resolver list; record types A, AAAA, MX, NS, TXT, CNAME.
 
 **Out of scope:** Custom resolver input from user (abuse); continuous monitoring.
 
@@ -32,7 +32,7 @@ See if DNS changes have propagated globally.
 
 ## Architecture
 
-Python async DNS to multiple resolvers.
+Python dnspython queries to 8.8.8.8, 1.1.1.1, 9.9.9.9.
 
 ## Data model
 
@@ -52,7 +52,7 @@ Cap resolver count; rate limit.
 
 ## Monetization
 
-Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)).
 
 ## Dependencies
 
@@ -60,14 +60,14 @@ None for v1 unless listed elsewhere in this doc.
 
 ## Implementation checklist
 
-- [ ] Python tool module
-- [ ] T2 page + BFF proxy
-- [ ] Analytics `tool_run`
+- [x] Python tool module
+- [x] T2 page + BFF proxy
+- [x] Analytics `tool_run`
 
 ## Acceptance criteria
 
-- [ ] Each resolver row shows answers or error
-- [ ] Mismatch highlighted
+- [x] Each resolver row shows answers or error
+- [x] Mismatch highlighted
 
 ## References
 

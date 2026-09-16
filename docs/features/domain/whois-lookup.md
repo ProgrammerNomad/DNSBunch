@@ -5,11 +5,11 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P2 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 1 |
 | **access** | free |
 | **tool_id** | `whois_lookup` |
-| **last_reviewed** | 2026-09-15 |
+| **last_reviewed** | 2026-09-16 |
 
 ## Summary
 
@@ -21,7 +21,7 @@ Registration context without leaving DNSBunch.
 
 ## Scope
 
-**In scope:** WHOIS text or structured fields where library supports.
+**In scope:** RDAP JSON via `rdap.org`; structured fields when available.
 
 **Out of scope:** Bulk WHOIS; legal WHOIS for all TLDs guaranteed.
 
@@ -32,7 +32,7 @@ Registration context without leaving DNSBunch.
 
 ## Architecture
 
-Python whois library; rate limit heavily.
+Python [`tools/rdap.py`](../../../backend/tools/rdap.py) + `requests`; domain validation via `normalize_domain`.
 
 ## Data model
 
@@ -48,11 +48,11 @@ Template **T2**, `/tools/whois-lookup`.
 
 ## Limits and abuse
 
-Strict rate limits; cache responses short TTL optional.
+RDAP rate limits; 429 surfaced to user.
 
 ## Monetization
 
-Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). Paid experiments only after funnel metrics ([METRICS_DASHBOARD.md](../../roadmap/METRICS_DASHBOARD.md)).
+Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)).
 
 ## Dependencies
 
@@ -60,19 +60,15 @@ None for v1 unless listed elsewhere in this doc.
 
 ## Implementation checklist
 
-- [ ] Python tool module
-- [ ] T2 page + BFF proxy
-- [ ] Analytics `tool_run`
+- [x] Python tool module
+- [x] T2 page + BFF proxy
+- [x] Analytics `tool_run`
 
 ## Acceptance criteria
 
-- [ ] Key fields shown when available
-- [ ] Rate limit message on 429
+- [x] Key fields shown when available
+- [x] Rate limit message on 429
 
 ## References
 
 None for v1.
-
-## Note
-
-May cross-promote WhoisExtractor; keep DNSBunch read-only lookup.

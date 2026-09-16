@@ -6,9 +6,11 @@ import { canRun } from '@/lib/can-run';
 import { postInternalTool } from '@/lib/internal-api';
 import { isAllowedToolId } from '@/lib/tool-allowlist';
 import { validateDnsHealthBulkBody } from '@/lib/validate-dns-health-bulk';
+import { validateDnsPropagationBody } from '@/lib/validate-dns-propagation';
 import { validateDkimCheckerBody } from '@/lib/validate-dkim-checker';
 import { validateDnsblLookupBody } from '@/lib/validate-dnsbl-lookup';
-import { validateFetchUrlBody } from '@/lib/validate-fetch-url';
+import { isWebsiteUrlToolId, validateFetchUrlBody } from '@/lib/validate-fetch-url';
+import { validateSslInspectorBody } from '@/lib/validate-ssl-inspector';
 import { validateSmtpTestBody } from '@/lib/validate-smtp-test';
 import { isDomainToolId, validateToolDomainBody } from '@/lib/validate-tool-domain';
 
@@ -80,7 +82,25 @@ export async function POST(request: NextRequest, context: RouteContext) {
       );
     }
     proxyBody = validated.data;
-  } else if (toolId === 'http_headers' || toolId === 'redirect_chain') {
+  } else if (toolId === 'dns_propagation') {
+    const validated = validateDnsPropagationBody(body);
+    if (!validated.ok) {
+      return NextResponse.json(
+        { error: validated.error, code: validated.code },
+        { status: 400, headers: { 'X-Request-Id': requestId } },
+      );
+    }
+    proxyBody = { name: validated.data.name, type: validated.data.type };
+  } else if (toolId === 'ssl_inspector') {
+    const validated = validateSslInspectorBody(body);
+    if (!validated.ok) {
+      return NextResponse.json(
+        { error: validated.error, code: validated.code },
+        { status: 400, headers: { 'X-Request-Id': requestId } },
+      );
+    }
+    proxyBody = validated.data;
+  } else if (isWebsiteUrlToolId(toolId)) {
     const validated = validateFetchUrlBody(body);
     if (!validated.ok) {
       return NextResponse.json(

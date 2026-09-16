@@ -10,7 +10,13 @@ export type ToolDomainRequest = {
 };
 
 /** Tools that accept POST `{ domain }` - keep in sync with BFF validation. */
-export const DOMAIN_TOOL_IDS = ['dmarc_checker', 'spf_checker', 'mx_lookup'] as const;
+export const DOMAIN_TOOL_IDS = [
+  'dmarc_checker',
+  'spf_checker',
+  'mx_lookup',
+  'whois_lookup',
+  'domain_expiry',
+] as const;
 
 export type DomainToolId = (typeof DOMAIN_TOOL_IDS)[number];
 

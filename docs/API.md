@@ -565,6 +565,50 @@ curl -s -X POST http://localhost:3000/api/tools/redirect_chain \
 
 Response: `{ "input_url", "final_url", "final_status_code", "status", "hops", "loop_detected", "issues", "error" }`.
 
+**Local dev - HTTP status (T2):**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/http_status \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com"}'
+```
+
+Response: `{ "input_url", "final_url", "status_code", "latency_ms", "status", "issues", "error" }`.
+
+**Local dev - SSL inspector (T2):**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/ssl_inspector \
+  -H "Content-Type: application/json" \
+  -d '{"host":"example.com"}'
+```
+
+Response: `{ "host", "status", "tls_version", "subject_cn", "issuer", "sans", "not_before", "not_after", "days_until_expiry", "hostname_match", "issues", "error" }`.
+
+**Local dev - WHOIS lookup (T2):**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/whois_lookup \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example.com"}'
+```
+
+**Local dev - Domain expiry (T2):**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/domain_expiry \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example.com"}'
+```
+
+**Local dev - DNS propagation (T2):**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/dns_propagation \
+  -H "Content-Type: application/json" \
+  -d '{"name":"example.com","type":"A"}'
+```
+
 Legacy **`POST /api/dns/check`** (CSRF → `/api/check`) remains unchanged for the home UI until T1 migration.
 
 ### Browser → Next BFF

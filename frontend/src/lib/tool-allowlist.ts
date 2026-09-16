@@ -9,6 +9,11 @@ export const ALLOWED_TOOL_IDS = [
   'dnsbl_lookup',
   'http_headers',
   'redirect_chain',
+  'http_status',
+  'ssl_inspector',
+  'whois_lookup',
+  'domain_expiry',
+  'dns_propagation',
 ] as const;
 
 export type AllowedToolId = (typeof ALLOWED_TOOL_IDS)[number];

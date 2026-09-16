@@ -249,7 +249,8 @@ Detail: [features/dns-health/bulk-checker.md](features/dns-health/bulk-checker.m
 - **Registry:** Python maps `tool_id` → runner; Next maps route → `tool_id`.
 - **DNS health:** `tool_id = dns_health`; surfaces: `single` (shipped), `bulk`, `api` (planned).
 - **Email T2 (Phase 1):** `dmarc_checker`, `spf_checker`, `dkim_checker`, `mx_lookup`, `smtp_test`, `dnsbl_lookup` under `/tools/*`; DMARC/SPF/MX use `run_all_checks` slices; DKIM uses `lookup_dkim_selector`; `smtp_test` does outbound TCP banner/EHLO only (no DATA), with `assert_public_host` before connect; `dnsbl_lookup` queries a fixed set of IPv4 DNSBL zones (cap IPs per run; respect provider terms).
-- **Website T2 (Phase 1):** `http_headers` at `/tools/http-headers`; `redirect_chain` at `/tools/redirect-chain`; server-side GET via `tools.url_fetch` (scheme allowlist, `assert_public_host` per redirect hop, max 5 redirects, 15s timeout); `fetch_redirect_chain` records each hop and detects loops; BFF mirrors URL rules in `validate-fetch-url.ts`.
+- **Website T2 (Phase 1):** `http_headers`, `redirect_chain`, `http_status` (HTTP via `tools.url_fetch`); `ssl_inspector` at `/tools/ssl-inspector` (TLS 443 + `assert_public_host`).
+- **Domain T2 (Phase 1):** `whois_lookup`, `domain_expiry` (RDAP via `tools.rdap`); `dns_propagation` (fixed public resolvers + dnspython). (scheme allowlist, `assert_public_host` per redirect hop, max 5 redirects, 15s timeout); `fetch_redirect_chain` records each hop and detects loops; BFF mirrors URL rules in `validate-fetch-url.ts`.
 
 ---
 

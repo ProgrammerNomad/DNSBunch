@@ -1,3 +1,12 @@
+/** Tools that accept `{ url }` and use the same SSRF rules (keep in sync with bootstrap). */
+export const WEBSITE_URL_TOOL_IDS = ['http_headers', 'redirect_chain', 'http_status'] as const;
+
+export type WebsiteUrlToolId = (typeof WEBSITE_URL_TOOL_IDS)[number];
+
+export function isWebsiteUrlToolId(toolId: string): toolId is WebsiteUrlToolId {
+  return (WEBSITE_URL_TOOL_IDS as readonly string[]).includes(toolId);
+}
+
 const MAX_FETCH_URL_LENGTH = 2048;
 
 const IPV4_PATTERN =

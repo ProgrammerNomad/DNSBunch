@@ -5,11 +5,11 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P2 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 1 |
 | **access** | free |
 | **tool_id** | `ssl_inspector` |
-| **last_reviewed** | 2026-09-15 |
+| **last_reviewed** | 2026-09-16 |
 
 ## Summary
 
@@ -21,7 +21,7 @@ Quick cert expiry and name mismatch checks for admins.
 
 ## Scope
 
-**In scope:** Connect TLS; parse cert; SAN/CN vs input host.
+**In scope:** Connect TLS on port 443; parse cert; SAN/CN vs input host; expiry warnings (&lt;30 days).
 
 **Out of scope:** Full vulnerability scan; client cert auth.
 
@@ -32,7 +32,7 @@ Quick cert expiry and name mismatch checks for admins.
 
 ## Architecture
 
-Python ssl/socket; SSRF rules [ARCHITECTURE §20](../../ARCHITECTURE.md).
+Python `ssl` + `socket`; `assert_public_host` before connect; BFF [`validate-ssl-inspector`](../../../frontend/src/lib/validate-ssl-inspector.ts).
 
 ## Data model
 
@@ -56,18 +56,18 @@ Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). 
 
 ## Dependencies
 
-Platform skeleton recommended.
+Shared host validation (`assert_public_host`).
 
 ## Implementation checklist
 
-- [ ] Host input validation
-- [ ] Expiry warning thresholds
+- [x] Host input validation
+- [x] Expiry warning thresholds
 
 ## Acceptance criteria
 
-- [ ] Expiry date shown
-- [ ] Hostname mismatch warning
-- [ ] Connection failures explained
+- [x] Expiry date shown
+- [x] Hostname mismatch warning
+- [x] Connection failures explained
 
 ## References
 

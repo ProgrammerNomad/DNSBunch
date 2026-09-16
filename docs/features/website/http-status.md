@@ -5,11 +5,11 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P2 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 1 |
 | **access** | free |
 | **tool_id** | `http_status` |
-| **last_reviewed** | 2026-09-15 |
+| **last_reviewed** | 2026-09-16 |
 
 ## Summary
 
@@ -21,7 +21,7 @@ Simple up/down and status code check.
 
 ## Scope
 
-**In scope:** Single URL; status + latency ms.
+**In scope:** Single URL; status + latency ms (after up to 5 redirects).
 
 **Out of scope:** Global uptime monitoring (Phase 3).
 
@@ -32,7 +32,7 @@ Simple up/down and status code check.
 
 ## Architecture
 
-Python httpx; SSRF gate.
+Python `requests` via [`url_fetch.fetch_get_with_redirect_cap`](../../../backend/tools/url_fetch.py); BFF [`validate-fetch-url`](../../../frontend/src/lib/validate-fetch-url.ts).
 
 ## Data model
 
@@ -48,7 +48,7 @@ Template **T2**, `/tools/http-status`.
 
 ## Limits and abuse
 
-SSRF; timeout.
+SSRF; timeout 15s; max 5 redirects.
 
 ## Monetization
 
@@ -56,18 +56,18 @@ Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). 
 
 ## Dependencies
 
-None for v1 unless listed elsewhere in this doc.
+Shared `url_fetch` + BFF URL validation.
 
 ## Implementation checklist
 
-- [ ] Python tool module + SSRF tests
-- [ ] T2 page + BFF proxy
-- [ ] Analytics `tool_run`
+- [x] Python tool module + SSRF tests
+- [x] T2 page + BFF proxy
+- [x] Analytics `tool_run`
 
 ## Acceptance criteria
 
-- [ ] Status code accurate
-- [ ] Timeout handled
+- [x] Status code accurate
+- [x] Timeout handled
 
 ## References
 
