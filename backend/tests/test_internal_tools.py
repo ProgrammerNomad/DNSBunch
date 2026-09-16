@@ -206,6 +206,23 @@ class TestInternalToolsRoute:
         assert data["host"] == "smtp.example.com"
         assert data["banner"].startswith("220")
 
+    def test_http_headers_valid_signature(self, client, monkeypatch):
+        from tools.url_fetch import FetchGetResult
+
+        def fake_fetch(url, **kwargs):
+            return FetchGetResult(
+                final_url="https://example.com/",
+                status_code=200,
+                headers={"X-Frame-Options": "DENY"},
+            )
+
+        monkeypatch.setattr("tools.http_headers.runner.fetch_get_with_redirect_cap", fake_fetch)
+        response = _signed_post(client, "http_headers", {"url": "https://example.com"})
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data["status_code"] == 200
+        assert data["final_url"] == "https://example.com/"
+
     def test_dnsbl_lookup_valid_signature(self, client, monkeypatch):
         def fake_query(ip, zone_meta):
             return {

@@ -7,6 +7,7 @@ export const ALLOWED_TOOL_IDS = [
   'mx_lookup',
   'smtp_test',
   'dnsbl_lookup',
+  'http_headers',
 ] as const;
 
 export type AllowedToolId = (typeof ALLOWED_TOOL_IDS)[number];

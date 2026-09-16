@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from tools.dnsbl_lookup.runner import run_dnsbl_lookup
+from tools.http_headers.runner import run_http_headers
 from tools.dkim_checker.runner import run_dkim_checker
 from tools.dmarc_checker.runner import run_dmarc_checker
 from tools.dns_health.runner import run_dns_health
@@ -46,4 +47,9 @@ def register_all_tools() -> None:
         "dnsbl_lookup",
         run_dnsbl_lookup,
         {"category": "email", "timeout_ms": 30_000},
+    )
+    register(
+        "http_headers",
+        run_http_headers,
+        {"category": "website", "timeout_ms": 20_000},
     )

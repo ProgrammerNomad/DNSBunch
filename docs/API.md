@@ -543,6 +543,18 @@ Or domain (public A records): `{"domain":"example.com"}`. Domain **or** IP, not 
 
 Response: `{ "input", "ips_checked", "status", "rows", "issues" }`.
 
+**Local dev - HTTP headers (T2):**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/http_headers \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com"}'
+```
+
+Response: `{ "input_url", "final_url", "status_code", "status", "headers", "security_headers", "issues", "error" }`.
+
+Private targets (e.g. `http://127.0.0.1`) are rejected at the BFF with **400**.
+
 Legacy **`POST /api/dns/check`** (CSRF → `/api/check`) remains unchanged for the home UI until T1 migration.
 
 ### Browser → Next BFF

@@ -109,7 +109,20 @@ export default function ToolsHubPage() {
         </Card>
       </section>
 
-      <p className="text-sm text-muted-foreground">Website tools (HTTP headers, SSL) coming in Phase 1.</p>
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Website</h2>
+        <Card>
+          <CardHeader>
+            <CardTitle>HTTP headers</CardTitle>
+            <CardDescription>
+              GET a URL (redirects capped) and inspect response headers with security headers highlighted.
+            </CardDescription>
+            <Button asChild className="mt-2 w-fit">
+              <Link href="/tools/http-headers">Open HTTP headers</Link>
+            </Button>
+          </CardHeader>
+        </Card>
+      </section>
     </div>
   );
 }

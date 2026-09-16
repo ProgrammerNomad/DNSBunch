@@ -213,6 +213,35 @@ class TestToolRegistry:
         assert len(result["rows"]) == 3
         assert result["status"] == "pass"
 
+    def test_http_headers_registered(self):
+        assert "http_headers" in list_tool_ids()
+        entry = get("http_headers")
+        assert entry.meta.category == "website"
+        assert entry.meta.timeout_ms == 20_000
+
+    def test_http_headers_invalid_url(self):
+        with pytest.raises(ValueError, match="URL is required"):
+            run_tool("http_headers", url="")
+
+    def test_http_headers_smoke_mocked(self, monkeypatch):
+        from tools.url_fetch import FetchGetResult
+
+        def fake_fetch(url, **kwargs):
+            return FetchGetResult(
+                final_url="https://example.com/",
+                status_code=200,
+                headers={
+                    "Content-Type": "text/html",
+                    "Strict-Transport-Security": "max-age=31536000",
+                },
+            )
+
+        monkeypatch.setattr("tools.http_headers.runner.fetch_get_with_redirect_cap", fake_fetch)
+        result = run_tool("http_headers", url="https://example.com")
+        assert result["status_code"] == 200
+        assert result["status"] == "warning"
+        assert any(h["name"] == "strict-transport-security" and h["present"] for h in result["security_headers"])
+
     def test_dns_health_invalid_domain(self):
         with pytest.raises(ValueError, match="Domain is required"):
             run_tool("dns_health", domain="", checks=[])

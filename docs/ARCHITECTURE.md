@@ -249,6 +249,7 @@ Detail: [features/dns-health/bulk-checker.md](features/dns-health/bulk-checker.m
 - **Registry:** Python maps `tool_id` → runner; Next maps route → `tool_id`.
 - **DNS health:** `tool_id = dns_health`; surfaces: `single` (shipped), `bulk`, `api` (planned).
 - **Email T2 (Phase 1):** `dmarc_checker`, `spf_checker`, `dkim_checker`, `mx_lookup`, `smtp_test`, `dnsbl_lookup` under `/tools/*`; DMARC/SPF/MX use `run_all_checks` slices; DKIM uses `lookup_dkim_selector`; `smtp_test` does outbound TCP banner/EHLO only (no DATA), with `assert_public_host` before connect; `dnsbl_lookup` queries a fixed set of IPv4 DNSBL zones (cap IPs per run; respect provider terms).
+- **Website T2 (Phase 1):** `http_headers` at `/tools/http-headers`; server-side GET via `tools.url_fetch` (scheme allowlist, `assert_public_host` per redirect hop, max 5 redirects, 15s timeout); BFF mirrors URL rules in `validate-fetch-url.ts`.
 
 ---
 
@@ -376,13 +377,15 @@ Not “just another Flask route.” Detail: [features/email/mail-tester-inbound.
 
 ---
 
-## 20. HTTP / website tool security [PLANNED]
+## 20. HTTP / website tool security [PARTIAL - shipped for `http_headers`]
 
 For SSL inspector, HTTP headers, redirect chain, HTTP status:
 
 - Block private/reserved/link-local IPs and localhost targets (SSRF).
 - Allowlist or strict URL parse; max redirects; short timeouts.
 - Rate limit per IP; no raw passthrough of arbitrary URLs without validation.
+
+**Shipped:** [`tools/url_fetch.py`](../backend/tools/url_fetch.py) + BFF URL validation power `http_headers`; reuse for redirect/status/SSL tools.
 
 ---
 
@@ -540,7 +543,7 @@ Mail Tester: separate SMTP ingress → workers → PostgreSQL → Next.js
 
 - **Decision:** Before any server-side HTTP fetch, validate URL, block private/internal targets, cap redirects and timeouts.
 - **Rationale:** Prevent DNSBunch from becoming an open proxy.
-- **Status:** Planned; required before shipping SSL/headers/redirect/status tools.
+- **Status:** Partially shipped - `http_headers` uses `url_fetch` + BFF validation; extend to SSL/redirect/status before those tools launch.
 
 ### ADR-003: API.md vs ARCHITECTURE.md ownership
 

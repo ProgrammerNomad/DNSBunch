@@ -8,6 +8,7 @@ import { isAllowedToolId } from '@/lib/tool-allowlist';
 import { validateDnsHealthBulkBody } from '@/lib/validate-dns-health-bulk';
 import { validateDkimCheckerBody } from '@/lib/validate-dkim-checker';
 import { validateDnsblLookupBody } from '@/lib/validate-dnsbl-lookup';
+import { validateFetchUrlBody } from '@/lib/validate-fetch-url';
 import { validateSmtpTestBody } from '@/lib/validate-smtp-test';
 import { isDomainToolId, validateToolDomainBody } from '@/lib/validate-tool-domain';
 
@@ -72,6 +73,15 @@ export async function POST(request: NextRequest, context: RouteContext) {
     proxyBody = validated.data;
   } else if (toolId === 'dnsbl_lookup') {
     const validated = validateDnsblLookupBody(body);
+    if (!validated.ok) {
+      return NextResponse.json(
+        { error: validated.error, code: validated.code },
+        { status: 400, headers: { 'X-Request-Id': requestId } },
+      );
+    }
+    proxyBody = validated.data;
+  } else if (toolId === 'http_headers') {
+    const validated = validateFetchUrlBody(body);
     if (!validated.ok) {
       return NextResponse.json(
         { error: validated.error, code: validated.code },

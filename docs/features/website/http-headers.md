@@ -5,11 +5,11 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P2 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 1 |
 | **access** | free |
 | **tool_id** | `http_headers` |
-| **last_reviewed** | 2026-09-15 |
+| **last_reviewed** | 2026-09-16 |
 
 ## Summary
 
@@ -32,7 +32,7 @@ Inspect caching, HSTS, CSP, and related headers quickly.
 
 ## Architecture
 
-Python httpx with redirects cap; BFF SSRF validation.
+Python `requests` via shared [`url_fetch`](../../../backend/tools/url_fetch.py) (redirect cap, SSRF checks); BFF [`validate-fetch-url`](../../../frontend/src/lib/validate-fetch-url.ts).
 
 ## Data model
 
@@ -56,19 +56,19 @@ Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). 
 
 ## Dependencies
 
-None for v1 unless listed elsewhere in this doc.
+Shared URL fetch + SSRF validation (`url_fetch`, BFF mirror).
 
 ## Implementation checklist
 
-- [ ] Python tool module + SSRF tests
-- [ ] T2 page + BFF proxy
-- [ ] Analytics `tool_run`
+- [x] Python tool module + SSRF tests
+- [x] T2 page + BFF proxy
+- [x] Analytics `tool_run`
 
 ## Acceptance criteria
 
-- [ ] Status code shown
-- [ ] Security headers section populated
-- [ ] Invalid URL rejected
+- [x] Status code shown
+- [x] Security headers section populated
+- [x] Invalid URL rejected
 
 ## References
 
