@@ -189,6 +189,30 @@ class TestToolRegistry:
         assert result["host"] == "mail.example.com"
         assert result["banner"].startswith("220")
 
+    def test_dnsbl_lookup_registered(self):
+        assert "dnsbl_lookup" in list_tool_ids()
+        entry = get("dnsbl_lookup")
+        assert entry.meta.category == "email"
+
+    def test_dnsbl_lookup_smoke_mocked(self, monkeypatch):
+        def fake_query(ip, zone_meta):
+            return {
+                "rbl_id": zone_meta["rbl_id"],
+                "label": zone_meta["label"],
+                "zone": zone_meta["zone"],
+                "ip": ip,
+                "query": f"test.{zone_meta['zone']}",
+                "result": "clean",
+                "response": None,
+                "message": None,
+            }
+
+        monkeypatch.setattr("tools.dnsbl_lookup.runner._query_rbl", fake_query)
+        result = run_tool("dnsbl_lookup", ip="8.8.8.8")
+        assert result["ips_checked"] == ["8.8.8.8"]
+        assert len(result["rows"]) == 3
+        assert result["status"] == "pass"
+
     def test_dns_health_invalid_domain(self):
         with pytest.raises(ValueError, match="Domain is required"):
             run_tool("dns_health", domain="", checks=[])

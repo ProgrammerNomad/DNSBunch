@@ -115,6 +115,10 @@ function MxLookupContent() {
         <Link href="/tools/smtp-test" className="underline underline-offset-4">
           SMTP test
         </Link>
+        {' · '}
+        <Link href="/tools/dnsbl-lookup" className="underline underline-offset-4">
+          DNSBL
+        </Link>
         .
       </p>
     </ToolPageLayout>

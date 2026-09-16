@@ -205,3 +205,23 @@ class TestInternalToolsRoute:
         data = response.get_json()
         assert data["host"] == "smtp.example.com"
         assert data["banner"].startswith("220")
+
+    def test_dnsbl_lookup_valid_signature(self, client, monkeypatch):
+        def fake_query(ip, zone_meta):
+            return {
+                "rbl_id": zone_meta["rbl_id"],
+                "label": zone_meta["label"],
+                "zone": zone_meta["zone"],
+                "ip": ip,
+                "query": f"test.{zone_meta['zone']}",
+                "result": "listed" if zone_meta["rbl_id"] == "spamhaus_zen" else "clean",
+                "response": "127.0.0.2" if zone_meta["rbl_id"] == "spamhaus_zen" else None,
+                "message": None,
+            }
+
+        monkeypatch.setattr("tools.dnsbl_lookup.runner._query_rbl", fake_query)
+        response = _signed_post(client, "dnsbl_lookup", {"ip": "8.8.8.8"})
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data["status"] == "warning"
+        assert len(data["rows"]) == 3

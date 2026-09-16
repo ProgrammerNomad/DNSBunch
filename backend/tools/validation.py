@@ -160,3 +160,53 @@ def parse_smtp_target(
     if not is_valid_hostname(cleaned_host):
         raise ValueError("Invalid host format")
     return SmtpTarget(domain=None, host=cleaned_host, port=resolved_port)
+
+
+@dataclass(frozen=True)
+class DnsblTarget:
+    domain: str | None
+    ip: str | None
+
+
+def normalize_ipv4(ip: str) -> str:
+    """Validate public IPv4 for DNSBL queries."""
+    cleaned = (ip or "").strip()
+    if not cleaned:
+        raise ValueError("IP is required")
+    try:
+        addr = ipaddress.ip_address(cleaned)
+    except ValueError as exc:
+        raise ValueError("Invalid IPv4 address") from exc
+    if addr.version != 4:
+        raise ValueError("IPv4 only in v1")
+    normalized = str(addr)
+    if _ip_is_blocked(normalized):
+        raise ValueError("Private or reserved IP addresses are not allowed")
+    return normalized
+
+
+def is_public_ipv4(ip_str: str) -> bool:
+    try:
+        addr = ipaddress.ip_address(ip_str)
+    except ValueError:
+        return False
+    return addr.version == 4 and not _ip_is_blocked(ip_str)
+
+
+def parse_dnsbl_target(
+    *,
+    domain: str = "",
+    ip: str = "",
+    **_kwargs: Any,
+) -> DnsblTarget:
+    domain_trimmed = (domain or "").strip()
+    ip_trimmed = (ip or "").strip()
+
+    if domain_trimmed and ip_trimmed:
+        raise ValueError("Provide domain or IP, not both")
+    if not domain_trimmed and not ip_trimmed:
+        raise ValueError("Domain or IP is required")
+
+    if domain_trimmed:
+        return DnsblTarget(domain=normalize_domain(domain_trimmed), ip=None)
+    return DnsblTarget(domain=None, ip=normalize_ipv4(ip_trimmed))

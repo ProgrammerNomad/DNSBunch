@@ -96,9 +96,20 @@ export default function ToolsHubPage() {
             </Button>
           </CardHeader>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>DNSBL lookup</CardTitle>
+            <CardDescription>
+              Check IPv4 against Spamhaus ZEN, SpamCop, and Barracuda DNS blocklists.
+            </CardDescription>
+            <Button asChild className="mt-2 w-fit">
+              <Link href="/tools/dnsbl-lookup">Open DNSBL lookup</Link>
+            </Button>
+          </CardHeader>
+        </Card>
       </section>
 
-      <p className="text-sm text-muted-foreground">More email and website tools coming in Phase 1.</p>
+      <p className="text-sm text-muted-foreground">Website tools (HTTP headers, SSL) coming in Phase 1.</p>
     </div>
   );
 }

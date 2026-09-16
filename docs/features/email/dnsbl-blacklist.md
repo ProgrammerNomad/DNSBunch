@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P2 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 1 |
 | **access** | free |
 | **tool_id** | `dnsbl_lookup` |
@@ -21,7 +21,7 @@ Deliverability troubleshooting requires multi-RBL checks.
 
 ## Scope
 
-**In scope:** Configurable small set of RBLs (e.g. zen.spamhaus.org); listed/not listed.
+**In scope:** Fixed set of RBLs: `zen.spamhaus.org` (Spamhaus ZEN), `bl.spamcop.net` (SpamCop), `b.barracudacentral.org` (Barracuda); listed/not listed (IPv4 v1).
 
 **Out of scope:** Delisting requests; commercial RBL API keys.
 
@@ -60,13 +60,13 @@ Platform rate limits.
 
 ## Implementation checklist
 
-- [ ] IP + domain input modes
-- [ ] Document which lists are queried
+- [x] IP + domain input modes on `/tools/dnsbl-lookup`
+- [x] Document which lists are queried (see In scope)
 
 ## Acceptance criteria
 
-- [ ] Each RBL row shows listed/clean/error
-- [ ] Invalid IP rejected
+- [x] Each RBL row shows listed/clean/error
+- [x] Invalid IP rejected
 
 ## References
 

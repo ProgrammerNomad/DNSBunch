@@ -248,7 +248,7 @@ Detail: [features/dns-health/bulk-checker.md](features/dns-health/bulk-checker.m
 - **`tool_id`:** stable snake_case identifier per user-facing tool (catalog in [TOOL_PLUGIN_CONTRACT.md](TOOL_PLUGIN_CONTRACT.md)).
 - **Registry:** Python maps `tool_id` → runner; Next maps route → `tool_id`.
 - **DNS health:** `tool_id = dns_health`; surfaces: `single` (shipped), `bulk`, `api` (planned).
-- **Email T2 (Phase 1):** `dmarc_checker`, `spf_checker`, `dkim_checker`, `mx_lookup`, `smtp_test` under `/tools/*`; DMARC/SPF/MX use `run_all_checks` slices; DKIM uses `lookup_dkim_selector`; `smtp_test` does outbound TCP banner/EHLO only (no DATA), with `assert_public_host` before connect.
+- **Email T2 (Phase 1):** `dmarc_checker`, `spf_checker`, `dkim_checker`, `mx_lookup`, `smtp_test`, `dnsbl_lookup` under `/tools/*`; DMARC/SPF/MX use `run_all_checks` slices; DKIM uses `lookup_dkim_selector`; `smtp_test` does outbound TCP banner/EHLO only (no DATA), with `assert_public_host` before connect; `dnsbl_lookup` queries a fixed set of IPv4 DNSBL zones (cap IPs per run; respect provider terms).
 
 ---
 

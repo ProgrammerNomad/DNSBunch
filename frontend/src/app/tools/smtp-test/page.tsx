@@ -153,6 +153,10 @@ function SmtpTestContent() {
           MX lookup
         </Link>
         {' · '}
+        <Link href="/tools/dnsbl-lookup" className="underline underline-offset-4">
+          DNSBL
+        </Link>
+        {' · '}
         <Link href="/" className="underline underline-offset-4">
           full DNS health
         </Link>

@@ -531,6 +531,18 @@ Or explicit host: `{"host":"aspmx.l.google.com","port":25}` (domain **or** host,
 
 Response: `{ "domain", "host", "port", "status", "banner", "ehlo_response", "issues", "error" }`.
 
+**Local dev - DNSBL lookup (T2):**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/dnsbl_lookup \
+  -H "Content-Type: application/json" \
+  -d '{"ip":"8.8.8.8"}'
+```
+
+Or domain (public A records): `{"domain":"example.com"}`. Domain **or** IP, not both.
+
+Response: `{ "input", "ips_checked", "status", "rows", "issues" }`.
+
 Legacy **`POST /api/dns/check`** (CSRF → `/api/check`) remains unchanged for the home UI until T1 migration.
 
 ### Browser → Next BFF
