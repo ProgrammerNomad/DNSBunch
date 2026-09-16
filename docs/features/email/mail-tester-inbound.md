@@ -94,7 +94,7 @@ mail-tester.com-style inbound scoring is highest retention potential vs another 
 
 
 
-T4 `/tools/mail-tester`, session URL `/tools/mail-tester/[sessionId]`. UI renders report JSON only (no parallel tool API calls on results page).
+T4 `/tools/mail-tester`, session URL `/tools/mail-tester/[sessionId]`. UI renders report JSON only (no parallel tool API calls on results page). **DNS configuration** uses the same SPF/DMARC/DKIM result panels as standalone tools (`MailTesterDnsPanels`), fed from stored `dns_configuration` in the report; footer links open standalone checkers for `from_domain`. Dev `.eml` upload on session page when `MAIL_TESTER_DEV_INGEST` is enabled.
 
 
 

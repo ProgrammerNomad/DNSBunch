@@ -5,6 +5,15 @@ import { auth } from '@/auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { prisma } from '@/lib/prisma';
+import { parseSavedCheckSummary, savedCheckHref } from '@/lib/saved-checks';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -18,6 +27,12 @@ export default async function DashboardPage() {
     where: { userId: session.user.id },
     orderBy: { createdAt: 'desc' },
     take: 10,
+  });
+
+  const savedChecks = await prisma.savedCheck.findMany({
+    where: { userId: session.user.id },
+    orderBy: { createdAt: 'desc' },
+    take: 50,
   });
 
   return (
@@ -42,7 +57,7 @@ export default async function DashboardPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground">
-              Recent mail deliverability tests appear under the Mail tests tab.
+              Recent tool runs and mail deliverability tests appear under Saved checks and Mail tests.
             </CardContent>
           </Card>
         </TabsContent>
@@ -50,9 +65,59 @@ export default async function DashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>Saved checks</CardTitle>
-              <CardDescription>Coming soon - rerun and compare past tool results.</CardDescription>
+              <CardDescription>Recent successful tool runs while signed in (up to 50).</CardDescription>
             </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">No saved checks yet.</CardContent>
+            <CardContent className="text-sm">
+              {savedChecks.length === 0 ? (
+                <p className="text-muted-foreground">
+                  No saved checks yet. Run a tool while signed in (for example{' '}
+                  <Link href="/tools/dmarc-checker" className="underline">
+                    DMARC checker
+                  </Link>
+                  ).
+                </p>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Tool</TableHead>
+                      <TableHead>Summary</TableHead>
+                      <TableHead className="text-right">Open</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {savedChecks.map((row) => {
+                      const summary = parseSavedCheckSummary(row.summaryJson);
+                      const href = savedCheckHref(row.toolId, summary);
+                      return (
+                        <TableRow key={row.id}>
+                          <TableCell className="text-muted-foreground">
+                            {row.createdAt.toISOString().slice(0, 16).replace('T', ' ')}
+                          </TableCell>
+                          <TableCell className="font-mono text-xs">{row.toolId}</TableCell>
+                          <TableCell>
+                            {summary.label}
+                            {summary.status ? (
+                              <span className="ml-2 text-muted-foreground">({summary.status})</span>
+                            ) : null}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {href ? (
+                              <Link href={href} className="underline">
+                                Re-run
+                              </Link>
+                            ) : (
+                              <span className="text-muted-foreground">-</span>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="mail" className="mt-4">

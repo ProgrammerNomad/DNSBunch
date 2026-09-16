@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import { useParams } from 'next/navigation';
@@ -46,6 +46,12 @@ export default function MailTesterSessionPage() {
 
   const [session, setSession] = useState<SessionPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+
+  const showDevIngest = useMemo(() => {
+    return session?.devIngestEnabled || process.env.NEXT_PUBLIC_MAIL_TESTER_DEV_INGEST === 'true';
+  }, [session?.devIngestEnabled]);
 
   const load = useCallback(async () => {
     if (!sessionId) return;
@@ -54,6 +60,32 @@ export default function MailTesterSessionPage() {
     if (!res.ok) throw new Error(data.error || 'Session not found');
     setSession(data);
   }, [sessionId]);
+
+  const uploadEml = async () => {
+    if (!session?.sessionId || !file) {
+      setError('Choose a .eml file first.');
+      return;
+    }
+    setError(null);
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      const res = await fetch(`/api/mail-test/sessions/${session.sessionId}/ingest`, {
+        method: 'POST',
+        body: form,
+      });
+      const data = (await res.json()) as SessionPayload & { error?: string };
+      if (!res.ok) {
+        throw new Error(data.error || 'Ingest failed');
+      }
+      setSession(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Ingest failed');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   useEffect(() => {
     void load().catch((e) => setError(e instanceof Error ? e.message : 'Failed to load'));
@@ -97,6 +129,28 @@ export default function MailTesterSessionPage() {
               <Progress className="mt-3" value={progressForStatus(session.status)} />
             </CardContent>
           </Card>
+
+          {showDevIngest && session.status === 'pending' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Dev: upload .eml</CardTitle>
+                <CardDescription>
+                  Simulates inbound mail without MX or a VPS SMTP listener. Enable with MAIL_TESTER_DEV_INGEST=true.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Input
+                  type="file"
+                  accept=".eml,text/plain,message/rfc822"
+                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                />
+                <Button type="button" disabled={uploading || !file} onClick={() => void uploadEml()}>
+                  {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  Score uploaded message
+                </Button>
+              </CardContent>
+            </Card>
+          )}
 
           {session.result && session.status === 'scored' ? <MailTesterReportView result={session.result} /> : null}
 

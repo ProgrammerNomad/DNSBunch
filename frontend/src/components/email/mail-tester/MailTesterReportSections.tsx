@@ -4,6 +4,8 @@ import { CheckCircle2, XCircle } from 'lucide-react';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { MailTesterDnsPanels } from '@/components/email/mail-tester/MailTesterDnsPanels';
+import { MailTesterDomainToolLinks } from '@/components/email/mail-tester/MailTesterDomainToolLinks';
 import type { MailTestReportV2 } from '@/lib/mail-test/report-types';
 
 function PassIcon({ ok }: { ok: boolean }) {
@@ -58,10 +60,9 @@ export function MailTesterReportSections({ report }: { report: MailTestReportV2 
           <CardTitle>DNS configuration</CardTitle>
           <CardDescription>Same checks as standalone SPF/DKIM/DMARC tools (single source of truth)</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm text-muted-foreground">
-          <pre className="max-h-48 overflow-auto rounded bg-muted p-2 text-xs">
-            {JSON.stringify(report.dns_configuration, null, 2)}
-          </pre>
+        <CardContent className="space-y-4">
+          {report.from_domain ? <MailTesterDomainToolLinks domain={report.from_domain} /> : null}
+          <MailTesterDnsPanels dns={report.dns_configuration} />
         </CardContent>
       </Card>
 

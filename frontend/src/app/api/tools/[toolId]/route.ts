@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { logToolEvent } from '@/lib/analytics/tool-events';
 import { canRun } from '@/lib/can-run';
+import { buildToolRunSummary, persistSavedCheck } from '@/lib/saved-checks';
 import { postInternalTool } from '@/lib/internal-api';
 import { isAllowedToolId } from '@/lib/tool-allowlist';
 import { validateDnsHealthBulkBody } from '@/lib/validate-dns-health-bulk';
@@ -148,6 +149,11 @@ export async function POST(request: NextRequest, context: RouteContext) {
       surface: eventSurface,
       userId: session?.user?.id,
     });
+
+    if (session?.user?.id) {
+      const summary = buildToolRunSummary(toolId, proxyBody, data, eventSurface);
+      void persistSavedCheck(session.user.id, toolId, summary).catch(() => undefined);
+    }
 
     return NextResponse.json(data, {
       status: upstream.status,
