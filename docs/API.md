@@ -479,6 +479,16 @@ Response: `{ "surface": "bulk", "rows": [...], "meta": { "requested", "completed
 
 **T3 CSV (Bulk 2–3):** Import/export of domain lists and rollup results is **client-side** on [`/tools/bulk-dns-health`](../frontend/src/app/tools/bulk-dns-health/page.tsx) - no separate CSV API. Row **View full** opens T1 home with `?domain=` (same single-domain engine).
 
+**Local dev - DMARC checker (T2):**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/dmarc_checker \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example.com"}'
+```
+
+Response: `{ "domain", "status", "record", "parsed", "issues", "tags" }`.
+
 Legacy **`POST /api/dns/check`** (CSRF → `/api/check`) remains unchanged for the home UI until T1 migration.
 
 ### Browser → Next BFF

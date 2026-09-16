@@ -44,7 +44,7 @@ Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) 
 | [features/platform/entitlements-quotas.md](features/platform/entitlements-quotas.md) | Entitlements | planned | 3 | P1 | experiment |
 | [features/email/spf-checker.md](features/email/spf-checker.md) | SPF checker | planned | 1 | P2 | |
 | [features/email/dkim-checker.md](features/email/dkim-checker.md) | DKIM checker | planned | 1 | P2 | |
-| [features/email/dmarc-checker.md](features/email/dmarc-checker.md) | DMARC checker | planned | 1 | P2 | |
+| [features/email/dmarc-checker.md](features/email/dmarc-checker.md) | DMARC checker | **shipped** | 1 | P2 | First Phase 1 T2 tool |
 | [features/email/mx-lookup.md](features/email/mx-lookup.md) | MX lookup | planned | 1 | P2 | |
 | [features/email/smtp-test.md](features/email/smtp-test.md) | SMTP test | planned | 1 | P2 | |
 | [features/email/dnsbl-blacklist.md](features/email/dnsbl-blacklist.md) | DNSBL | planned | 1 | P2 | |

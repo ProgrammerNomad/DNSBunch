@@ -248,6 +248,7 @@ Detail: [features/dns-health/bulk-checker.md](features/dns-health/bulk-checker.m
 - **`tool_id`:** stable snake_case identifier per user-facing tool (catalog in [TOOL_PLUGIN_CONTRACT.md](TOOL_PLUGIN_CONTRACT.md)).
 - **Registry:** Python maps `tool_id` → runner; Next maps route → `tool_id`.
 - **DNS health:** `tool_id = dns_health`; surfaces: `single` (shipped), `bulk`, `api` (planned).
+- **Email T2 (Phase 1):** `dmarc_checker` shipped at `/tools/dmarc-checker`; runner reuses `DNSChecker` DMARC check only.
 
 ---
 

@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P2 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 1 |
 | **access** | free |
 | **tool_id** | `dmarc_checker` |
@@ -32,7 +32,7 @@ High SEO demand for DMARC validation; operators need policy at a glance.
 
 ## Architecture
 
-Python `backend/tools/dmarc_checker/` or extract from dns_checker DMARC check.
+Python `backend/tools/dmarc_checker/runner.py` calls `DNSChecker.run_all_checks(["dmarc"])` (same engine as T1).
 
 ## Data model
 
@@ -60,14 +60,14 @@ Platform skeleton recommended.
 
 ## Implementation checklist
 
-- [ ] Standalone page `/tools/dmarc-checker`
-- [ ] Link from health results when `dmarc` category present
+- [x] Standalone page `/tools/dmarc-checker` (T2; `?domain=` prefill)
+- [ ] Link from health results when `dmarc` category present (deferred - T1 results table omits dmarc rows today)
 
 ## Acceptance criteria
 
-- [ ] Policy p= displayed
-- [ ] rua/ruf URIs listed when present
-- [ ] Missing DMARC shows actionable message
+- [x] Policy p= displayed
+- [x] rua/ruf URIs listed when present
+- [x] Missing DMARC shows actionable message
 
 ## References
 

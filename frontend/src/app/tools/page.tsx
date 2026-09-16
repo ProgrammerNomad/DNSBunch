@@ -39,7 +39,22 @@ export default function ToolsHubPage() {
         </Card>
       </section>
 
-      <p className="text-sm text-muted-foreground">More tools (SPF, DMARC, and more) coming in Phase 1.</p>
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Email</h2>
+        <Card>
+          <CardHeader>
+            <CardTitle>DMARC checker</CardTitle>
+            <CardDescription>
+              Query _dmarc TXT, policy (none/quarantine/reject), alignment, and rua/ruf reporting.
+            </CardDescription>
+            <Button asChild className="mt-2 w-fit">
+              <Link href="/tools/dmarc-checker">Open DMARC checker</Link>
+            </Button>
+          </CardHeader>
+        </Card>
+      </section>
+
+      <p className="text-sm text-muted-foreground">More email and website tools coming in Phase 1.</p>
     </div>
   );
 }

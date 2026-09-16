@@ -6,6 +6,7 @@ import { canRun } from '@/lib/can-run';
 import { postInternalTool } from '@/lib/internal-api';
 import { isAllowedToolId } from '@/lib/tool-allowlist';
 import { validateDnsHealthBulkBody } from '@/lib/validate-dns-health-bulk';
+import { validateToolDomainBody } from '@/lib/validate-tool-domain';
 
 type RouteContext = { params: Promise<{ toolId: string }> };
 
@@ -46,6 +47,17 @@ export async function POST(request: NextRequest, context: RouteContext) {
     }
     proxyBody = validated.data;
     eventSurface = 'bulk';
+  }
+
+  if (toolId === 'dmarc_checker') {
+    const validated = validateToolDomainBody(body);
+    if (!validated.ok) {
+      return NextResponse.json(
+        { error: validated.error, code: validated.code },
+        { status: 400, headers: { 'X-Request-Id': requestId } },
+      );
+    }
+    proxyBody = validated.data;
   }
 
   try {
