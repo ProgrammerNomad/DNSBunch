@@ -165,6 +165,30 @@ class TestToolRegistry:
         assert result["rows"][0]["host"] == "mail.example.com"
         assert result["rows"][0]["ips"] == ["93.184.216.34"]
 
+    def test_smtp_test_registered(self):
+        assert "smtp_test" in list_tool_ids()
+        entry = get("smtp_test")
+        assert entry.meta.category == "email"
+
+    def test_smtp_test_invalid_target(self):
+        with pytest.raises(ValueError, match="Domain or host is required"):
+            run_tool("smtp_test")
+
+    def test_smtp_test_smoke_mocked(self, monkeypatch):
+        def fake_probe(host, port):
+            return {
+                "status": "pass",
+                "banner": "220 mail.example.com ESMTP",
+                "ehlo_response": "250-mail.example.com\r\n250 SIZE",
+                "issues": [],
+                "error": None,
+            }
+
+        monkeypatch.setattr("tools.smtp_test.runner._probe_smtp", fake_probe)
+        result = run_tool("smtp_test", host="mail.example.com", port=25)
+        assert result["host"] == "mail.example.com"
+        assert result["banner"].startswith("220")
+
     def test_dns_health_invalid_domain(self):
         with pytest.raises(ValueError, match="Domain is required"):
             run_tool("dns_health", domain="", checks=[])

@@ -184,3 +184,24 @@ class TestInternalToolsRoute:
         data = response.get_json()
         assert data["count"] == 0
         assert data["rows"] == []
+
+    def test_smtp_test_valid_signature(self, client, monkeypatch):
+        def fake_probe(host, port):
+            return {
+                "status": "pass",
+                "banner": "220 smtp.example.com",
+                "ehlo_response": "250 OK",
+                "issues": [],
+                "error": None,
+            }
+
+        monkeypatch.setattr("tools.smtp_test.runner._probe_smtp", fake_probe)
+        response = _signed_post(
+            client,
+            "smtp_test",
+            {"host": "smtp.example.com", "port": 25},
+        )
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data["host"] == "smtp.example.com"
+        assert data["banner"].startswith("220")

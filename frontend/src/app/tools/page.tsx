@@ -85,6 +85,17 @@ export default function ToolsHubPage() {
             </Button>
           </CardHeader>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>SMTP test</CardTitle>
+            <CardDescription>
+              TCP connect to port 25 or 587, read banner and EHLO - no mail sent.
+            </CardDescription>
+            <Button asChild className="mt-2 w-fit">
+              <Link href="/tools/smtp-test">Open SMTP test</Link>
+            </Button>
+          </CardHeader>
+        </Card>
       </section>
 
       <p className="text-sm text-muted-foreground">More email and website tools coming in Phase 1.</p>

@@ -28,6 +28,16 @@ export function isValidDomain(domain: string): boolean {
   return true;
 }
 
+const HOSTNAME_PATTERN =
+  /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,62})?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,62})?)*$/;
+
+export function isValidHostname(host: string): boolean {
+  if (!host || host.length > 253) return false;
+  const lower = host.toLowerCase();
+  if (lower === 'localhost' || lower === 'localhost.localdomain') return false;
+  return HOSTNAME_PATTERN.test(host);
+}
+
 export function isValidDkimSelector(selector: string): boolean {
   if (!selector || selector.length > 63) return false;
   return DKIM_SELECTOR_PATTERN.test(selector);

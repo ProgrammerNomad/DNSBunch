@@ -519,6 +519,18 @@ curl -s -X POST http://localhost:3000/api/tools/mx_lookup \
 
 Response: `{ "domain", "status", "count", "rows", "issues" }`.
 
+**Local dev - SMTP test (T2):**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/smtp_test \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example.com","port":25}'
+```
+
+Or explicit host: `{"host":"aspmx.l.google.com","port":25}` (domain **or** host, not both).
+
+Response: `{ "domain", "host", "port", "status", "banner", "ehlo_response", "issues", "error" }`.
+
 Legacy **`POST /api/dns/check`** (CSRF → `/api/check`) remains unchanged for the home UI until T1 migration.
 
 ### Browser → Next BFF

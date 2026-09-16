@@ -5,6 +5,7 @@ export const ALLOWED_TOOL_IDS = [
   'spf_checker',
   'dkim_checker',
   'mx_lookup',
+  'smtp_test',
 ] as const;
 
 export type AllowedToolId = (typeof ALLOWED_TOOL_IDS)[number];

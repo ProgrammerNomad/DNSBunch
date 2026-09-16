@@ -46,7 +46,7 @@ Feature quality rules: [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) 
 | [features/email/dkim-checker.md](features/email/dkim-checker.md) | DKIM checker | **shipped** | 1 | P2 | T2; domain + selector |
 | [features/email/dmarc-checker.md](features/email/dmarc-checker.md) | DMARC checker | **shipped** | 1 | P2 | First Phase 1 T2 tool |
 | [features/email/mx-lookup.md](features/email/mx-lookup.md) | MX lookup | **shipped** | 1 | P2 | T2 email |
-| [features/email/smtp-test.md](features/email/smtp-test.md) | SMTP test | planned | 1 | P2 | |
+| [features/email/smtp-test.md](features/email/smtp-test.md) | SMTP test | **shipped** | 1 | P2 | Banner + EHLO only |
 | [features/email/dnsbl-blacklist.md](features/email/dnsbl-blacklist.md) | DNSBL | planned | 1 | P2 | |
 | [features/email/mail-tester-inbound.md](features/email/mail-tester-inbound.md) | Mail tester | planned | 2 | P1 | inbound SMTP |
 | [features/website/ssl-inspector.md](features/website/ssl-inspector.md) | SSL inspector | planned | 1 | P2 | |

@@ -111,6 +111,10 @@ function MxLookupContent() {
         <Link href="/tools/dmarc-checker" className="underline underline-offset-4">
           DMARC
         </Link>
+        {' · '}
+        <Link href="/tools/smtp-test" className="underline underline-offset-4">
+          SMTP test
+        </Link>
         .
       </p>
     </ToolPageLayout>

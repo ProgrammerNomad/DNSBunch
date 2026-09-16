@@ -172,6 +172,10 @@ function DkimCheckerContent() {
           MX
         </Link>
         {' · '}
+        <Link href="/tools/smtp-test" className="underline underline-offset-4">
+          SMTP test
+        </Link>
+        {' · '}
         <Link href="/" className="underline underline-offset-4">
           full DNS health
         </Link>

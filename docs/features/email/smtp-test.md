@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P2 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 1 |
 | **access** | free |
 | **tool_id** | `smtp_test` |
@@ -60,14 +60,14 @@ Free public tier by default ([PRODUCT_STRATEGY.md](../../PRODUCT_STRATEGY.md)). 
 
 ## Implementation checklist
 
-- [ ] Connect to port 25/587 with timeout
-- [ ] Abuse limits per IP
+- [x] Connect to port 25/587 with timeout
+- [x] Private/reserved targets blocked (`assert_public_host`)
 
 ## Acceptance criteria
 
-- [ ] Banner displayed on success
-- [ ] Timeout errors user-friendly
-- [ ] Does not send email
+- [x] Banner displayed on success
+- [x] Timeout errors user-friendly
+- [x] Does not send email
 
 ## References
 
