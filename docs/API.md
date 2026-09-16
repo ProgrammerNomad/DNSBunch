@@ -477,6 +477,8 @@ curl -s -X POST http://localhost:3000/api/tools/dns_health \
 
 Response: `{ "surface": "bulk", "rows": [...], "meta": { "requested", "completed", "failed" } }`. Max domains: `BULK_MAX_DOMAINS` (default 50).
 
+**T3 CSV (Bulk 2–3):** Import/export of domain lists and rollup results is **client-side** on [`/tools/bulk-dns-health`](../frontend/src/app/tools/bulk-dns-health/page.tsx) - no separate CSV API. Row **View full** opens T1 home with `?domain=` (same single-domain engine).
+
 Legacy **`POST /api/dns/check`** (CSRF → `/api/check`) remains unchanged for the home UI until T1 migration.
 
 ### Browser → Next BFF

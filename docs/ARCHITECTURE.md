@@ -212,9 +212,9 @@ Record semantics: [DNS_RECORDS.md](DNS_RECORDS.md). Feature-level doc: [features
 
 ---
 
-## 9. Bulk architecture [CURRENT: Bulk 1 + PLANNED: Bulk 2–4]
+## 9. Bulk architecture [CURRENT: Bulk 1–3 + PLANNED: Bulk 4]
 
-**Bulk 1 shipped:** paste list, bounded concurrency, rollup summary table via `POST /api/tools/dns_health` with `surface: "bulk"`. Orchestration in `backend/tools/dns_health/bulk.py`. **Not yet:** CSV (Bulk 2), drill-down (Bulk 3), async jobs (Bulk 4).
+**Bulk 1–3 shipped:** paste/CSV import, sync rollup table, CSV export, drill-down to T1 via `/?domain=` - all on `/tools/bulk-dns-health`. Python orchestration in `backend/tools/dns_health/bulk.py`; same `DNSChecker.run_all_checks` per domain. **Not yet:** async jobs (Bulk 4).
 
 Design (normative):
 

@@ -4,7 +4,7 @@
 
 | Field | Value |
 |-------|--------|
-| **status** | in-progress |
+| **status** | shipped |
 | **priority** | P1 |
 | **phase** | 1 |
 | **access** | both |
@@ -98,8 +98,9 @@ Free tier with tight caps; larger batches / async jobs as Pro experiment ([METRI
 
 - [x] `analyze_domain`, `bulk_analyze`, `rollup_for_bulk` in Python (Bulk 1)
 - [x] T3 page + BFF bulk surface (Bulk 1)
-- [ ] CSV Bulk 2
-- [x] Document endpoints in API.md when shipped (Bulk 1)
+- [x] CSV Bulk 2 (client-side import/export on T3)
+- [x] Bulk 3 row drill-down to T1 (`/?domain=` View full)
+- [x] Document endpoints in API.md when shipped
 
 ## Acceptance criteria
 

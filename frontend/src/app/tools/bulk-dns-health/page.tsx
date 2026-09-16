@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { Loader2, Upload } from 'lucide-react';
 
 import { BulkSummaryTable } from '@/components/dns-health/BulkSummaryTable';
 import { ToolPageLayout } from '@/components/layout/ToolPageLayout';
@@ -9,26 +9,30 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  BULK_MAX_DOMAINS,
+  downloadBulkResultsCsv,
+  parseDomainsFromCsv,
+  parseDomainsFromText,
+} from '@/lib/csv-domains';
 import { dnsApi } from '@/services/api';
 import type { BulkDnsHealthResponse } from '@/types/dns';
 
-function parseDomains(text: string): string[] {
-  return text
-    .split(/[\n,;\s]+/)
-    .map((d) => d.trim())
-    .filter(Boolean);
-}
-
 export default function BulkDnsHealthPage() {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
   const [result, setResult] = useState<BulkDnsHealthResponse | null>(null);
 
-  const handleRun = async () => {
-    const domains = parseDomains(input);
+  const runBulk = async (domains: string[]) => {
     if (domains.length === 0) {
       setError('Enter at least one domain (one per line).');
+      return;
+    }
+    if (domains.length > BULK_MAX_DOMAINS) {
+      setError(`Maximum ${BULK_MAX_DOMAINS} domains per bulk request`);
       return;
     }
 
@@ -49,10 +53,35 @@ export default function BulkDnsHealthPage() {
     }
   };
 
+  const handleRun = () => {
+    void runBulk(parseDomainsFromText(input));
+  };
+
+  const handleImportCsv = async (file: File) => {
+    setImportError(null);
+    try {
+      const text = await file.text();
+      const parsed = parseDomainsFromCsv(text, BULK_MAX_DOMAINS);
+      if (!parsed.ok) {
+        setImportError(parsed.error);
+        return;
+      }
+      setInput(parsed.domains.join('\n'));
+    } catch {
+      setImportError('Could not read CSV file');
+    }
+  };
+
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) void handleImportCsv(file);
+    e.target.value = '';
+  };
+
   return (
     <ToolPageLayout
       title="Bulk DNS health"
-      description="Paste multiple domains for a quick pass/warning/error summary. Uses the same DNS engine as the home checker."
+      description="Paste or import domains for a quick pass/warning/error summary. Uses the same DNS engine as the home checker."
     >
       <Card>
         <CardContent className="space-y-4 pt-6">
@@ -63,6 +92,14 @@ export default function BulkDnsHealthPage() {
             disabled={loading}
             rows={8}
             aria-label="Domain list"
+          />
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv,text/csv"
+            className="hidden"
+            onChange={onFileChange}
+            aria-hidden
           />
           <div className="flex flex-wrap items-center gap-3">
             <Button onClick={handleRun} disabled={loading || !input.trim()}>
@@ -75,8 +112,27 @@ export default function BulkDnsHealthPage() {
                 'Run bulk check'
               )}
             </Button>
-            <span className="text-sm text-muted-foreground">Up to 50 domains per run</span>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={loading}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Upload className="mr-2 h-4 w-4" />
+              Import CSV
+            </Button>
+            {result && (
+              <Button type="button" variant="secondary" onClick={() => downloadBulkResultsCsv(result.rows)}>
+                Download CSV
+              </Button>
+            )}
+            <span className="text-sm text-muted-foreground">Up to {BULK_MAX_DOMAINS} domains per run</span>
           </div>
+          {importError && (
+            <Alert variant="destructive">
+              <AlertDescription>{importError}</AlertDescription>
+            </Alert>
+          )}
           {loading && (
             <p className="text-sm text-muted-foreground">Analyzing domains… this may take a minute.</p>
           )}
