@@ -4,6 +4,7 @@ from __future__ import annotations
 from tools.dkim_checker.runner import run_dkim_checker
 from tools.dmarc_checker.runner import run_dmarc_checker
 from tools.dns_health.runner import run_dns_health
+from tools.mx_lookup.runner import run_mx_lookup
 from tools.registry import register
 from tools.spf_checker.runner import run_spf_checker
 
@@ -27,5 +28,10 @@ def register_all_tools() -> None:
     register(
         "dkim_checker",
         run_dkim_checker,
+        {"category": "email", "timeout_ms": 30_000},
+    )
+    register(
+        "mx_lookup",
+        run_mx_lookup,
         {"category": "email", "timeout_ms": 30_000},
     )

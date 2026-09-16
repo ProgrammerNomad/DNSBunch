@@ -108,6 +108,10 @@ function SpfCheckerContent() {
           DKIM
         </Link>
         {' · '}
+        <Link href="/tools/mx-lookup" className="underline underline-offset-4">
+          MX
+        </Link>
+        {' · '}
         <Link href="/" className="underline underline-offset-4">
           full DNS health
         </Link>

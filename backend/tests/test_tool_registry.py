@@ -124,6 +124,47 @@ class TestToolRegistry:
         assert result["host"] == "google._domainkey.example.com"
         assert result["status"] == "pass"
 
+    def test_mx_lookup_registered(self):
+        assert "mx_lookup" in list_tool_ids()
+        entry = get("mx_lookup")
+        assert entry.meta.category == "email"
+
+    def test_mx_lookup_invalid_domain(self):
+        with pytest.raises(ValueError, match="Domain is required"):
+            run_tool("mx_lookup", domain="")
+
+    def test_mx_lookup_smoke_mocked(self, monkeypatch):
+        async def fake_run_all_checks(self, checks):
+            return {
+                "domain": self.domain,
+                "timestamp": "2026-01-01T00:00:00Z",
+                "checks": {
+                    "mx": {
+                        "status": "pass",
+                        "count": 1,
+                        "records": [
+                            {
+                                "host": "mail.example.com",
+                                "priority": 10,
+                                "ips": [{"type": "A", "ip": "93.184.216.34"}],
+                            }
+                        ],
+                        "checks": [],
+                    }
+                },
+                "summary": {"total": 1, "pass": 1, "warning": 0, "error": 0, "info": 0},
+            }
+
+        monkeypatch.setattr(
+            "tools.mx_lookup.runner.DNSChecker.run_all_checks",
+            fake_run_all_checks,
+        )
+        result = run_tool("mx_lookup", domain="example.com")
+        assert result["domain"] == "example.com"
+        assert result["count"] == 1
+        assert result["rows"][0]["host"] == "mail.example.com"
+        assert result["rows"][0]["ips"] == ["93.184.216.34"]
+
     def test_dns_health_invalid_domain(self):
         with pytest.raises(ValueError, match="Domain is required"):
             run_tool("dns_health", domain="", checks=[])

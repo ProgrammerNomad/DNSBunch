@@ -509,6 +509,16 @@ curl -s -X POST http://localhost:3000/api/tools/dkim_checker \
 
 Response: `{ "domain", "selector", "host", "status", "record", "parsed", "issues", "tags" }`.
 
+**Local dev - MX lookup (T2):**
+
+```bash
+curl -s -X POST http://localhost:3000/api/tools/mx_lookup \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example.com"}'
+```
+
+Response: `{ "domain", "status", "count", "rows", "issues" }`.
+
 Legacy **`POST /api/dns/check`** (CSRF → `/api/check`) remains unchanged for the home UI until T1 migration.
 
 ### Browser → Next BFF

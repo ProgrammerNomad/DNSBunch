@@ -151,3 +151,36 @@ class TestInternalToolsRoute:
         data = response.get_json()
         assert data["selector"] == "google"
         assert data["host"] == "google._domainkey.example.com"
+
+    def test_mx_lookup_valid_signature(self, client, monkeypatch):
+        async def fake_run_all_checks(self, checks):
+            return {
+                "domain": self.domain,
+                "timestamp": "2026-01-01T00:00:00Z",
+                "checks": {
+                    "mx": {
+                        "status": "info",
+                        "count": 0,
+                        "records": [],
+                        "checks": [
+                            {
+                                "type": "mx_records",
+                                "status": "info",
+                                "message": "No MX records found",
+                                "details": [],
+                            }
+                        ],
+                    }
+                },
+                "summary": {"total": 1, "pass": 0, "warning": 0, "error": 0, "info": 1},
+            }
+
+        monkeypatch.setattr(
+            "tools.mx_lookup.runner.DNSChecker.run_all_checks",
+            fake_run_all_checks,
+        )
+        response = _signed_post(client, "mx_lookup", {"domain": "example.com"})
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data["count"] == 0
+        assert data["rows"] == []

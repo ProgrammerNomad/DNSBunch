@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|--------|
 | **priority** | P2 |
-| **status** | planned |
+| **status** | shipped |
 | **phase** | 1 |
 | **access** | free |
 | **tool_id** | `mx_lookup` |
@@ -32,7 +32,7 @@ Quick MX inspection separate from full health report.
 
 ## Architecture
 
-Python `backend/tools/mx_lookup/`; dnspython.
+Python `backend/tools/mx_lookup/runner.py` calls `DNSChecker.run_all_checks(["mx"])` (same engine as T1).
 
 ## Data model
 
@@ -60,13 +60,13 @@ None.
 
 ## Implementation checklist
 
-- [ ] Tool module + page
-- [ ] CTA to full DNS health check
+- [x] Tool module + page `/tools/mx-lookup`
+- [x] CTA to full DNS health check
 
 ## Acceptance criteria
 
-- [ ] All MX rows shown with priority
-- [ ] No MX case handled
+- [x] All MX rows shown with priority
+- [x] No MX case handled
 
 ## References
 

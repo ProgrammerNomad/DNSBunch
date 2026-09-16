@@ -74,6 +74,17 @@ export default function ToolsHubPage() {
             </Button>
           </CardHeader>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>MX lookup</CardTitle>
+            <CardDescription>
+              List MX hosts and priorities with resolved mail server IP addresses.
+            </CardDescription>
+            <Button asChild className="mt-2 w-fit">
+              <Link href="/tools/mx-lookup">Open MX lookup</Link>
+            </Button>
+          </CardHeader>
+        </Card>
       </section>
 
       <p className="text-sm text-muted-foreground">More email and website tools coming in Phase 1.</p>
